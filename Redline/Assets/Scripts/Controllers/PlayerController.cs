@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
 		float x = Input.GetAxis("Horizontal");
 		float y = Input.GetAxis("Vertical");
 		
-		Vector3 movement = new Vector3( x, y, 0f);
+		Vector3 movement = new Vector3( x, 0f, y);
 
 		if (myBody != null)
 		{
@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
 
 	private void LookAtMouse( )
 	{
-		Plane mousePlane = new Plane( Vector3.forward, transform.position);
+		Plane mousePlane = new Plane( Vector3.up, transform.position);
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
 		{
 			Vector3 point = ray.GetPoint(hitDist);
 
-			Quaternion rotation = Quaternion.LookRotation(point - transform.position, Vector3.forward);
+			Quaternion rotation = Quaternion.LookRotation(point - transform.position, Vector3.up);
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
 		}
 	}
