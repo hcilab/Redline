@@ -28,12 +28,16 @@ public class FireSystemController : MonoBehaviour
         float height = floorSize.z;
         float width = floorSize.x;
         Vector3 itemSize = new Vector3(width/_columns, 1.1f, height/_rows);
+        _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         foreach ( FlameController flame in _activeFlames )
         {
             flame.transform.localScale = itemSize;
+            var coords = _fireGrid.GetCoords( flame.transform.position );
+            var pos = _fireGrid.GetPosition( coords );
+            
+            flame.transform.position = new Vector3( pos.x, 1.1f, pos.y);
         }
         
-        _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0 );
 
@@ -135,7 +139,7 @@ public class FireSystemController : MonoBehaviour
                 _activeFlames.Add(newFlame);
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 3 );
-                neighbour.SetVariable( "verticalOffset", 0.1f );
+                neighbour.SetVariable( "verticalOffset", verticalOffset );
                 //TODO check if neighbour is actually an edge flame
                 newEdges.Add(neighbour);
             }
