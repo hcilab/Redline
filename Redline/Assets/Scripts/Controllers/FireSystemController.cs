@@ -30,9 +30,7 @@ public class FireSystemController : MonoBehaviour
 
         _edgeFlames = new List< GridItem >();
         
-        FlameController flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
-
-        _flamePool = GameMaster.InstantiatePool( _firePoolSize, flamePrefab );
+        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _activeFlames[0] );
         //TODO setup intensity terrain
 
         foreach ( FlameController flame in _activeFlames )
