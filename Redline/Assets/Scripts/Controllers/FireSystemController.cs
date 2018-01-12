@@ -120,7 +120,7 @@ public class FireSystemController : MonoBehaviour
 
             foreach ( GridItem neighbour in emptyNeighbours )
             {
-                var verticalOffset = 0.1f;
+                var verticalOffset = 1.1f;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
                 if ( !newFlame ) return;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );

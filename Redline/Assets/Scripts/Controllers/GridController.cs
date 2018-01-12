@@ -81,7 +81,7 @@ public class GridController
 		point = _gameSpace.transform.InverseTransformPoint(point);
 		
 		point += new Vector3(5, 0, -5);
-		point.z *= -1;
+		point.z *= 1;
 		
 		//TODO this also is not tolerant of object orientation..
 		return new Vector2( 
@@ -225,8 +225,8 @@ public class GridController
 	public Vector2 GetPosition(Vector2 coords)
 	{
 		return new Vector2(
-			coords.x * _itemWidth + (_itemWidth/2) - _spaceWidth/2,
-			coords.y * _itemHeight + (_itemHeight/2) - _spaceHeight/2
+			coords.x * _itemWidth + (_itemWidth/2) - _spaceWidth/2 - _gameSpace.transform.position.x,
+			coords.y * -_itemHeight - (_itemHeight/2) + _spaceHeight/2 +_gameSpace.transform.position.z
 			);
 	}
 }
