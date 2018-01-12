@@ -24,6 +24,15 @@ public class FireSystemController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Vector3 floorSize = gameObject.transform.localScale;
+        float height = floorSize.z;
+        float width = floorSize.x;
+        Vector3 itemSize = new Vector3(width/_columns, 1.1f, height/_rows);
+        foreach ( FlameController flame in _activeFlames )
+        {
+            flame.transform.localScale = itemSize;
+        }
+        
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0 );
