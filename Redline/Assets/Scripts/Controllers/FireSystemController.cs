@@ -133,8 +133,8 @@ public class FireSystemController : MonoBehaviour
                     verticalOffset,
                     center.y
                 );
-                Debug.Log("Setting new flame to " + neighbour._gridCoords);
-                Debug.Log("To position" +   position);
+//                Debug.Log("Setting new flame to " + neighbour._gridCoords);
+//                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
                 _activeFlames.Add(newFlame);
                 neighbour.SetPayload( newFlame, 0 );

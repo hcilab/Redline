@@ -132,7 +132,7 @@ public class GridItem
             _payload[ i ] = payloadItem;
         }
         else throw new IndexOutOfRangeException();
-        Debug.Log("Updated payload for " + this);
+//        Debug.Log("Updated payload for " + this);
     }
 
     /// <summary>
