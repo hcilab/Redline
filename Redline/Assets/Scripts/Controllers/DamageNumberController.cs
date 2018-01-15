@@ -31,9 +31,10 @@ public class DamageNumberController : MonoBehaviour
 		if(!instance) throw new NullReferenceException();
 				
 		Vector2 screenPosition = Camera.main.WorldToScreenPoint(
-			new Vector2(
+			new Vector3(
 				location.position.x + Random.Range(-.2f, .2f),
-				location.position.y + Random.Range(-.2f, .2f)
+				0f,
+				location.position.z + Random.Range(-.2f, .2f)
 			));
 			
 		instance.transform.SetParent( _canvas.transform, false );
