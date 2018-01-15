@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
@@ -14,41 +15,50 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private bool _showGrid;
     [SerializeField] private int _firePoolSize = 20;
     [SerializeField] private float _updateInterval = 1;
-    [SerializeField] private List< FlameController > _activeFlames;
-
+    [SerializeField] private List< Vector2 > _startingFlames;
+    
+    private readonly float _verticalOffset = .2f;
+    private List< FlameController > _activeFlames;
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
     private GridController _fireGrid;
     private float _tick;
+    private FlameController _flamePrefab;
 
-    // Use this for initialization
-    void Start()
+    private void Awake()
     {
+        _edgeFlames = new List< GridItem >();
+        _activeFlames = new List< FlameController >();
+     
+        _flamePrefab = Resources.Load< FlameController >( "Prefabs/LameFlame" );
+        
         Vector3 floorSize = gameObject.transform.localScale;
         float height = floorSize.z;
         float width = floorSize.x;
         Vector3 itemSize = new Vector3(width/_columns, 1.1f, height/_rows);
-        _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
-        foreach ( FlameController flame in _activeFlames )
-        {
-            flame.transform.localScale = itemSize;
-            var coords = _fireGrid.GetCoords( flame.transform.position );
-            var pos = _fireGrid.GetPosition( coords );
-            
-            flame.transform.position = new Vector3( pos.x, 1.1f, pos.y);
-        }
+
+        _flamePrefab.transform.localScale = itemSize;
         
+        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        
+        _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0 );
-
-        _edgeFlames = new List< GridItem >();
-        
-        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _activeFlames[0] );
         //TODO setup intensity terrain
 
-        foreach ( FlameController flame in _activeFlames )
+        foreach ( Vector2 coords in _startingFlames )
         {
-            var cell = _fireGrid.GetGridItem( flame.transform.position );
+            FlameController flame = _flamePool.Spawn() as FlameController;
+            if ( !flame ) throw new Exception("Can't start a fire! Someone bring more matches!!");
+            var gridCoords = _fireGrid.GetPosition( coords );
+            flame.transform.position = new Vector3(
+                gridCoords.x,
+                _verticalOffset,
+                gridCoords.y
+                );
+            flame.SetIntensity( 3 );
+            _activeFlames.Add( flame );
+            var cell = _fireGrid.GetGridItem( coords.x, coords.y );
             cell.SetPayload( new MonoBehaviour[] {flame} );
             cell.SetVariable( "intensity", _startIntensity );
             _edgeFlames.Add( cell  );
@@ -124,13 +134,12 @@ public class FireSystemController : MonoBehaviour
 
             foreach ( GridItem neighbour in emptyNeighbours )
             {
-                var verticalOffset = 1.1f;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
                 if ( !newFlame ) return;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
-                    verticalOffset,
+                    _verticalOffset,
                     center.y
                 );
 //                Debug.Log("Setting new flame to " + neighbour._gridCoords);
@@ -140,7 +149,7 @@ public class FireSystemController : MonoBehaviour
                 _activeFlames.Add(newFlame);
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 3 );
-                neighbour.SetVariable( "verticalOffset", verticalOffset );
+                neighbour.SetVariable( "verticalOffset", _verticalOffset );
                 //TODO check if neighbour is actually an edge flame
                 newEdges.Add(neighbour);
             }
