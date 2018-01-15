@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 		{
 			float x = 4.2f * Mathf.Cos(theta);
 			float z = 4.2f * Mathf.Sin(theta);
-			Vector3 pos = new Vector3(x, 0, z);
+			Vector3 pos = new Vector3(x, 1, z);
 
 			outline.SetPosition(i, pos);
 			theta += deltaTheta;
