@@ -78,7 +78,7 @@ public class FireSystemController : MonoBehaviour
         if ( Input.GetMouseButtonDown( 0 ) )
         {
             Debug.Log( _fireGrid.GetCoords( 
-                Camera.main.ScreenToWorldPoint(Input.mousePosition) ) );
+                Camera.main.ScreenToViewportPoint(Input.mousePosition) ) );
         }
     }
 
