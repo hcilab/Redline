@@ -136,6 +136,7 @@ public class FireSystemController : MonoBehaviour
 //                Debug.Log("Setting new flame to " + neighbour._gridCoords);
 //                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
+                newFlame.SetIntensity( 3f );
                 _activeFlames.Add(newFlame);
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 3 );
