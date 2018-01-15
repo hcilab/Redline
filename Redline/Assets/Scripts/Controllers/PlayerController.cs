@@ -101,9 +101,9 @@ public class PlayerController : MonoBehaviour
 	private void FixedUpdate()
 	{
 		float x = Input.GetAxis("Horizontal");
-		float y = Input.GetAxis("Vertical");
+		float z = Input.GetAxis("Vertical");
 		
-		Vector3 movement = new Vector3( x, 0f, y);
+		Vector3 movement = new Vector3( x, 0f, z);
 
 		if (myBody != null)
 		{
