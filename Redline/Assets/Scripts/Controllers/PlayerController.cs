@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float speed = 3.0f;
 	[SerializeField] private float rotationSpeed = 130f;
 	[SerializeField] private double damage = 0.2;
-
+	[SerializeField] private double _damageScaling = 10f;
+	
 	private Rigidbody myBody;
 	private double hitPoints = 100;
 	private DamageNumberController _damageNumberController;
@@ -60,6 +61,7 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.R)) hitPoints = 100;
 		LookAtMouse();
+		TakeDamage();
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -67,36 +69,41 @@ public class PlayerController : MonoBehaviour
 		EnemyController enemy = other.GetComponentInParent<EnemyController>();
 		if (!enemiesNearBy.Contains(other) && enemy)
 		{
-			enemy.setActive();
-			Debug.Log("Adding new enemy: " + enemiesNearBy.Count+1);
+//			enemy.setActive();
+//			Debug.Log("Adding new enemy: " + enemiesNearBy.Count+1);
 			enemiesNearBy.Add(other);
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		Debug.Log("Removing " + enemiesNearBy.IndexOf(other)+1);
+//		Debug.Log("Removing " + enemiesNearBy.IndexOf(other)+1);
 		if (enemiesNearBy.Remove(other))
 		{
-			other.GetComponentInParent<EnemyController>().setInactive();
+//			other.GetComponentInParent<EnemyController>().setInactive();
 		}
 	}
 	
-//	private void TakeDamage()
-//	{
-//		foreach (Collider enemyCollider in enemiesNearBy)
-//		{
-//			var enemyDamage = enemy.getIntensity()
-//			                  /
-//			                  Vector3.Distance(enemy.transform.position, transform.position)
-//			                  *
-//			                  Time.deltaTime;
-//			
-//			hitPoints -= enemyDamage;
-//			_damageNumberController.SpawnDamageNumber( enemyDamage, transform );
-//
-//		}
-//	}
+	private void TakeDamage()
+	{
+		double totalDmg = 0;
+		foreach (Collider enemyCollider in enemiesNearBy)
+		{
+			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
+			totalDmg += enemy.GetIntensity()
+			                  /
+			                  Vector3.Distance(enemy.transform.position, transform.position)
+			                  *
+			                  Time.deltaTime;
+		}
+		if ( totalDmg > 0 )
+		{
+			totalDmg = Math.Round( totalDmg * _damageScaling );
+			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
+			hitPoints -= totalDmg;
+			Debug.Log( totalDmg );
+		}
+	}
 
 	private void FixedUpdate()
 	{
