@@ -14,7 +14,7 @@ public class DamageNumberController : MonoBehaviour
 	void Start()
 	{		
 		_canvas = FindObjectOfType<Canvas>();
-		DamageNumber numberPrefab = Resources.Load<DamageNumber>("Prefabs/DamageNumber");
+		DamageNumber numberPrefab = Resources.Load<DamageNumber>("Prefabs/DamageNumbers");
 		_poolController = GameMaster.InstantiatePool(_numberPoolSize, numberPrefab);
 		_lastSpawn = Time.time;
 	}
