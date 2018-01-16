@@ -62,28 +62,29 @@ public class GridController
 	/// <returns>A 2 item vector with the grid row and column of the point of interest.</returns>
 	/// <exception cref="IndexOutOfRangeException">When point requested is out of the bounds of
 	/// the grid object.</exception>
-	public Vector2 GetCoords(Vector3 pointOfInterest)
+	public Vector2 GetMouseCoords()
 	{
+		
 		var spaceCollider = _gameSpace.GetComponent<Collider>();
 		
 		var ray = Camera.main.ScreenPointToRay(
-			Camera.main.WorldToScreenPoint(pointOfInterest));
+			Input.mousePosition );
 		RaycastHit hit;
 		Vector3 point;
 		
 		Debug.DrawRay(ray.origin, ray.direction, Color.green, 20, false);
 		
-		if( spaceCollider.Raycast( ray, out hit, 100000) )
+		if( spaceCollider.Raycast( ray, out hit, 1000) )
 			point = hit.point;
 		else
-			throw new IndexOutOfRangeException("Point " + pointOfInterest + "is not within the grid.");
+			throw new IndexOutOfRangeException("Point " + Input.mousePosition + "is not within the grid.");
 
 		point = _gameSpace.transform.InverseTransformPoint(point);
 		
-		point += new Vector3(5, 0, -5);
+		//TODO this also is not tolerant of object orientation..
+		point += new Vector3(5, -5, 0);
 		point.z *= 1;
 		
-		//TODO this also is not tolerant of object orientation..
 		return new Vector2( 
 				(int) (point.x / ( 10f / _cols ) )
 			, 	(int) (point.z / ( 10f / _rows ) ));
@@ -110,19 +111,6 @@ public class GridController
 		_grid[x * _rows + y] = item;
 	}
 	
-	/// <summary>
-	/// Retrieves the grid item in a certain grid cell.
-	/// </summary>
-	/// <param name="coords">Vector of the world position of the desired cell.</param>
-	/// <returns>A GridItem that is associated with the specified cell.</returns>
-	public GridItem GetGridItem(Vector3 coords)
-	{
-		//TODO switch to using gameObject instead of vector 
-		//because we can't tell if hte vector coming in is grid coords, or local or world 
-		Vector2 position = GetCoords(coords);
-		return GetGridItem(position.x, position.y);
-	}
-
 	/// <summary>
 	/// Retrieves the grid item in a certain grid cell.
 	/// </summary>
