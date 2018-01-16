@@ -2,25 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
 
-	[SerializeField] private float speed = 3.0f;
-	[SerializeField] private float rotationSpeed = 130f;
-	[SerializeField] private double damage = 0.2;
+	[SerializeField] private float _speed = 3.0f;
+	[SerializeField] private float _rotationSpeed = 130f;
+	[SerializeField] private double _damage = 0.2;
 	[SerializeField] private double _damageScaling = 10f;
+	[SerializeField] private double _totalHp = 100;
+	[SerializeField] private float _waterStrength = 3;
 	
-	private Rigidbody myBody;
-	private double hitPoints = 100;
+	
+	private Rigidbody _myBody;
+	private double _hitPoints;
 	private DamageNumberController _damageNumberController;
-	private List<Collider> enemiesNearBy;
-	
+	private List<Collider> _enemiesNearBy;
+
 	// Use this for initialization
 	void Start ()
 	{
+		_hitPoints = _totalHp;
+		
 		LineRenderer outline = gameObject.AddComponent<LineRenderer>();
 
 		outline.startWidth = 0.1f;
@@ -41,8 +47,8 @@ public class PlayerController : MonoBehaviour
 			theta += deltaTheta;
 		}
 		
-		enemiesNearBy = new List<Collider>();
-		myBody = GetComponent<Rigidbody>();
+		_enemiesNearBy = new List<Collider>();
+		_myBody = GetComponent<Rigidbody>();
 		_damageNumberController = GameMaster.GetDamageNumberController();
 	}
 	
@@ -50,16 +56,17 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 		
-		if (Input.GetKey(KeyCode.Space) && hitPoints > 0)
+		if (Input.GetKey(KeyCode.Space) && _hitPoints > 0)
 		{
-			if (hitPoints > 0)
+			if (_hitPoints > 0)
 			{
-				hitPoints -= damage;
-				_damageNumberController.SpawnDamageNumber( damage, transform );
+				_hitPoints -= _damage;
+				_damageNumberController.SpawnDamageNumber( _damage, transform );
 			}
 		};
 
-		if (Input.GetKeyUp(KeyCode.R)) hitPoints = 100;
+		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
+
 		LookAtMouse();
 		TakeDamage();
 	}
@@ -67,18 +74,18 @@ public class PlayerController : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		EnemyController enemy = other.GetComponentInParent<EnemyController>();
-		if (!enemiesNearBy.Contains(other) && enemy)
+		if (!_enemiesNearBy.Contains(other) && enemy)
 		{
 //			enemy.setActive();
 //			Debug.Log("Adding new enemy: " + enemiesNearBy.Count+1);
-			enemiesNearBy.Add(other);
+			_enemiesNearBy.Add(other);
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
 //		Debug.Log("Removing " + enemiesNearBy.IndexOf(other)+1);
-		if (enemiesNearBy.Remove(other))
+		if (_enemiesNearBy.Remove(other))
 		{
 //			other.GetComponentInParent<EnemyController>().setInactive();
 		}
@@ -87,7 +94,7 @@ public class PlayerController : MonoBehaviour
 	private void TakeDamage()
 	{
 		double totalDmg = 0;
-		foreach (Collider enemyCollider in enemiesNearBy)
+		foreach (Collider enemyCollider in _enemiesNearBy)
 		{
 			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
 			totalDmg += enemy.GetIntensity()
@@ -100,8 +107,8 @@ public class PlayerController : MonoBehaviour
 		{
 			totalDmg = Math.Round( totalDmg * _damageScaling );
 			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
-			hitPoints -= totalDmg;
-			Debug.Log( totalDmg );
+			_hitPoints -= totalDmg;
+//			Debug.Log( totalDmg );
 		}
 	}
 
@@ -112,9 +119,9 @@ public class PlayerController : MonoBehaviour
 		
 		Vector3 movement = new Vector3( x, 0f, z);
 
-		if (myBody != null)
+		if (_myBody != null)
 		{
-			myBody.velocity = movement * speed;
+			_myBody.velocity = movement * _speed;
 		}
 	}
 
@@ -131,12 +138,12 @@ public class PlayerController : MonoBehaviour
 			Vector3 point = ray.GetPoint(hitDist);
 
 			Quaternion rotation = Quaternion.LookRotation(point - transform.position, Vector3.up);
-			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
 		}
 	}
 
 	public double GetHealth()
 	{
-		return hitPoints / 100f;
+		return _hitPoints / _totalHp;
 	}
 }
