@@ -81,9 +81,8 @@ public class GridController
 
 		point = _gameSpace.transform.InverseTransformPoint(point);
 		
-		//TODO this also is not tolerant of object orientation..
-		point += new Vector3(5, -5, 0);
-		point.z *= 1;
+		point += new Vector3(5, 0, -5);
+		point.z *= -1;
 		
 		return new Vector2( 
 				(int) (point.x / ( 10f / _cols ) )
