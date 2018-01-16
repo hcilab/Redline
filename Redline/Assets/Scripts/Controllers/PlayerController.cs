@@ -58,6 +58,13 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 		
+		float x = Input.GetAxis("Horizontal");
+		float z = Input.GetAxis("Vertical");
+		
+		Vector3 movement = new Vector3( x, 0f, z);
+
+		gameObject.transform.position = gameObject.transform.position + movement * _speed;
+		
 		if (Input.GetKey(KeyCode.Space) && _hitPoints > 0)
 		{
 			if (_hitPoints > 0)
@@ -120,19 +127,6 @@ public class PlayerController : MonoBehaviour
 			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
 			_hitPoints -= totalDmg;
 //			Debug.Log( totalDmg );
-		}
-	}
-
-	private void FixedUpdate()
-	{
-		float x = Input.GetAxis("Horizontal");
-		float z = Input.GetAxis("Vertical");
-		
-		Vector3 movement = new Vector3( x, 0f, z);
-
-		if (_myBody != null)
-		{
-			_myBody.velocity = movement * _speed;
 		}
 	}
 
