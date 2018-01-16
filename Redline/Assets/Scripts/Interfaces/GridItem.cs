@@ -136,6 +136,19 @@ public class GridItem
     }
 
     /// <summary>
+    /// Removes a payload item from the cell.
+    /// </summary>
+    /// <param name="i">Index of the payload item to be removed.</param>
+    public void RemovePayload( int i )
+    {
+        if ( i < _payload.Length && _payloadActiveElementCount > 0 )
+        {
+            _payloadActiveElementCount-=1;
+            _payload[ i ] = null;
+        }
+    }
+
+    /// <summary>
     /// Sets a variable to be associated with the grid item.
     /// </summary>
     /// <param name="key">Name of the variable.</param>
