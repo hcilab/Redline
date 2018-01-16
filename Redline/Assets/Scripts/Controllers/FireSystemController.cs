@@ -18,7 +18,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private List< Vector2 > _startingFlames;
     
     private readonly float _verticalOffset = .2f;
-    private List< FlameController > _activeFlames;
+    private List< GridItem > _activeFlames;
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
     private GridController _fireGrid;
@@ -28,7 +28,7 @@ public class FireSystemController : MonoBehaviour
     private void Awake()
     {
         _edgeFlames = new List< GridItem >();
-        _activeFlames = new List< FlameController >();
+        _activeFlames = new List< GridItem >();
      
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/LameFlame" );
         
@@ -56,11 +56,11 @@ public class FireSystemController : MonoBehaviour
                 _verticalOffset,
                 gridCoords.y
                 );
-            flame.SetIntensity( 3 );
-            _activeFlames.Add( flame );
+            flame.SetIntensity( 3f );
             var cell = _fireGrid.GetGridItem( coords.x, coords.y );
-            cell.SetPayload( new MonoBehaviour[] {flame} );
+            cell.SetPayload( flame, 0 );
             cell.SetVariable( "intensity", _startIntensity );
+            _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
         }
         
@@ -147,11 +147,11 @@ public class FireSystemController : MonoBehaviour
 //                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
                 newFlame.SetIntensity( 3f );
-                _activeFlames.Add(newFlame);
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 3 );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
                 //TODO check if neighbour is actually an edge flame
+                _activeFlames.Add(neighbour);
                 newEdges.Add(neighbour);
             }
         }
@@ -162,5 +162,31 @@ public class FireSystemController : MonoBehaviour
     {
         //TODO lower intensity terrain
         //the terrain will spread negative height outwards until it reaches 0
+    }
+
+    public void LowerIntensity( float waterStrength )
+    {
+        Vector2 coords = _fireGrid.GetMouseCoords( );
+        GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
+
+        FlameController flame = cell.GetPayload( 0 ) as FlameController;
+        Debug.Log("Clicked on  " + flame + " at position " + coords);
+        if ( flame != null )
+        {
+            flame.SetIntensity( flame.GetIntensity() - waterStrength );
+    
+            if ( flame.GetIntensity() <= 0 )
+            {
+                Debug.Log( "Removing flame" );
+                cell.SetVariable( "intensity", 0 );
+                _flamePool.Remove( flame );
+                flame = null;
+                _edgeFlames.Remove( cell );
+                _activeFlames.Remove( cell );
+            }
+            
+            cell.SetPayload( flame, 0 );
+            _fireGrid.UpdateGridItem( coords, cell);
+        }
     }
 }

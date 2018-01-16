@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
 
+	[SerializeField] private FireSystemController _fireSystemController;
+	
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
 	[SerializeField] private double _damage = 0.2;
@@ -67,8 +69,17 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
 
+		if ( Input.GetMouseButtonDown( 0 ) )
+		{
+			ApplyWater( );
+		}
 		LookAtMouse();
 		TakeDamage();
+	}
+
+	private void ApplyWater( )
+	{
+		_fireSystemController.LowerIntensity( _waterStrength );
 	}
 
 	private void OnTriggerEnter(Collider other)
