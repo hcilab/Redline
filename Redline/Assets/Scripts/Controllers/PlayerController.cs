@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
 
-		if ( Input.GetMouseButtonDown( 0 ) )
+		if ( Input.GetMouseButton( 0 ) )
 		{	
 			var cursor = new Vector3(
 				Input.mousePosition.x,
