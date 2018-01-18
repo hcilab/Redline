@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -13,7 +14,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private double _damageScaling = 10f;
 	[SerializeField] private double _totalHp = 100;
 	[SerializeField] private float _waterStrength = 3;
-	[SerializeField] private float _waterDistance = 100;
+	[SerializeField] private bool _showCollider = false;
 	
 	
 	private Rigidbody _myBody;
@@ -25,27 +26,30 @@ public class PlayerController : MonoBehaviour
 	void Start ()
 	{
 		_hitPoints = _totalHp;
-		
-		LineRenderer outline = gameObject.AddComponent<LineRenderer>();
 
-		outline.startWidth = 0.1f;
-		outline.endWidth = 0.1f;
-		outline.positionCount = 129;
-		outline.useWorldSpace = false;
-
-		float deltaTheta = (float) (2.0 * Mathf.PI) / 128;
-		float theta = 0f;
-
-		for (int i = 0; i < 129; i++)
+		if ( _showCollider )
 		{
-			float x = 4.2f * Mathf.Cos(theta);
-			float z = 4.2f * Mathf.Sin(theta);
-			Vector3 pos = new Vector3(x, 1, z);
-
-			outline.SetPosition(i, pos);
-			theta += deltaTheta;
+			LineRenderer outline = gameObject.AddComponent<LineRenderer>();
+	
+			outline.startWidth = 0.1f;
+			outline.endWidth = 0.1f;
+			outline.positionCount = 129;
+			outline.useWorldSpace = false;
+	
+			float deltaTheta = (float) (2.0 * Mathf.PI) / 128;
+			float theta = 0f;
+	
+			for (int i = 0; i < 129; i++)
+			{
+				float x = 4.2f * Mathf.Cos(theta);
+				float z = 4.2f * Mathf.Sin(theta);
+				Vector3 pos = new Vector3(x, 1, z);
+	
+				outline.SetPosition(i, pos);
+				theta += deltaTheta;
+			}
 		}
-		
+
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_damageNumberController = GameMaster.GetDamageNumberController();
@@ -74,25 +78,26 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
 
 		if ( Input.GetMouseButtonDown( 0 ) )
-		{
-			Debug.Log(Vector3.Distance( 
-				Camera.main.ScreenToWorldPoint( Input.mousePosition ), 
-				gameObject.transform.position 
-			)  );
-			if( 
-				Vector3.Distance( 
-					Camera.main.ScreenToWorldPoint( Input.mousePosition ), 
-					gameObject.transform.position 
-				) < _waterDistance )
-				ApplyWater( );
+		{	
+			var cursor = new Vector3(
+				Input.mousePosition.x,
+				Input.mousePosition.y,
+				1f
+			);
+			cursor = Camera.main.ScreenToWorldPoint( cursor );
+			cursor.y = transform.position.y;
+			double distance = Vector3.Distance( cursor, transform.position );
+			ApplyWater( distance );
 		}
 		LookAtMouse();
 		TakeDamage();
 	}
 
-	private void ApplyWater( )
+	private void ApplyWater( double distance )
 	{
-		_fireSystemController.LowerIntensity( _waterStrength );
+		double hoseStrength = 1 - distance;
+		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength; 
+		_fireSystemController.LowerIntensity( _waterStrength * hoseStrength );
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -121,7 +126,7 @@ public class PlayerController : MonoBehaviour
 		foreach (Collider enemyCollider in _enemiesNearBy)
 		{
 			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
-			totalDmg += enemy.GetIntensity()
+			totalDmg += _fireSystemController.GetFlameIntensity( enemy )
 			                  /
 			                  Vector3.Distance(enemy.transform.position, transform.position)
 			                  *

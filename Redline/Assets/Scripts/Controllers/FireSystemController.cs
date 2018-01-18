@@ -221,4 +221,13 @@ public class FireSystemController : MonoBehaviour
             _fireGrid.UpdateGridItem( coords, cell);
         }
     }
+
+    public double GetFlameIntensity( FlameController flame )
+    {
+        foreach ( var activeFlame in _activeFlames )
+        {
+            if ( activeFlame.GetPayload( 0 ) == flame ) return activeFlame.GetVariable< double >( "intensity" );
+        }
+        throw new Exception("Flame cell not found!");
+    }
 }
