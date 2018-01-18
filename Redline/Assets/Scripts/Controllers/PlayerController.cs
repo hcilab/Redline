@@ -117,12 +117,12 @@ public class PlayerController : MonoBehaviour
 			                  *
 			                  Time.deltaTime;
 		}
-		if ( totalDmg > 0 )
+		if ( totalDmg > 0 && _hitPoints >= 0 )
 		{
 			totalDmg = Math.Round( totalDmg * _damageScaling );
 			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
 			_hitPoints -= totalDmg;
-//			Debug.Log( totalDmg );
+			Debug.Log( totalDmg );
 		}
 	}
 
