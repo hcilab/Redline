@@ -209,6 +209,15 @@ public class GridController
 		}
 	}
 
+	public void InitVariable<T>( string name, T value, GridItem.VariableEvent variableEvent )
+	{
+		foreach ( var item in _grid )
+		{
+			item.SetVariable< T >( name, value );
+			item.AttachVariableEvent( name, variableEvent );
+		}
+	}
+
 	public Vector2 GetPosition(Vector2 coords)
 	{
 		return new Vector2(
