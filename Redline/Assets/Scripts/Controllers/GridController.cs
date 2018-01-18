@@ -8,7 +8,7 @@ using UnityEngine;
 /// Manages the grid and it's associated objects.
 /// </summary>
 public class GridController
-{
+{	
 	private GameObject _gameSpace;
 	public readonly int _rows, _cols, _payloadDepth;
 	private GridItem[] _grid;
@@ -64,15 +64,24 @@ public class GridController
 	/// the grid object.</exception>
 	public Vector2 GetMouseCoords()
 	{
-		
-		var spaceCollider = _gameSpace.GetComponent<Collider>();
-		
 		var ray = Camera.main.ScreenPointToRay(
 			Input.mousePosition );
+		return GetRayCoords( ray );
+	}
+
+	public Vector2 GetWorldCoords( Vector3 position )
+	{
+		var ray = Camera.main.ScreenPointToRay( Camera.main.WorldToScreenPoint( position ) );
+		return GetRayCoords( ray );
+	}
+
+	private Vector2 GetRayCoords( Ray ray )
+	{
+		var spaceCollider = _gameSpace.GetComponent<Collider>();
 		RaycastHit hit;
 		Vector3 point;
 		
-		Debug.DrawRay(ray.origin, ray.direction, Color.green, 20, false);
+//		Debug.DrawRay(ray.origin, ray.direction, Color.green, 20, false);
 		
 		if( spaceCollider.Raycast( ray, out hit, 1000) )
 			point = hit.point;
@@ -85,7 +94,7 @@ public class GridController
 		point.z *= -1;
 		
 		return new Vector2( 
-				(int) (point.x / ( 10f / _cols ) )
+			(int) (point.x / ( 10f / _cols ) )
 			, 	(int) (point.z / ( 10f / _rows ) ));
 	}
 
@@ -208,7 +217,7 @@ public class GridController
 			n.SetVariable<T>( name, value );
 		}
 	}
-
+	
 	public void InitVariable<T>( string name, T value, GridItem.VariableEvent variableEvent )
 	{
 		foreach ( var item in _grid )
