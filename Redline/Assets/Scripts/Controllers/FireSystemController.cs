@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using UnityEngine;
@@ -44,6 +45,7 @@ public class FireSystemController : MonoBehaviour
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0 );
+        _fireGrid.InitVariable( "onfire", false );
         //TODO setup intensity terrain
 
         foreach ( Vector2 coords in _startingFlames )
@@ -60,6 +62,7 @@ public class FireSystemController : MonoBehaviour
             var cell = _fireGrid.GetGridItem( coords.x, coords.y );
             cell.SetPayload( flame, 0 );
             cell.SetVariable( "intensity", _startIntensity );
+            cell.SetVariable( "onfire", true );
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
         }
@@ -81,6 +84,15 @@ public class FireSystemController : MonoBehaviour
             Spread();
 //            Grow();
             _tick = Time.time;
+        }
+        
+        
+        foreach ( GridItem edgeFlame in _edgeFlames )
+        {
+            (edgeFlame.GetPayload( 0 ) as FlameController)
+                .gameObject
+                .GetComponentInChildren< EnemyController >()
+                .setActive();
         }
 
         if ( _showGrid ) _fireGrid.DrawGrid();
@@ -118,16 +130,34 @@ public class FireSystemController : MonoBehaviour
          * to the appropriate grid cells depending
          * on intensity thresholds.
          */
+        foreach ( var edgeItem in _edgeFlames )
+        {
+            (edgeItem.GetPayload( 0 ) as FlameController)
+                .gameObject
+                .GetComponentInChildren< EnemyController >()
+                .setInactive();
+        }
+        _edgeFlames = new List< GridItem >();
+        foreach ( var item in _activeFlames )
+        {
+            bool add = false;
+            foreach ( var neighbour in item.GetNeighbours() )
+            {
+                if ( !neighbour.GetVariable<bool>( "onfire" ) )
+                {
+                    add = true;
+                }
+            }
+            if( add ) _edgeFlames.Add( item );
+        }
         
-        List<GridItem> newEdges = new List<GridItem>();
         foreach ( GridItem edgeItem in _edgeFlames )
         {
-            if ( edgeItem.GetVariable<int>( "intensity" ) <= 1 ) continue;
             List< GridItem > emptyNeighbours = new List< GridItem >();
             
             foreach( GridItem n in edgeItem.GetNeighbours() )
             {
-                if ( !n.HasActivePayloadElements() )
+                if ( !n.GetVariable<bool>( "onfire" ) )
                 {
                     emptyNeighbours.Add( n );
                 }
@@ -136,7 +166,7 @@ public class FireSystemController : MonoBehaviour
             foreach ( GridItem neighbour in emptyNeighbours )
             {
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
-                if ( !newFlame ) return;
+                if ( !newFlame ) return; 
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
@@ -149,13 +179,12 @@ public class FireSystemController : MonoBehaviour
                 newFlame.SetIntensity( 3f );
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 3 );
+                neighbour.SetVariable( "onfire", true );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
                 //TODO check if neighbour is actually an edge flame
                 _activeFlames.Add(neighbour);
-                newEdges.Add(neighbour);
             }
         }
-        _edgeFlames = newEdges;
     }
 
     public void SpreadWater( Vector3 position )
@@ -178,11 +207,14 @@ public class FireSystemController : MonoBehaviour
             if ( flame.GetIntensity() <= 0 )
             {
                 Debug.Log( "Removing flame" );
-                cell.SetVariable( "intensity", 0 );
-                _flamePool.Remove( flame );
-                flame = null;
-                _edgeFlames.Remove( cell );
+                
                 _activeFlames.Remove( cell );
+                _flamePool.Remove( flame );
+                
+                cell.SetVariable( "intensity", 0 );
+                cell.SetVariable( "onfire", false );
+                Debug.Log( cell.GetVariable<int>( "intensity" )  );
+                cell.RemovePayload( 0 );
             }
             
             cell.SetPayload( flame, 0 );
