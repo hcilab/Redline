@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Controls the spread, damage and visualization of the fire.
@@ -12,7 +13,8 @@ using UnityEngine;
 /// </summary>
 public class FireSystemController : MonoBehaviour
 {
-    [SerializeField] private int _rows, _columns, _payloadDepth, _startIntensity;
+    [SerializeField] private int _rows, _columns, _payloadDepth;
+    [SerializeField] private double _startIntensity;
     [SerializeField] private bool _showGrid;
     [SerializeField] private int _firePoolSize = 20;
     [SerializeField] private float _updateInterval = 1;
@@ -25,6 +27,8 @@ public class FireSystemController : MonoBehaviour
     private GridController _fireGrid;
     private float _tick;
     private FlameController _flamePrefab;
+    [SerializeField] private double _spreadChance = 0.3;
+    [SerializeField] private double _growthFactor;
 
     private void Awake()
     {
@@ -44,7 +48,18 @@ public class FireSystemController : MonoBehaviour
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
-        _fireGrid.InitVariable( "intensity", 0 );
+        _fireGrid.InitVariable( "intensity", 0d, (GridItem item) =>
+        {
+            var color = new Color(
+                1f,
+                1f - (float)item.GetVariable<double>( "intensity" ) / 5,
+                0f
+                );
+            
+            item.GetPayload< FlameController >( 0 )
+                .GetComponent< Renderer >().material.color = color;
+//            Debug.Log( "increasing intensity color!" );
+        } );
         _fireGrid.InitVariable( "onfire", false );
         //TODO setup intensity terrain
 
@@ -58,7 +73,6 @@ public class FireSystemController : MonoBehaviour
                 _verticalOffset,
                 gridCoords.y
                 );
-            flame.SetIntensity( 3f );
             var cell = _fireGrid.GetGridItem( coords.x, coords.y );
             cell.SetPayload( flame, 0 );
             cell.SetVariable( "intensity", _startIntensity );
@@ -119,6 +133,11 @@ public class FireSystemController : MonoBehaviour
          * TODO Update the intensity terrain 
          * depending on how each flame influences it's neighbouring cells.
          */
+        foreach ( var activeFlame in _activeFlames )
+        {
+            activeFlame.SetVariable( "intensity",
+                activeFlame.GetVariable<double>( "intensity" ) + _growthFactor );
+        }
         
         /*
          * TODO Remove flame controllers
@@ -153,6 +172,7 @@ public class FireSystemController : MonoBehaviour
         
         foreach ( GridItem edgeItem in _edgeFlames )
         {
+            if( edgeItem.GetVariable<double>( "intensity" ) < 3 ) continue;
             List< GridItem > emptyNeighbours = new List< GridItem >();
             
             foreach( GridItem n in edgeItem.GetNeighbours() )
@@ -165,6 +185,7 @@ public class FireSystemController : MonoBehaviour
 
             foreach ( GridItem neighbour in emptyNeighbours )
             {
+                if( Random.value < ( 1 - _spreadChance ) ) continue;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
                 if ( !newFlame ) return; 
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
@@ -176,9 +197,8 @@ public class FireSystemController : MonoBehaviour
 //                Debug.Log("Setting new flame to " + neighbour._gridCoords);
 //                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
-                newFlame.SetIntensity( 3f );
                 neighbour.SetPayload( newFlame, 0 );
-                neighbour.SetVariable( "intensity", 3 );
+                neighbour.SetVariable( "intensity", 1d );
                 neighbour.SetVariable( "onfire", true );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
                 //TODO check if neighbour is actually an edge flame
@@ -193,27 +213,28 @@ public class FireSystemController : MonoBehaviour
         //the terrain will spread negative height outwards until it reaches 0
     }
 
-    public void LowerIntensity( float waterStrength )
+    public void LowerIntensity( double waterStrength )
     {
         Vector2 coords = _fireGrid.GetMouseCoords( );
         GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
 
         FlameController flame = cell.GetPayload( 0 ) as FlameController;
-        Debug.Log("Clicked on  " + flame + " at position " + coords);
+//        Debug.Log("Clicked on  " + flame + " at position " + coords);
         if ( flame != null )
-        {
-            flame.SetIntensity( flame.GetIntensity() - waterStrength );
-    
-            if ( flame.GetIntensity() <= 0 )
+        {    
+            cell.SetVariable( "intensity",
+                    cell.GetVariable<double>( "intensity" ) - waterStrength
+            );
+            if ( cell.GetVariable<double>( "intensity" ) <= 0 )
             {
-                Debug.Log( "Removing flame" );
+//                Debug.Log( "Removing flame" );
                 
                 _activeFlames.Remove( cell );
                 _flamePool.Remove( flame );
                 
-                cell.SetVariable( "intensity", 0 );
+                cell.SetVariable( "intensity", 0d );
                 cell.SetVariable( "onfire", false );
-                Debug.Log( cell.GetVariable<int>( "intensity" )  );
+//                Debug.Log( cell.GetVariable<int>( "intensity" )  );
                 cell.RemovePayload( 0 );
             }
             
