@@ -97,7 +97,11 @@ public class PlayerController : MonoBehaviour
 	{
 		double hoseStrength = 1 - distance;
 		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength; 
-		_fireSystemController.LowerIntensity( _waterStrength * hoseStrength );
+		FlameController flame = _fireSystemController.LowerIntensity( _waterStrength * hoseStrength );
+		if ( flame != null )
+		{
+			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+		}
 	}
 
 	private void OnTriggerEnter(Collider other)

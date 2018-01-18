@@ -213,7 +213,7 @@ public class FireSystemController : MonoBehaviour
         //the terrain will spread negative height outwards until it reaches 0
     }
 
-    public void LowerIntensity( double waterStrength )
+    public FlameController LowerIntensity( double waterStrength )
     {
         Vector2 coords = _fireGrid.GetMouseCoords( );
         GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
@@ -236,11 +236,13 @@ public class FireSystemController : MonoBehaviour
                 cell.SetVariable( "onfire", false );
 //                Debug.Log( cell.GetVariable<int>( "intensity" )  );
                 cell.RemovePayload( 0 );
+                return flame;
             }
             
             cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
+        return null;
     }
 
     public double GetFlameIntensity( FlameController flame )
