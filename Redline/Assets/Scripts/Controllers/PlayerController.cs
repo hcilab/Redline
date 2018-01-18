@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private double _damageScaling = 10f;
 	[SerializeField] private double _totalHp = 100;
 	[SerializeField] private float _waterStrength = 3;
+	[SerializeField] private float _waterDistance = 100;
 	
 	
 	private Rigidbody _myBody;
@@ -74,7 +75,16 @@ public class PlayerController : MonoBehaviour
 
 		if ( Input.GetMouseButtonDown( 0 ) )
 		{
-			ApplyWater( );
+			Debug.Log(Vector3.Distance( 
+				Camera.main.ScreenToWorldPoint( Input.mousePosition ), 
+				gameObject.transform.position 
+			)  );
+			if( 
+				Vector3.Distance( 
+					Camera.main.ScreenToWorldPoint( Input.mousePosition ), 
+					gameObject.transform.position 
+				) < _waterDistance )
+				ApplyWater( );
 		}
 		LookAtMouse();
 		TakeDamage();
@@ -117,12 +127,11 @@ public class PlayerController : MonoBehaviour
 			                  *
 			                  Time.deltaTime;
 		}
-		if ( totalDmg > 0 && _hitPoints >= 0 )
+		if ( totalDmg > 0.01 && _hitPoints >= 0) 
 		{
 			totalDmg = Math.Round( totalDmg * _damageScaling );
 			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
 			_hitPoints -= totalDmg;
-			Debug.Log( totalDmg );
 		}
 	}
 

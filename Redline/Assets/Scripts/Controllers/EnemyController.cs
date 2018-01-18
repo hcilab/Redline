@@ -17,12 +17,12 @@ public class EnemyController : MonoBehaviour
 
 	public void setActive()
 	{
-		GetComponent<Renderer>().material = Resources.Load<Material>("Materials/enemyActive");
+//		GetComponent<Renderer>().material = Resources.Load<Material>("Materials/enemyActive");
 	}
 
 	public void setInactive()
 	{
-		GetComponent<Renderer>().material = Resources.Load<Material>("Materials/enemyInactive");
+//		GetComponent<Renderer>().material = Resources.Load<Material>("Materials/enemyInactive");
 	}
 
 	public override string ToString()

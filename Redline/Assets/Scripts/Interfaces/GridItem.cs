@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 /// <summary>
@@ -12,12 +13,14 @@ using UnityEngine;
 /// </summary>
 public class GridItem
 {
+    public delegate void VariableEvent(GridItem item);
     private Dictionary< String, object > _variables;
     private MonoBehaviour[] _payload;
     private int _payloadActiveElementCount = 0;
     private readonly GridController _parentGrid;
     public readonly Vector2 _gridCoords;
     private readonly Vector2 _size;
+    private Dictionary<string, VariableEvent> _variableEvents;
 
     /// <summary>
     /// Creates a new grid item and sets it's payload of MonoBehaviour items.
@@ -46,6 +49,7 @@ public class GridItem
         , Vector2 size
         )
     {
+        _variableEvents = new Dictionary< string, VariableEvent >();
         _size = size;
         _gridCoords = coords;
         _parentGrid = parent;
@@ -159,6 +163,9 @@ public class GridItem
             _variables[key] = value;
         else
             _variables.Add( key, value );
+
+        if ( _variableEvents.ContainsKey( key ) ) _variableEvents[ key ]( this );
+        
         return _variables.ContainsKey( key );
     }
 
@@ -190,5 +197,10 @@ public class GridItem
     public bool HasActivePayloadElements()
     {
         return _payloadActiveElementCount != 0;
+    }
+    
+    public void AttachVariableEvent( string variable,  VariableEvent variableEvent )
+    {
+        _variableEvents.Add( variable, variableEvent );
     }
 }
