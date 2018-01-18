@@ -101,14 +101,6 @@ public class FireSystemController : MonoBehaviour
         }
         
         
-        foreach ( GridItem edgeFlame in _edgeFlames )
-        {
-            (edgeFlame.GetPayload( 0 ) as FlameController)
-                .gameObject
-                .GetComponentInChildren< EnemyController >()
-                .setActive();
-        }
-
         if ( _showGrid ) _fireGrid.DrawGrid();
 
         if ( Input.GetMouseButtonDown( 0 ) )
@@ -149,13 +141,6 @@ public class FireSystemController : MonoBehaviour
          * to the appropriate grid cells depending
          * on intensity thresholds.
          */
-        foreach ( var edgeItem in _edgeFlames )
-        {
-            (edgeItem.GetPayload( 0 ) as FlameController)
-                .gameObject
-                .GetComponentInChildren< EnemyController >()
-                .setInactive();
-        }
         _edgeFlames = new List< GridItem >();
         foreach ( var item in _activeFlames )
         {
