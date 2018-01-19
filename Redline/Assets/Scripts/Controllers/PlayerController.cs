@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
 
 		if ( Input.GetMouseButton( 0 ) )
-		{	
+		{
 			var cursor = new Vector3(
 				Input.mousePosition.x,
 				Input.mousePosition.y,
@@ -88,6 +88,11 @@ public class PlayerController : MonoBehaviour
 			cursor.y = transform.position.y;
 			double distance = Vector3.Distance( cursor, transform.position );
 			ApplyWater( distance );
+
+			//update the distance of the water stream
+			var water = GetComponentInChildren< ParticleSystem >().main;
+			water.startSpeed = new ParticleSystem.MinMaxCurve( ( float ) distance * 30 );
+
 		}
 		LookAtMouse();
 		TakeDamage();
