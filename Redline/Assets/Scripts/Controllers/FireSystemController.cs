@@ -29,6 +29,7 @@ public class FireSystemController : MonoBehaviour
     private FlameController _flamePrefab;
     [SerializeField] private double _spreadChance = 0.3;
     [SerializeField] private double _growthFactor;
+    [SerializeField] private double _maxFlameIntensity = 3d;
 
     private void Awake()
     {
@@ -127,8 +128,11 @@ public class FireSystemController : MonoBehaviour
          */
         foreach ( var activeFlame in _activeFlames )
         {
-            activeFlame.SetVariable( "intensity",
-                activeFlame.GetVariable<double>( "intensity" ) + _growthFactor );
+            if ( activeFlame.GetVariable< double >( "intensity" ) < _maxFlameIntensity )
+            {
+                activeFlame.SetVariable( "intensity",
+                    activeFlame.GetVariable<double>( "intensity" ) + _growthFactor );
+            }
         }
         
         /*
