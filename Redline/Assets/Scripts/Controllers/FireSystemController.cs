@@ -202,7 +202,7 @@ public class FireSystemController : MonoBehaviour
         //the terrain will spread negative height outwards until it reaches 0
     }
 
-    public FlameController LowerIntensity( double waterStrength )
+    public FlameController LowerIntensity( double waterStrength, out double outIntensity )
     {
         Vector2 coords = _fireGrid.GetMouseCoords( );
         GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
@@ -210,9 +210,10 @@ public class FireSystemController : MonoBehaviour
         FlameController flame = cell.GetPayload( 0 ) as FlameController;
 //        Debug.Log("Clicked on  " + flame + " at position " + coords);
         if ( flame != null )
-        {    
+        {
+            outIntensity = cell.GetVariable< double >( "intensity" );
             cell.SetVariable( "intensity",
-                    cell.GetVariable<double>( "intensity" ) - waterStrength
+                    outIntensity - waterStrength
             );
             if ( cell.GetVariable<double>( "intensity" ) <= 0 )
             {
@@ -231,6 +232,7 @@ public class FireSystemController : MonoBehaviour
             cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
+        outIntensity = 0f;
         return null;
     }
 

@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
 	private double _hitPoints;
 	private DamageNumberController _damageNumberController;
 	private List<Collider> _enemiesNearBy;
+	private double _score = 0;
 
 	// Use this for initialization
 	void Start ()
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
 	}
 	
 	// Update is called once per frame
+
 	void Update ()
 	{
 		
@@ -72,6 +74,7 @@ public class PlayerController : MonoBehaviour
 			{
 				_hitPoints -= _damage;
 				_damageNumberController.SpawnDamageNumber( _damage, transform );
+				_score = 0;
 			}
 		};
 
@@ -101,12 +104,24 @@ public class PlayerController : MonoBehaviour
 	private void ApplyWater( double distance )
 	{
 		double hoseStrength = 1 - distance;
-		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength; 
-		FlameController flame = _fireSystemController.LowerIntensity( _waterStrength * hoseStrength );
-		if ( flame != null )
+		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength;
+
+		try
 		{
-			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+			double outIntensity = 0;
+			var flame =
+				_fireSystemController.LowerIntensity( 
+					_waterStrength * hoseStrength, 
+					out outIntensity 
+					);
+			_score += hoseStrength * outIntensity;
+			if ( flame != null )
+			{
+				_score += 100;
+				_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+			}
 		}
+		catch ( Exception ){}
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -169,5 +184,10 @@ public class PlayerController : MonoBehaviour
 	public double GetHealth()
 	{
 		return _hitPoints / _totalHp;
+	}
+
+	public double GetScore()
+	{
+		return _score;
 	}
 }
