@@ -103,7 +103,15 @@ public class PlayerController : MonoBehaviour
 			emission.enabled = false;
 		}
 		LookAtMouse();
-		TakeDamage();
+		if ( _hitPoints <= 0 )
+		{
+			enabled = false;
+			GameMaster.onDeath( _score );
+		}
+		else
+		{
+			TakeDamage();
+		}
 	}
 
 	private void ApplyWater( double distance )
