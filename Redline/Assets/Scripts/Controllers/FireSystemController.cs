@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Resources;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using UnityEngine;
@@ -94,10 +95,13 @@ public class FireSystemController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( Time.time - _tick > _updateInterval )
+        
+        if( GameMaster._paused ) return;
+        
+        if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
         {
             Spread();
-//            Grow();
+            Grow();
             _tick = Time.time;
         }
         
@@ -114,18 +118,6 @@ public class FireSystemController : MonoBehaviour
 
     private void Grow()
     {
-        throw new System.NotImplementedException();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private void Spread()
-    {
-        /*
-         * TODO Update the intensity terrain 
-         * depending on how each flame influences it's neighbouring cells.
-         */
         foreach ( var activeFlame in _activeFlames )
         {
             if ( activeFlame.GetVariable< double >( "intensity" ) < _maxFlameIntensity )
@@ -134,17 +126,13 @@ public class FireSystemController : MonoBehaviour
                     activeFlame.GetVariable<double>( "intensity" ) + _growthFactor );
             }
         }
-        
-        /*
-         * TODO Remove flame controllers
-         * from grid cells if intensity falls below their threshold.
-         */
+    }
 
-        /*
-         * TODO Add new flame controllers
-         * to the appropriate grid cells depending
-         * on intensity thresholds.
-         */
+    /// <summary>
+    /// 
+    /// </summary>
+    private void Spread()
+    {
         _edgeFlames = new List< GridItem >();
         foreach ( var item in _activeFlames )
         {

@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour
 
 	void Update ()
 	{
+		Debug.Log( GameMaster._paused);
+		if ( GameMaster._paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
 		float z = Input.GetAxis("Vertical");
@@ -68,18 +70,6 @@ public class PlayerController : MonoBehaviour
 
 		gameObject.transform.position = gameObject.transform.position + movement * _speed;
 		
-		if (Input.GetKey(KeyCode.Space) && _hitPoints > 0)
-		{
-			if (_hitPoints > 0)
-			{
-				_hitPoints -= _damage;
-				_damageNumberController.SpawnDamageNumber( _damage, transform );
-				_score = 0;
-			}
-		};
-
-		if (Input.GetKeyUp(KeyCode.R)) _hitPoints = _totalHp;
-
 		if ( Input.GetMouseButton( 0 ) )
 		{
 			var cursor = new Vector3(
@@ -103,9 +93,9 @@ public class PlayerController : MonoBehaviour
 			emission.enabled = false;
 		}
 		LookAtMouse();
+		
 		if ( _hitPoints <= 0 )
 		{
-			enabled = false;
 			GameMaster.onDeath( _score );
 		}
 		else
