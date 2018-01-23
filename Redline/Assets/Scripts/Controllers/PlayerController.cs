@@ -95,7 +95,12 @@ public class PlayerController : MonoBehaviour
 			//update the distance of the water stream
 			var water = GetComponentInChildren< ParticleSystem >().main;
 			water.startSpeed = new ParticleSystem.MinMaxCurve( ( float ) distance * 30 );
-
+			var emission = GetComponentInChildren< ParticleSystem >().emission;
+			emission.enabled = true;
+		} else if ( Input.GetMouseButtonUp( 0 ) )
+		{
+			var emission = GetComponentInChildren< ParticleSystem >().emission;
+			emission.enabled = false;
 		}
 		LookAtMouse();
 		TakeDamage();
@@ -114,10 +119,10 @@ public class PlayerController : MonoBehaviour
 					_waterStrength * hoseStrength, 
 					out outIntensity 
 					);
-			_score += hoseStrength * outIntensity;
+			_score += hoseStrength * outIntensity * 100;
 			if ( flame != null )
 			{
-				_score += 100;
+				_score += 10;
 				_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
 			}
 		}
