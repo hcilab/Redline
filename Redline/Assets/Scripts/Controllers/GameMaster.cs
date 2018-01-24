@@ -36,6 +36,9 @@ public class GameMaster : MonoBehaviour
 		} else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
 			SceneManager.LoadScene( "mainMenu" );
+		} else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
+		{
+			NextLevel();
 		} else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
 			ChangeHpBar( -1 );
@@ -43,6 +46,22 @@ public class GameMaster : MonoBehaviour
 		{
 			ChangeHpBar( 1 );
 		} 
+	}
+
+	private void NextLevel()
+	{
+		string currentLvl = SceneManager.GetActiveScene().name.Substring( 5 );
+		Debug.Log( currentLvl );
+		var nextLvl = Int32.Parse( currentLvl ) + 1;
+
+		if ( nextLvl > 3 )
+		{
+			SceneManager.LoadScene( "mainMenu" );
+		}
+		else
+		{
+			SceneManager.LoadScene( "level" + nextLvl );
+		}
 	}
 
 	private void ChangeHpBar( int direction )
