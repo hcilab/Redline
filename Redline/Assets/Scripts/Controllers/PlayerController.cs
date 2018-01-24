@@ -60,7 +60,6 @@ public class PlayerController : MonoBehaviour
 
 	void Update ()
 	{
-		Debug.Log( GameMaster._paused);
 		if ( GameMaster._paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
@@ -85,12 +84,12 @@ public class PlayerController : MonoBehaviour
 			//update the distance of the water stream
 			var water = GetComponentInChildren< ParticleSystem >().main;
 			water.startSpeed = new ParticleSystem.MinMaxCurve( ( float ) distance * 30 );
-			var emission = GetComponentInChildren< ParticleSystem >().emission;
-			emission.enabled = true;
+			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
+			waterEmission.enabled = true;
 		} else if ( Input.GetMouseButtonUp( 0 ) )
 		{
-			var emission = GetComponentInChildren< ParticleSystem >().emission;
-			emission.enabled = false;
+			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
+			waterEmission.enabled = false;
 		}
 		LookAtMouse();
 		
