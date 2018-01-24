@@ -33,13 +33,16 @@ public class GameMaster : MonoBehaviour
 		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
 		{
 			restart();
+		} else if ( Input.GetKeyDown( KeyCode.Escape ) )
+		{
+			SceneManager.LoadScene( "mainMenu" );
 		} else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
 			ChangeHpBar( -1 );
 		} else if ( Input.GetKeyDown( KeyCode.Comma ) )
 		{
 			ChangeHpBar( 1 );
-		}
+		} 
 	}
 
 	private void ChangeHpBar( int direction )
