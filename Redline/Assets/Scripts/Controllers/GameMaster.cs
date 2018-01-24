@@ -87,4 +87,9 @@ public class GameMaster : MonoBehaviour
 		pool.Init( poolSize, item);
 		return pool;
 	}
+
+	public static void onVictory()
+	{
+		onDeath( FindObjectOfType<PlayerController>().GetScore() );
+	}
 }

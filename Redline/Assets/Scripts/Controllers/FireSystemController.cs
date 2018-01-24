@@ -98,6 +98,11 @@ public class FireSystemController : MonoBehaviour
         
         if( GameMaster._paused ) return;
         
+        if ( _activeFlames.Count == 0 )
+        {
+            GameMaster.onVictory();
+        }
+        
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
         {
             Spread();
