@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Resources;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -97,7 +92,7 @@ public class FireSystemController : MonoBehaviour
     {
         
         if( GameMaster._paused ) return;
-        
+
         if ( _activeFlames.Count == 0 )
         {
             GameMaster.onVictory();
