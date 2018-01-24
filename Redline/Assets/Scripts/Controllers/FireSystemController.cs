@@ -37,7 +37,7 @@ public class FireSystemController : MonoBehaviour
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
      
-        _flamePrefab = Resources.Load< FlameController >( "Prefabs/LameFlame" );
+        _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         
         Vector3 floorSize = gameObject.transform.localScale;
         float height = floorSize.z;
