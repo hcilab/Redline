@@ -21,6 +21,11 @@ public class DamageNumber : ObjectPoolItem
     public void AnimationComplete()
     {
         _animator.enabled = false;
-        GameMaster.GetDamageNumberController().RemoveDamageNumber(this);
+        FindObjectOfType<GameMaster>().GetDamageNumberController().RemoveDamageNumber(this);
+    }
+
+    private void OnDestroy()
+    {
+        Destroy( _animator );
     }
 }

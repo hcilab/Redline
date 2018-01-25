@@ -22,10 +22,13 @@ public class PlayerController : MonoBehaviour
 	private DamageNumberController _damageNumberController;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
+	private GameMaster _gameMaster;
 
 	// Use this for initialization
 	void Start ()
 	{
+		_gameMaster = FindObjectOfType< GameMaster >();
+		
 		_hitPoints = _totalHp;
 
 		if ( _showCollider )
@@ -53,14 +56,14 @@ public class PlayerController : MonoBehaviour
 
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
-		_damageNumberController = GameMaster.GetDamageNumberController();
+		_damageNumberController = _gameMaster.GetDamageNumberController();
 	}
 	
 	// Update is called once per frame
 
 	void Update ()
 	{
-		if ( GameMaster._paused ) return;
+		if ( _gameMaster.Paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
 		float z = Input.GetAxis("Vertical");
@@ -95,7 +98,7 @@ public class PlayerController : MonoBehaviour
 		
 		if ( _hitPoints <= 0 )
 		{
-			GameMaster.onDeath( _score );
+			_gameMaster.OnDeath( _score );
 		}
 		else
 		{

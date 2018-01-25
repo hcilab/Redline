@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Xml.Schema;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// Representation of a grid in the gameworld.
@@ -233,5 +234,13 @@ public class GridController
 			coords.x * _itemWidth + (_itemWidth/2) - _spaceWidth/2 - _gameSpace.transform.position.x,
 			coords.y * -_itemHeight - (_itemHeight/2) + _spaceHeight/2 +_gameSpace.transform.position.z
 			);
+	}
+
+	public void Dispose()
+	{
+		foreach ( var gridItem in _grid )
+		{
+			gridItem.Dispose();
+		}
 	}
 }

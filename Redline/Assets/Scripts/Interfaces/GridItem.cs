@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// A single square (or whatever shape) in a grid as defined by the GridController.
@@ -202,5 +203,13 @@ public class GridItem
     public void AttachVariableEvent( string variable,  VariableEvent variableEvent )
     {
         _variableEvents.Add( variable, variableEvent );
+    }
+
+    public void Dispose()
+    {
+        foreach ( var monoBehaviour in _payload )
+        {
+            Object.Destroy( monoBehaviour );
+        }
     }
 }

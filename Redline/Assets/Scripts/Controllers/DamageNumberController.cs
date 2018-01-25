@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class DamageNumberController : MonoBehaviour
@@ -10,12 +11,19 @@ public class DamageNumberController : MonoBehaviour
 	private double _accumulatedDamage;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
+	private GameMaster _gameMaster;
 
-	void Start()
-	{		
+	void Awake()
+	{
+		_gameMaster = FindObjectOfType< GameMaster >();
+		SceneManager.sceneLoaded += Initialize;
+	}
+
+	private void Initialize( Scene arg0, LoadSceneMode arg1 )
+	{
 		_canvas = FindObjectOfType<Canvas>();
 		DamageNumber numberPrefab = Resources.Load<DamageNumber>("Prefabs/DamageNumbers");
-		_poolController = GameMaster.InstantiatePool(_numberPoolSize, numberPrefab);
+		_poolController = _gameMaster.InstantiatePool(_numberPoolSize, numberPrefab);
 		_lastSpawn = Time.time;
 	}
 
@@ -52,6 +60,13 @@ public class DamageNumberController : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		Destroy(_poolController);
+		if ( _poolController != null )
+		{
+			foreach ( var component in _poolController.GetComponents<DamageNumber>(  ) )
+			{
+				Destroy( component );
+			}
+			Destroy(_poolController);
+		}
 	}
 }

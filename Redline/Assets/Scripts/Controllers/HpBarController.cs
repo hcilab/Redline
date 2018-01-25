@@ -1,5 +1,6 @@
 ﻿using Interfaces;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -10,16 +11,16 @@ public class HpBarController : MonoBehaviour
 {
 
 	[SerializeField] private Gradient _color;
-	[SerializeField] private PlayerController _player;
+	private PlayerController _player;
 	[SerializeField] private HpBarScale _scale;
-	[SerializeField] private bool hasTextField;
+	[SerializeField] private bool _hasTextField;
 
 	private RectTransform _bar, _bkg;
 	private Text _text;
 
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		_bar = transform.Find("bar") as RectTransform;
 		_bkg = transform.Find("bkg") as RectTransform;
@@ -31,14 +32,21 @@ public class HpBarController : MonoBehaviour
 		if( _bkg && _bar ) _bar.sizeDelta = _bkg.sizeDelta;
 		
 		Debug.Log("Initialized HP bar.");
+
+		SceneManager.sceneLoaded += Initialize;
 	}
-	
+
+	private void Initialize( Scene arg0, LoadSceneMode arg1 )
+	{
+		_player = FindObjectOfType<PlayerController>();
+	}
+
 	// Update is called once per frame
 	void Update ()
 	{
-		_text.enabled = hasTextField;
+		_text.enabled = _hasTextField;
 
-		if (hasTextField) _text.text = Mathf.Round( (float)_player.GetHealth() * 100) + "%";
+		if (_hasTextField) _text.text = Mathf.Round( (float)_player.GetHealth() * 100) + "%";
 
 		_bar.GetComponent<Image>().color = _color.Evaluate((float) _player.GetHealth());
 		

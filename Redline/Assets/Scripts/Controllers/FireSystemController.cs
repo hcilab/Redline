@@ -26,9 +26,12 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private double _spreadChance = 0.3;
     [SerializeField] private double _growthFactor;
     [SerializeField] private double _maxFlameIntensity = 3d;
+    private GameMaster _gameMaster;
 
     private void Awake()
     {
+        _gameMaster = FindObjectOfType< GameMaster >();
+        
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
      
@@ -41,7 +44,7 @@ public class FireSystemController : MonoBehaviour
 
         _flamePrefab.transform.localScale = itemSize;
         
-        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
@@ -91,11 +94,11 @@ public class FireSystemController : MonoBehaviour
     void Update()
     {
         
-        if( GameMaster._paused ) return;
+        if( _gameMaster.Paused ) return;
 
         if ( _activeFlames.Count == 0 )
         {
-            GameMaster.onVictory();
+            _gameMaster.OnVictory();
         }
         
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
@@ -231,5 +234,10 @@ public class FireSystemController : MonoBehaviour
             if ( activeFlame.GetPayload( 0 ) == flame ) return activeFlame.GetVariable< double >( "intensity" );
         }
         throw new Exception("Flame cell not found!");
+    }
+
+    private void OnDestroy()
+    {
+        _fireGrid.Dispose();
     }
 }

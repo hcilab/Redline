@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Resources;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
-	private static DamageNumberController _damageNumberController;
-	private static DeathScreenController _deathScreenController;
-	private static bool _gameOver;
-	public static bool _paused;
+	private DamageNumberController _damageNumberController;
+	private bool _gameOver;
+	public bool Paused;
 	private int _currentHpBarindex;
+	public static GameMaster Instance = null;
+	[SerializeField] private DeathScreenController _deathScreenController;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List<HpBarController> _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
@@ -18,20 +21,30 @@ public class GameMaster : MonoBehaviour
 	// Use this for initialization
 	void Awake()
 	{
-		_damageNumberController = GetComponent<DamageNumberController>();
-		_deathScreenController = FindObjectOfType< DeathScreenController >();
-		_paused = false;
 
-		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
-		_hpbarlabel.text = _currentHpBar.name;
+		if ( Instance == null )
+			Instance = this;
+		else if ( Instance != this ) 
+			Destroy( this );
 
+		DontDestroyOnLoad( Instance );
+		SceneManager.sceneLoaded += Initialize;
 	}
 
+	private void Initialize( Scene arg0, LoadSceneMode arg1 )
+	{
+		_damageNumberController = GetComponent<DamageNumberController>();
+		Paused = arg0.name == "mainMenu";
+        
+        _currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
+        _hpbarlabel.text = _currentHpBar.name;
+	}
+	
 	private void Update()
 	{
 		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
 		{
-			restart();
+			Restart();
 		} else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
 			SceneManager.LoadScene( "mainMenu" );
@@ -76,27 +89,27 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public static void onDeath( double score )
+	public void OnDeath( double score )
 	{
-		_paused = true;
+		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
 		_deathScreenController.setScore( score.ToString() );
 		_deathScreenController.show();
 	}
 
-	private static void restart()
+	private static void Restart()
 	{
-		string scene_name = SceneManager.GetActiveScene().name;
-		SceneManager.LoadScene( scene_name );
+		string sceneName = SceneManager.GetActiveScene().name;
+		SceneManager.LoadScene( sceneName );
 	}
 
-	public static DamageNumberController GetDamageNumberController()
+	public DamageNumberController GetDamageNumberController()
 	{
 		return _damageNumberController;
 	}
 
-	public static ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)
+	public ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)
 	{
 		ObjectPoolController pool = Instantiate(
           			Resources.Load<ObjectPoolController>("Prefabs/ObjectPool")
@@ -106,8 +119,15 @@ public class GameMaster : MonoBehaviour
 		return pool;
 	}
 
-	public static void onVictory()
+	public void OnVictory()
 	{
-		onDeath( FindObjectOfType<PlayerController>().GetScore() );
+		OnDeath( FindObjectOfType<PlayerController>().GetScore() );
+	}
+
+	public void ResetUi()
+	{
+		Paused = false;
+		_gameOver = false;
+		_deathScreenController.hide();
 	}
 }

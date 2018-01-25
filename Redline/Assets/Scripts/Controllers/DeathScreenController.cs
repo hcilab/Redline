@@ -16,6 +16,11 @@ public class DeathScreenController : MonoBehaviour
 		_animator.enabled = true;
 	}
 
+	public void hide()
+	{
+		_animator.enabled = false;
+	}
+
 	public void setScore( string score )
 	{
 		GetComponentsInChildren< Text >( true )[ 1 ].text = "Final Score: " + score;
