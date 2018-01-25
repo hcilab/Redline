@@ -34,7 +34,6 @@ public class GameMaster : MonoBehaviour
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_damageNumberController = GetComponent<DamageNumberController>();
-		Paused = arg0.name == "mainMenu";
         
         _currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
         _hpbarlabel.text = _currentHpBar.name;
@@ -126,8 +125,8 @@ public class GameMaster : MonoBehaviour
 
 	public void ResetUi()
 	{
+		_deathScreenController.hide();
 		Paused = false;
 		_gameOver = false;
-		_deathScreenController.hide();
 	}
 }

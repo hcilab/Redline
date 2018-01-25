@@ -13,12 +13,14 @@ public class DeathScreenController : MonoBehaviour
 
 	public void show()
 	{
+		gameObject.SetActive( true );
 		_animator.enabled = true;
 	}
 
 	public void hide()
 	{
 		_animator.enabled = false;
+		gameObject.SetActive( false );
 	}
 
 	public void setScore( string score )
