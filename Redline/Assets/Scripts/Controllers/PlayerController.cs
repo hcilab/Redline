@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
 			cursor = Camera.main.ScreenToWorldPoint( cursor );
 			cursor.y = transform.position.y;
 			double distance = Vector3.Distance( cursor, transform.position );
-			ApplyWater( distance );
+//			ApplyWater( distance );
 
 			//update the distance of the water stream
 			var water = GetComponentInChildren< ParticleSystem >().main;
@@ -194,5 +194,14 @@ public class PlayerController : MonoBehaviour
 	public double GetScore()
 	{
 		return _score;
+	}
+
+	public void Score( FlameController flame, double intensity )
+	{
+		_score += intensity * 10;
+		if ( flame == null )
+		{
+			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+		}
 	}
 }

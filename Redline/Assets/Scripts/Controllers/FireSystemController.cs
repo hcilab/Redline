@@ -111,12 +111,6 @@ public class FireSystemController : MonoBehaviour
         
         if ( _showGrid ) _fireGrid.DrawGrid();
 
-        if ( Input.GetMouseButtonDown( 0 ) )
-        {
-         
-            Debug.Log( _fireGrid.GetMouseCoords( ) );
-            
-        }
     }
 
     private void Grow()
@@ -193,18 +187,38 @@ public class FireSystemController : MonoBehaviour
         //the terrain will spread negative height outwards until it reaches 0
     }
 
+    public double GetFlameIntensity( FlameController flame )
+    {
+        foreach ( var activeFlame in _activeFlames )
+        {
+            if ( activeFlame.GetPayload( 0 ) == flame ) return activeFlame.GetVariable< double >( "intensity" );
+        }
+        throw new Exception("Flame cell not found!");
+    }
+
     public FlameController LowerIntensity( double waterStrength, out double outIntensity )
     {
-        outIntensity = 0f;
-        Vector2 coords = _fireGrid.GetMouseCoords( );
-        GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
+        return LowerIntensity( _fireGrid.GetMouseCoords( ), waterStrength, out outIntensity );
 
+    }
+
+    public FlameController LowerIntensity( Vector3 worldCoords, double waterStrength, out double outIntensity )
+    {
+        return LowerIntensity( _fireGrid.GetWorldCoords( worldCoords ), waterStrength, out outIntensity );
+    }
+
+    public FlameController LowerIntensity( Vector2 coords, double waterStrength, out double outIntensity )
+    {
+        outIntensity = 0f;
+        
+        GridItem cell = _fireGrid.GetGridItem( coords.x, coords.y );
+        
         FlameController flame = cell.GetPayload( 0 ) as FlameController;
 //        Debug.Log("Clicked on  " + flame + " at position " + coords);
         if ( flame != null )
         {
             cell.SetVariable( "intensity",
-                    outIntensity - waterStrength
+                outIntensity - waterStrength
             );
             if ( cell.GetVariable<double>( "intensity" ) <= 0 )
             {
@@ -227,16 +241,7 @@ public class FireSystemController : MonoBehaviour
         return null;
     }
 
-    public double GetFlameIntensity( FlameController flame )
-    {
-        foreach ( var activeFlame in _activeFlames )
-        {
-            if ( activeFlame.GetPayload( 0 ) == flame ) return activeFlame.GetVariable< double >( "intensity" );
-        }
-        throw new Exception("Flame cell not found!");
-    }
-
-    private void OnDestroy()
+     private void OnDestroy()
     {
         _fireGrid.Dispose();
     }
