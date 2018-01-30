@@ -4,7 +4,7 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DamageNumber : ObjectPoolItem, FloatingNumber
+public class ScoreNumber: ObjectPoolItem, FloatingNumber
 {
     [SerializeField] private Animator _animator;
 
@@ -21,7 +21,7 @@ public class DamageNumber : ObjectPoolItem, FloatingNumber
     public void AnimationComplete()
     {
         _animator.enabled = false;
-        FindObjectOfType<GameMaster>().GetDamageNumberController().RemoveNumber(this);
+        FindObjectOfType<GameMaster>().GetScoreNumberController().RemoveNumber( this );
     }
 
     private void OnDestroy()

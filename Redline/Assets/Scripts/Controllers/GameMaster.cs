@@ -8,15 +8,18 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
-	[SerializeField] private NumberController _damageNumberController;
 	private bool _gameOver;
 	public bool Paused;
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
 	[SerializeField] private DeathScreenController _deathScreenController;
 	[SerializeField] private HpBarController _currentHpBar;
-	[SerializeField] private List<HpBarController> _hpBarControllers;
+	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
+
+	[SerializeField] private NumberController _damageNumberController;
+
+	[SerializeField] private NumberController _scoreNumberController;
 
 	// Use this for initialization
 	void Awake()
@@ -24,7 +27,7 @@ public class GameMaster : MonoBehaviour
 
 		if ( Instance == null )
 			Instance = this;
-		else if ( Instance != this ) 
+		else if ( Instance != this )
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
@@ -32,29 +35,33 @@ public class GameMaster : MonoBehaviour
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
-	{        
-        _currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
-        _hpbarlabel.text = _currentHpBar.name;
+	{
+		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
+		_hpbarlabel.text = _currentHpBar.name;
 	}
-	
+
 	private void Update()
 	{
 		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
 		{
 			Restart();
-		} else if ( Input.GetKeyDown( KeyCode.Escape ) )
+		}
+		else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
 			SceneManager.LoadScene( "mainMenu" );
-		} else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
+		}
+		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
 			NextLevel();
-		} else if ( Input.GetKeyDown( KeyCode.Period ) )
+		}
+		else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
 			ChangeHpBar( -1 );
-		} else if ( Input.GetKeyDown( KeyCode.Comma ) )
+		}
+		else if ( Input.GetKeyDown( KeyCode.Comma ) )
 		{
 			ChangeHpBar( 1 );
-		} 
+		}
 	}
 
 	private void NextLevel()
@@ -75,13 +82,13 @@ public class GameMaster : MonoBehaviour
 
 	private void ChangeHpBar( int direction )
 	{
-		Debug.Log("change HP bar"  );
+		Debug.Log( "change HP bar" );
 		_currentHpBar.enabled = false;
-		
-		_currentHpBarindex = ( ( ( _currentHpBarindex + direction ) % _hpBarControllers.Count ) 
-		+ _hpBarControllers.Count ) % _hpBarControllers.Count;
+
+		_currentHpBarindex = (((_currentHpBarindex + direction) % _hpBarControllers.Count)
+		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
 		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
-		
+
 		_currentHpBar.enabled = true;
 		_hpbarlabel.text = _currentHpBar.name;
 	}
@@ -104,6 +111,11 @@ public class GameMaster : MonoBehaviour
 	public NumberController GetDamageNumberController()
 	{
 		return _damageNumberController;
+	}
+
+	public NumberController GetScoreNumberController()
+	{
+		return _scoreNumberController;
 	}
 
 	public ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)

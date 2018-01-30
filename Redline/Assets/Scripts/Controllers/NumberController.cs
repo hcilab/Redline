@@ -34,7 +34,7 @@ public class NumberController : MonoBehaviour
 		if (!_poolController.ObjectsAvailable() 
 		    || !((Time.time - _lastSpawn) > _spawnDelay)) return;
 		
-		var instance = _poolController.Spawn() as DamageNumber;
+		var instance = _poolController.Spawn();
 			
 		if(!instance) throw new NullReferenceException();
 				
@@ -47,13 +47,13 @@ public class NumberController : MonoBehaviour
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
-		instance.setText(_accumulator.ToString());
-		instance.startPlayback();
+		(instance as FloatingNumber).setText(_accumulator.ToString());
+		(instance as FloatingNumber).startPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
 	}
 
-	public void RemoveDamageNumber(DamageNumber sender)
+	public void RemoveNumber(ObjectPoolItem sender)
 	{
 		_poolController.Remove(sender);
 	}
@@ -69,4 +69,10 @@ public class NumberController : MonoBehaviour
 			Destroy(_poolController);
 		}
 	}
+}
+
+internal interface FloatingNumber
+{
+	void setText(string text);
+	void startPlayback();
 }

@@ -29,7 +29,7 @@ public class WaterController : MonoBehaviour
 				out intensity
 			);
 
-			GetComponentInParent< PlayerController >().Score( flame, intensity );
+			GetComponentInParent< PlayerController >().Score( flame, intensity, other.transform );
 
 		}
 	}

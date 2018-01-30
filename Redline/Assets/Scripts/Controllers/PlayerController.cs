@@ -196,10 +196,11 @@ public class PlayerController : MonoBehaviour
 		return _score;
 	}
 
-	public void Score( FlameController flame, double intensity )
+	public void Score( FlameController flame, double intensity, Transform position )
 	{
-		_score += intensity * 10;
-		if ( flame == null )
+		_score += ( intensity + 1 )* 10;
+		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position );
+		if ( flame != null )
 		{
 			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
 		}
