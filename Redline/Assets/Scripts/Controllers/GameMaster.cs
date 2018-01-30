@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
-	private DamageNumberController _damageNumberController;
+	[SerializeField] private NumberController _damageNumberController;
 	private bool _gameOver;
 	public bool Paused;
 	private int _currentHpBarindex;
@@ -32,9 +32,7 @@ public class GameMaster : MonoBehaviour
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
-	{
-		_damageNumberController = GetComponent<DamageNumberController>();
-        
+	{        
         _currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
         _hpbarlabel.text = _currentHpBar.name;
 	}
@@ -103,7 +101,7 @@ public class GameMaster : MonoBehaviour
 		SceneManager.LoadScene( sceneName );
 	}
 
-	public DamageNumberController GetDamageNumberController()
+	public NumberController GetDamageNumberController()
 	{
 		return _damageNumberController;
 	}

@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 	
 	private Rigidbody _myBody;
 	private double _hitPoints;
-	private DamageNumberController _damageNumberController;
+	private NumberController _damageNumberController;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
 	private GameMaster _gameMaster;
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
 		if ( totalDmg > 0.01 && _hitPoints >= 0) 
 		{
 			totalDmg = Math.Round( totalDmg * _damageScaling );
-			_damageNumberController.SpawnDamageNumber( totalDmg, transform );
+			_damageNumberController.SpawnNumber( totalDmg, transform );
 			_hitPoints -= totalDmg;
 		}
 	}

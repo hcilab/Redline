@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-public class DamageNumberController : MonoBehaviour
+public class NumberController : MonoBehaviour
 {
 	[SerializeField] private float _spawnDelay = 0.3f;
 	[SerializeField] private int _numberPoolSize = 10;
+	[SerializeField] private ObjectPoolItem _numberPrefab;
 	private Canvas _canvas;
-	private double _accumulatedDamage;
+	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
 	private GameMaster _gameMaster;
@@ -22,14 +23,13 @@ public class DamageNumberController : MonoBehaviour
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_canvas = FindObjectOfType<Canvas>();
-		DamageNumber numberPrefab = Resources.Load<DamageNumber>("Prefabs/DamageNumbers");
-		_poolController = _gameMaster.InstantiatePool(_numberPoolSize, numberPrefab);
+		_poolController = _gameMaster.InstantiatePool(_numberPoolSize, _numberPrefab);
 		_lastSpawn = Time.time;
 	}
 
-	public void SpawnDamageNumber(double damage, Transform location)
+	public void SpawnNumber(double damage, Transform location)
 	{
-		_accumulatedDamage += damage;
+		_accumulator += damage;
 		
 		if (!_poolController.ObjectsAvailable() 
 		    || !((Time.time - _lastSpawn) > _spawnDelay)) return;
@@ -47,9 +47,9 @@ public class DamageNumberController : MonoBehaviour
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
-		instance.setText(_accumulatedDamage.ToString());
+		instance.setText(_accumulator.ToString());
 		instance.startPlayback();
-		_accumulatedDamage = 0;
+		_accumulator = 0;
 		_lastSpawn = Time.time;
 	}
 
