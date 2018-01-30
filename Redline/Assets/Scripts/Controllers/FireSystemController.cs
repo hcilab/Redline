@@ -217,6 +217,7 @@ public class FireSystemController : MonoBehaviour
 //        Debug.Log("Clicked on  " + flame + " at position " + coords);
         if ( flame != null )
         {
+            outIntensity = cell.GetVariable< double >( "intensity" );
             cell.SetVariable( "intensity",
                 outIntensity - waterStrength
             );
@@ -233,8 +234,7 @@ public class FireSystemController : MonoBehaviour
                 cell.RemovePayload( 0 );
                 return flame;
             }
-            
-            outIntensity = cell.GetVariable< double >( "intensity" );
+
             cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
