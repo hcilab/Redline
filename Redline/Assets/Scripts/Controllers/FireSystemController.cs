@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -30,7 +31,8 @@ public class FireSystemController : MonoBehaviour
 
     private void Awake()
     {
-        _gameMaster = FindObjectOfType< GameMaster >();
+
+        SceneManager.sceneLoaded += Initialize;
         
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
@@ -44,8 +46,6 @@ public class FireSystemController : MonoBehaviour
 
         _flamePrefab.transform.localScale = itemSize;
         
-        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
-        
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0d, (GridItem item) =>
@@ -58,11 +58,24 @@ public class FireSystemController : MonoBehaviour
             
             item.GetPayload< FlameController >( 0 )
                 .GetComponent< Renderer >().material.color = color;
-//            Debug.Log( "increasing intensity color!" );
         } );
         _fireGrid.InitVariable( "onfire", false );
-        //TODO setup intensity terrain
+        
+        _tick = Time.time;
 
+        if ( _showGrid )
+        {
+            _fireGrid.DrawGrid();
+            
+        }
+    }
+
+    private void Initialize( Scene arg0, LoadSceneMode arg1 )
+    {
+        
+        _gameMaster = FindObjectOfType< GameMaster >();
+        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        
         foreach ( Vector2 coords in _startingFlames )
         {
             FlameController flame = _flamePool.Spawn() as FlameController;
@@ -72,20 +85,13 @@ public class FireSystemController : MonoBehaviour
                 gridCoords.x,
                 _verticalOffset,
                 gridCoords.y
-                );
+            );
             var cell = _fireGrid.GetGridItem( coords.x, coords.y );
             cell.SetPayload( flame, 0 );
             cell.SetVariable( "intensity", _startIntensity );
             cell.SetVariable( "onfire", true );
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
-        }
-        
-        _tick = Time.time;
-
-        if ( _showGrid )
-        {
-            _fireGrid.DrawGrid();
         }
     }
 
