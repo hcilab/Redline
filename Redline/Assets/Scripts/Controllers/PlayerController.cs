@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-	[SerializeField] private FireSystemController _fireSystemController;
+	[SerializeField] public FireSystemController FireSystemController;
 	
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
 		{
 			double outIntensity = 0;
 			var flame =
-				_fireSystemController.LowerIntensity( 
+				FireSystemController.LowerIntensity( 
 					_waterStrength * hoseStrength, 
 					out outIntensity 
 					);
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour
 		foreach (Collider enemyCollider in _enemiesNearBy)
 		{
 			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
-			totalDmg += _fireSystemController.GetFlameIntensity( enemy )
+			totalDmg += FireSystemController.GetFlameIntensity( enemy )
 			                  /
 			                  Vector3.Distance(enemy.transform.position, transform.position)
 			                  *

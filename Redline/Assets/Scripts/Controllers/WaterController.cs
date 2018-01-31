@@ -5,12 +5,13 @@ using UnityEngine;
 public class WaterController : MonoBehaviour
 {
 	[SerializeField] private double _waterStrength = .5f;
-	[SerializeField] private FireSystemController _fireSystemController;
+	private FireSystemController _fireSystemController;
 	private ParticleSystem water;
 	
 	// Use this for initialization
 	void Start () {
 		water = GetComponent< ParticleSystem >();
+		_fireSystemController = GetComponentInParent< PlayerController >().FireSystemController;
 	}
 
 	private void OnParticleCollision( GameObject other )
