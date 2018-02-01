@@ -30,7 +30,7 @@ public class NumberController : MonoBehaviour
 		_accumulator += damage;
 		
 		if (!_poolController.ObjectsAvailable() 
-		    || !((Time.time - _lastSpawn) > _spawnDelay)) return;
+		    || !(Time.time - _lastSpawn > _spawnDelay)) return;
 		
 		var instance = _poolController.Spawn();
 			
