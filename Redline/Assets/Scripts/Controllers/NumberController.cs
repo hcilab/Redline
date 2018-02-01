@@ -12,11 +12,9 @@ public class NumberController : MonoBehaviour
 	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
-	private GameMaster _gameMaster;
 
 	void Awake()
 	{
-		_gameMaster = FindObjectOfType< GameMaster >();
 		SceneManager.sceneLoaded += Initialize;
 	}
 
