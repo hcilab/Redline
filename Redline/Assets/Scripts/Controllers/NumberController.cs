@@ -45,8 +45,8 @@ public class NumberController : MonoBehaviour
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
-		(instance as FloatingNumber).setText(_accumulator.ToString());
-		(instance as FloatingNumber).startPlayback();
+		(instance as FloatingNumber).SetText(_accumulator.ToString());
+		(instance as FloatingNumber).StartPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
 	}
