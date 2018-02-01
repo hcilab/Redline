@@ -15,6 +15,8 @@ using Object = UnityEngine.Object;
 public class GridItem
 {
     public delegate void VariableEvent(GridItem item);
+
+    public delegate T VariableSetter<T>( GridItem item );
     private Dictionary< String, object > _variables;
     private MonoBehaviour[] _payload;
     private int _payloadActiveElementCount = 0;
@@ -168,6 +170,11 @@ public class GridItem
         if ( _variableEvents.ContainsKey( key ) ) _variableEvents[ key ]( this );
         
         return _variables.ContainsKey( key );
+    }
+
+    public bool SetVariable< T >( String key, VariableSetter< T > setter )
+    {
+        return SetVariable( key, setter( this ) );
     }
 
     public GridItem[] GetNeighbours()

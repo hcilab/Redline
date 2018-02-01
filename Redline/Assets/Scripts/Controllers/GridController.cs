@@ -228,6 +228,14 @@ public class GridController
 		}
 	}
 
+	public void InitVariable< T >( string name, GridItem.VariableSetter<T> setter)
+	{
+		foreach ( GridItem gridItem in _grid )
+		{
+			gridItem.SetVariable( name, setter );
+		}
+	}
+
 	public Vector2 GetPosition(Vector2 coords)
 	{
 		return new Vector2(
