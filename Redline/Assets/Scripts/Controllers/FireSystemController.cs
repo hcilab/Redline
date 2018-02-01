@@ -51,7 +51,7 @@ public class FireSystemController : MonoBehaviour
         _flamePrefab.transform.localScale = itemSize;
 
         
-        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
         
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );

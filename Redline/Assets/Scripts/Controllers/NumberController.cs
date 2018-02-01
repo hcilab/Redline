@@ -23,7 +23,7 @@ public class NumberController : MonoBehaviour
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_canvas = FindObjectOfType<Canvas>();
-		_poolController = _gameMaster.InstantiatePool(_numberPoolSize, _numberPrefab);
+		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab);
 		_lastSpawn = Time.time;
 	}
 

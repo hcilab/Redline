@@ -118,7 +118,7 @@ public class GameMaster : MonoBehaviour
 		return _scoreNumberController;
 	}
 
-	public ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)
+	public static ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)
 	{
 		ObjectPoolController pool = Instantiate(
           			Resources.Load<ObjectPoolController>("Prefabs/ObjectPool")
