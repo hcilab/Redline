@@ -73,6 +73,6 @@ public class NumberController : MonoBehaviour
 
 internal interface FloatingNumber
 {
-	void setText(string text);
-	void startPlayback();
+	void SetText(string text);
+	void StartPlayback();
 }

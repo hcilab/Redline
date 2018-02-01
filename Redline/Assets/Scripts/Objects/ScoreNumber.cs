@@ -8,12 +8,12 @@ public class ScoreNumber: ObjectPoolItem, FloatingNumber
 {
     [SerializeField] private Animator _animator;
 
-    public void setText(string text)
+    public void SetText(string text)
     {
         _animator.GetComponentInChildren<Text>().text = text;
     }
 
-    public void startPlayback()
+    public void StartPlayback()
     {
         _animator.enabled = true;
     }
