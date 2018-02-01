@@ -67,6 +67,23 @@ public class FireSystemController : MonoBehaviour
             item.GetPayload< FlameController >( 0 )
                 .GetComponent< Renderer >().material.color = color;
         } );
+        
+        _fireGrid.InitVariable( "flammable", item =>
+        {
+            Vector3 pos = _fireGrid.GetPosition( item._gridCoords );
+            pos.z = pos.y;
+            pos.y = Camera.main.transform.position.y;
+            
+            Ray ray = new Ray(pos, Vector3.down);
+
+            if ( Physics.Raycast( ray, pos.y - 2 ) )
+            {
+                Debug.Log( item._gridCoords + " is not flammable!"  );
+                return false;
+            }
+            return true;
+        } );
+        
         _fireGrid.InitVariable( "onfire", false );
         
 
@@ -158,7 +175,7 @@ public class FireSystemController : MonoBehaviour
             
             foreach( GridItem n in edgeItem.GetNeighbours() )
             {
-                if ( !n.GetVariable<bool>( "onfire" ) )
+                if ( !n.GetVariable<bool>( "onfire" ) && n.GetVariable<bool>( "flammable" ) )
                 {
                     emptyNeighbours.Add( n );
                 }
