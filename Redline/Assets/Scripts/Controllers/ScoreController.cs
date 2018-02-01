@@ -15,15 +15,14 @@ public class ScoreController : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
 	{
-		_text = GetComponentInChildren< Text >();
-		_text.text = "Score: 0";
-
 		SceneManager.sceneLoaded += Initialize;
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_player = FindObjectOfType<PlayerController>();
+		_text = GetComponentInChildren< Text >();
+		_text.text = "Score: 0";
 	}
 
 	// Update is called once per frame

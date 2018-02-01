@@ -31,51 +31,45 @@ public class FireSystemController : MonoBehaviour
 
     private void Awake()
     {
-
-        SceneManager.sceneLoaded += Initialize;
-        
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
      
-        _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
+        SceneManager.sceneLoaded += Initialize;
+    }
+
+    private void Initialize( Scene arg0, LoadSceneMode arg1 )
+    {
+        if( this == null ) return;
+        _gameMaster = FindObjectOfType< GameMaster >();
         
+        _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         Vector3 floorSize = gameObject.transform.localScale;
         float height = floorSize.z;
         float width = floorSize.x;
         Vector3 itemSize = new Vector3(width/_columns, 1.1f, height/_rows);
 
         _flamePrefab.transform.localScale = itemSize;
+
+        
+        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
-        _fireGrid.InitVariable( "intensity", 0d, (GridItem item) =>
+        _fireGrid.InitVariable( "intensity", 0d, item =>
         {
             var color = new Color(
                 1f,
                 1f - (float)item.GetVariable<double>( "intensity" ) / 5,
                 0f
-                );
+            );
             
             item.GetPayload< FlameController >( 0 )
                 .GetComponent< Renderer >().material.color = color;
         } );
         _fireGrid.InitVariable( "onfire", false );
         
-        _tick = Time.time;
 
-        if ( _showGrid )
-        {
-            _fireGrid.DrawGrid();
-            
-        }
-    }
-
-    private void Initialize( Scene arg0, LoadSceneMode arg1 )
-    {
-        
-        _gameMaster = FindObjectOfType< GameMaster >();
-        _flamePool = _gameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
-        
         foreach ( Vector2 coords in _startingFlames )
         {
             FlameController flame = _flamePool.Spawn() as FlameController;
@@ -93,14 +87,21 @@ public class FireSystemController : MonoBehaviour
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
         }
+        
+        _tick = Time.time;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if( _gameMaster == null || _gameMaster.Paused ) return;
         
-        if( _gameMaster.Paused ) return;
+        if ( _showGrid )
+        {
+            _fireGrid.DrawGrid();
+            
+        }
 
         if ( _activeFlames.Count == 0 )
         {
@@ -199,7 +200,7 @@ public class FireSystemController : MonoBehaviour
         {
             if ( activeFlame.GetPayload( 0 ) == flame ) return activeFlame.GetVariable< double >( "intensity" );
         }
-        throw new Exception("Flame cell not found!");
+        return 0f;
     }
 
     public FlameController LowerIntensity( double waterStrength, out double outIntensity )

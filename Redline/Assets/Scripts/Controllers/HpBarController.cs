@@ -22,15 +22,6 @@ public class HpBarController : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
 	{
-		_bar = transform.Find("bar") as RectTransform;
-		_bkg = transform.Find("bkg") as RectTransform;
-
-		_text = _bkg.GetComponentInChildren<Text>();
-
-		_bar.GetComponent<Image>().color = _color.Evaluate(1);
-		
-		if( _bkg && _bar ) _bar.sizeDelta = _bkg.sizeDelta;
-		
 		Debug.Log("Initialized HP bar.");
 
 		SceneManager.sceneLoaded += Initialize;
@@ -39,6 +30,14 @@ public class HpBarController : MonoBehaviour
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_player = FindObjectOfType<PlayerController>();
+		_bar = transform.Find("bar") as RectTransform;
+		_bkg = transform.Find("bkg") as RectTransform;
+
+		_text = _bkg.GetComponentInChildren<Text>();
+
+		_bar.GetComponent<Image>().color = _color.Evaluate(1);
+		
+		if( _bkg && _bar ) _bar.sizeDelta = _bkg.sizeDelta;
 	}
 
 	// Update is called once per frame
