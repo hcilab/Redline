@@ -8,9 +8,11 @@ public class DamageNumber : ObjectPoolItem, FloatingNumber
 {
     [SerializeField] private Animator _animator;
 
-    public void SetText(string text)
+    public void SetNumber(double number)
     {
-        _animator.GetComponentInChildren<Text>().text = text;
+        var textField =_animator.GetComponentInChildren< Text >();
+        textField.text = number.ToString();
+        textField.fontSize = ( int ) ( number / 600 * 20 + 14 );
     }
 
     public void StartPlayback()
