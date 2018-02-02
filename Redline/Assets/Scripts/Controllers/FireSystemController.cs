@@ -74,14 +74,9 @@ public class FireSystemController : MonoBehaviour
             pos.z = pos.y;
             pos.y = Camera.main.transform.position.y;
             
-            Ray ray = new Ray(pos, Vector3.down);
+            var ray = new Ray(pos, Vector3.down);
 
-            if ( Physics.Raycast( ray, pos.y - 2 ) )
-            {
-                Debug.Log( item._gridCoords + " is not flammable!"  );
-                return false;
-            }
-            return true;
+            return !Physics.Raycast( ray, pos.y - 2 );
         } );
         
         _fireGrid.InitVariable( "onfire", false );
