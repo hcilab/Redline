@@ -11,9 +11,16 @@ public class ScoreNumber: ObjectPoolItem, FloatingNumber
 
     public void SetNumber( double number )
     {
+        var magnitude = ( float ) number / 400f;
         var textField =_animator.GetComponentInChildren< Text >();
         textField.text = number.ToString();
-        textField.fontSize = ( int ) ( number / 600 * 20 + 14 );
+        textField.fontSize = ( int ) Mathf.Clamp( magnitude * 20 + 14, 14f, 60f );
+        textField.color = new Color(
+                Mathf.Clamp( 1 - magnitude, 0f, 1f ),
+                1f,
+                Mathf.Clamp( 1 - magnitude, 0f, 1f ),
+                1f
+            ); 
     }
 
     public void StartPlayback()

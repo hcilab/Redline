@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
@@ -10,9 +11,16 @@ public class DamageNumber : ObjectPoolItem, FloatingNumber
 
     public void SetNumber(double number)
     {
+        var magnitude = ( float ) number / 100f;
         var textField =_animator.GetComponentInChildren< Text >();
         textField.text = number.ToString();
-        textField.fontSize = ( int ) ( number / 600 * 20 + 14 );
+        textField.fontSize = (int) Mathf.Clamp( (float) number / 100 * 20 + 20, 15f, 50f );
+        textField.color = new Color(
+            1f,
+            Mathf.Clamp( 1 - magnitude, 0f, 1f),
+            Mathf.Clamp( 1-magnitude, 0f, 1f ),
+            1f
+        );
     }
 
     public void StartPlayback()
