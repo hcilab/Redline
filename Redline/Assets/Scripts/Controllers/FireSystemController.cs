@@ -60,12 +60,14 @@ public class FireSystemController : MonoBehaviour
         {
             var color = new Color(
                 1f,
-                1f - (float)item.GetVariable<double>( "intensity" ) / 5,
+                1f - (float)item.GetVariable<double>( "intensity" ) / 3,
                 0f
             );
-            
-            item.GetPayload< FlameController >( 0 )
-                .GetComponent< Renderer >().material.color = color;
+
+            var main = item.GetPayload< FlameController >( 0 )
+                .GetComponent< ParticleSystem >().main;
+                
+            main.startColor = color;
         } );
         
         _fireGrid.InitVariable( "flammable", item =>
