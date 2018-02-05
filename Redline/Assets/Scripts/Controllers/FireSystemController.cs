@@ -183,7 +183,11 @@ public class FireSystemController : MonoBehaviour
             {
                 if( Random.value < ( 1 - _spreadChance ) ) continue;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
-                if ( !newFlame ) return; 
+                if ( !newFlame )
+                {
+                    _gameMaster.OnDeath( );
+                    return;
+                }; 
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
