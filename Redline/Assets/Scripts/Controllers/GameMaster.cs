@@ -12,7 +12,9 @@ public class GameMaster : MonoBehaviour
 	public bool Paused;
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
+	private PlayerController _player;
 	[SerializeField] private DeathScreenController _deathScreenController;
+	[SerializeField] private DeathScreenController _victoryScreenController;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
@@ -93,12 +95,12 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public void OnDeath( double score )
+	public void OnDeath( )
 	{
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
-		_deathScreenController.setScore( score.ToString() );
+		_deathScreenController.setScore(  _player.GetScore().ToString() );
 		_deathScreenController.show();
 	}
 
