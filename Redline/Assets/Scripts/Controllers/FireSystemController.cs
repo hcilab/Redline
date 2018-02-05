@@ -98,6 +98,7 @@ public class FireSystemController : MonoBehaviour
             cell.SetVariable( "onfire", true );
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
+            _fireGrid.UpdateGridItem( cell._gridCoords, cell );
         }
         
         _tick = Time.time;
@@ -194,6 +195,7 @@ public class FireSystemController : MonoBehaviour
                 neighbour.SetVariable( "intensity", 1d );
                 neighbour.SetVariable( "onfire", true );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
+                _fireGrid.UpdateGridItem( neighbour._gridCoords, neighbour );
                 //TODO check if neighbour is actually an edge flame
                 _activeFlames.Add(neighbour);
             }
