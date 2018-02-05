@@ -253,13 +253,10 @@ public class FireSystemController : MonoBehaviour
                 cell.SetVariable( "onfire", false );
 //                Debug.Log( cell.GetVariable<int>( "intensity" )  );
                 cell.RemovePayload( 0 );
-                return flame;
-            }
-
-            cell.SetPayload( flame, 0 );
+            } else cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
-        return null;
+        return flame;
     }
 
      private void OnDestroy()
