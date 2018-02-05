@@ -17,7 +17,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
     
-    private readonly float _verticalOffset = .2f;
+    private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
