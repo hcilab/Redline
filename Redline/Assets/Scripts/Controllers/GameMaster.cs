@@ -40,6 +40,7 @@ public class GameMaster : MonoBehaviour
 	{
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		_hpbarlabel.text = _currentHpBar.name;
+		_player = FindObjectOfType< PlayerController >();
 	}
 
 	private void Update()
@@ -130,13 +131,18 @@ public class GameMaster : MonoBehaviour
 		return pool;
 	}
 
-	public void OnVictory()
+	public void OnVictory( )
 	{
-		OnDeath( FindObjectOfType<PlayerController>().GetScore() );
+		Paused = true;
+		_gameOver = true;
+		_victoryScreenController.enabled = true;
+		_victoryScreenController.setScore( _player.GetScore().ToString() );
+		_victoryScreenController.show();
 	}
 
 	public void ResetUi()
 	{
+		_victoryScreenController.hide();
 		_deathScreenController.hide();
 		Paused = false;
 		_gameOver = false;
