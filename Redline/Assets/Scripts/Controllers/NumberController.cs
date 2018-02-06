@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class NumberController : MonoBehaviour
@@ -32,9 +33,9 @@ public class NumberController : MonoBehaviour
 		if (!_poolController.ObjectsAvailable() 
 		    || !(Time.time - _lastSpawn > _spawnDelay)) return;
 		
-		var instance = _poolController.Spawn();
+		var instance = _poolController.Spawn() as FloatingNumber;
 			
-		if(!instance) throw new NullReferenceException();
+		if( !instance ) throw new NullReferenceException();
 				
 		Vector2 screenPosition = Camera.main.WorldToScreenPoint(
 			new Vector3(
@@ -69,8 +70,46 @@ public class NumberController : MonoBehaviour
 	}
 }
 
-internal interface FloatingNumber
+public abstract class FloatingNumber : ObjectPoolItem
 {
-	void SetNumber(double number);
-	void StartPlayback();
+	protected Animator Animator;
+
+	protected Text TextField;
+
+	void Awake()
+	{
+		Animator = GetComponent< Animator >();
+		TextField = Animator.GetComponentInChildren< Text >();
+	}
+
+	public void SetNumber( double number )
+	{
+		TextField.text = number.ToString();	
+	}
+
+	public void StartPlayback()
+	{
+		Animator.enabled = true;
+	}
+
+	public abstract void AnimationComplete();
+	
+	public void OnDestroy()
+	{
+		Destroy( Animator );
+	}
+
+	public override void Disable()
+	{
+		transform.position = Camera.main.transform.position + Vector3.Cross(
+			                     new Vector3( 200, 200, 200 ), Vector3.up );
+		Animator.enabled = false;
+		base.Disable();
+	}
+
+	public override void Enable()
+	{
+		Animator.enabled = true;
+		base.Enable();
+	}
 }

@@ -18,7 +18,6 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	private ObjectPoolItem _objectPrefab;
 	private int _poolSize;
 	private Queue<ObjectPoolItem> _pool;
-	private Vector3 _outOfView;
 	
 	//TODO write docs
 	/// <summary>
@@ -29,23 +28,17 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	/// <exception cref="TypeLoadException"></exception>
 	public void Init(int poolSize, ObjectPoolItem itemPrefab)
 	{
-		_outOfView =
-			Camera.main.transform.position +
-			Vector3.Cross( 
-				new Vector3( 100, 100, 100 ), 
-				Vector3.up
-			);
 		_poolSize = poolSize;
 		_objectPrefab = itemPrefab;
 		
 		_pool = new Queue<ObjectPoolItem>(_poolSize);
 		
-		if(!_objectPrefab) throw new TypeLoadException();
+		if(_objectPrefab == null) throw new TypeLoadException();
 		
 		for (int i = 0; i < _poolSize; i++)
 		{
 			ObjectPoolItem newItem = Instantiate( _objectPrefab );
-			newItem.transform.position = _outOfView;
+			newItem.Disable();
 			_pool.Enqueue( newItem );
 		}
 	}
@@ -65,10 +58,8 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 		if (_pool.Count > 0)
 			item = _pool.Dequeue();
 		
-		//Once ObjectPoolItems switch to using the payload design this controller
-		//won't enable items anymore.
-		if (item)
-			item.enabled = true;
+		if (item != null)
+			item.Enable();
 		return item;
 	}
 
@@ -78,8 +69,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	/// <param name="sender"></param>
 	public void Remove(ObjectPoolItem sender)
 	{
-		sender.enabled = false;
-		sender.transform.position = _outOfView;
+		sender.Disable();
 		_pool.Enqueue(sender);
 	}
 
@@ -88,7 +78,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 		//loop through and clear all items in the pool
 		foreach (ObjectPoolItem item in _pool)
 		{
-			Destroy(item);
+			Destroy( item );
 		}
 	}
 
