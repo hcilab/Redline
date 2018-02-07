@@ -72,7 +72,8 @@ public class GridController
 
 	public Vector2 GetWorldCoords( Vector3 position )
 	{
-		var ray = Camera.main.ScreenPointToRay( Camera.main.WorldToScreenPoint( position ) );
+		position.y = -1;
+		var ray = new Ray( position, Vector3.up );
 		return GetRayCoords( ray );
 	}
 

@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
 		
 		if ( _hitPoints <= 0 )
 		{
-			_gameMaster.OnDeath( _score );
+			_gameMaster.OnDeath();
 		}
 		else
 		{

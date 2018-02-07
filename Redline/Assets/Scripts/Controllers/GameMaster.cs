@@ -12,7 +12,9 @@ public class GameMaster : MonoBehaviour
 	public bool Paused;
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
+	private PlayerController _player;
 	[SerializeField] private DeathScreenController _deathScreenController;
+	[SerializeField] private DeathScreenController _victoryScreenController;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
@@ -38,6 +40,7 @@ public class GameMaster : MonoBehaviour
 	{
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		_hpbarlabel.text = _currentHpBar.name;
+		_player = FindObjectOfType< PlayerController >();
 	}
 
 	private void Update()
@@ -93,12 +96,12 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public void OnDeath( double score )
+	public void OnDeath( )
 	{
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
-		_deathScreenController.setScore( score.ToString() );
+		_deathScreenController.setScore(  _player.GetScore().ToString() );
 		_deathScreenController.show();
 	}
 
@@ -128,13 +131,18 @@ public class GameMaster : MonoBehaviour
 		return pool;
 	}
 
-	public void OnVictory()
+	public void OnVictory( )
 	{
-		OnDeath( FindObjectOfType<PlayerController>().GetScore() );
+		Paused = true;
+		_gameOver = true;
+		_victoryScreenController.enabled = true;
+		_victoryScreenController.setScore( _player.GetScore().ToString() );
+		_victoryScreenController.show();
 	}
 
 	public void ResetUi()
 	{
+		_victoryScreenController.hide();
 		_deathScreenController.hide();
 		Paused = false;
 		_gameOver = false;

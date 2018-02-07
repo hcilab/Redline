@@ -5,37 +5,24 @@ using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreNumber: ObjectPoolItem, FloatingNumber
+public class ScoreNumber: FloatingNumber
 {
-    [SerializeField] private Animator _animator;
 
     public void SetNumber( double number )
     {
         var magnitude = ( float ) number / 400f;
-        var textField =_animator.GetComponentInChildren< Text >();
-        textField.text = number.ToString();
-        textField.fontSize = ( int ) Mathf.Clamp( magnitude * 20 + 14, 14f, 60f );
-        textField.color = new Color(
+        TextField.fontSize = ( int ) Mathf.Clamp( magnitude * 20 + 14, 14f, 60f );
+        TextField.color = new Color(
                 Mathf.Clamp( 1 - magnitude, 0f, 1f ),
                 1f,
                 Mathf.Clamp( 1 - magnitude, 0f, 1f ),
                 1f
-            ); 
+            );
+        base.SetNumber( number );
     }
 
-    public void StartPlayback()
+    public override void AnimationComplete()
     {
-        _animator.enabled = true;
-    }
-
-    public void AnimationComplete()
-    {
-        _animator.enabled = false;
-        FindObjectOfType<GameMaster>().GetScoreNumberController().RemoveNumber( this );
-    }
-
-    private void OnDestroy()
-    {
-        Destroy( _animator );
+        FindObjectOfType<GameMaster>( ).GetScoreNumberController().RemoveNumber( this );
     }
 }

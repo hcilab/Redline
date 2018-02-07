@@ -17,7 +17,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
     
-    private readonly float _verticalOffset = .2f;
+    private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
@@ -60,12 +60,14 @@ public class FireSystemController : MonoBehaviour
         {
             var color = new Color(
                 1f,
-                1f - (float)item.GetVariable<double>( "intensity" ) / 5,
+                1f - (float)item.GetVariable<double>( "intensity" ) / 3,
                 0f
             );
-            
-            item.GetPayload< FlameController >( 0 )
-                .GetComponent< Renderer >().material.color = color;
+
+            var main = item.GetPayload< FlameController >( 0 )
+                .GetComponent< ParticleSystem >().main;
+                
+            main.startColor = color;
         } );
         
         _fireGrid.InitVariable( "flammable", item =>
@@ -98,6 +100,7 @@ public class FireSystemController : MonoBehaviour
             cell.SetVariable( "onfire", true );
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
+            _fireGrid.UpdateGridItem( cell._gridCoords, cell );
         }
         
         _tick = Time.time;
@@ -180,7 +183,11 @@ public class FireSystemController : MonoBehaviour
             {
                 if( Random.value < ( 1 - _spreadChance ) ) continue;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
-                if ( !newFlame ) return; 
+                if ( !newFlame )
+                {
+                    _gameMaster.OnDeath( );
+                    return;
+                }; 
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
@@ -194,6 +201,7 @@ public class FireSystemController : MonoBehaviour
                 neighbour.SetVariable( "intensity", 1d );
                 neighbour.SetVariable( "onfire", true );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
+                _fireGrid.UpdateGridItem( neighbour._gridCoords, neighbour );
                 //TODO check if neighbour is actually an edge flame
                 _activeFlames.Add(neighbour);
             }
@@ -251,13 +259,10 @@ public class FireSystemController : MonoBehaviour
                 cell.SetVariable( "onfire", false );
 //                Debug.Log( cell.GetVariable<int>( "intensity" )  );
                 cell.RemovePayload( 0 );
-                return flame;
-            }
-
-            cell.SetPayload( flame, 0 );
+            } else cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
-        return null;
+        return flame;
     }
 
      private void OnDestroy()
