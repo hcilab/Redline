@@ -14,16 +14,18 @@ using Object = UnityEngine.Object;
 /// </summary>
 public class GridItem
 {
-    public delegate void VariableEvent(GridItem item);
 
-    public delegate T VariableSetter<T>( GridItem item );
+    public delegate void VariableEvent(GridItem item);
+    public delegate object VariableSetter( GridItem item );
+    
     private Dictionary< String, object > _variables;
-    private MonoBehaviour[] _payload;
+    private List< MonoBehaviour > _payload;
     private int _payloadActiveElementCount = 0;
     private readonly GridController _parentGrid;
     public readonly Vector2 _gridCoords;
     private readonly Vector2 _size;
-    private Dictionary<string, VariableEvent> _variableEvents;
+    private Dictionary< string, VariableEvent > _variableEvents;
+    private Dictionary< string, VariableSetter > _variableSetters;
 
     /// <summary>
     /// Creates a new grid item and sets it's payload of MonoBehaviour items.
@@ -40,7 +42,7 @@ public class GridItem
         , Vector2 size 
         ) : this(parent, coords, size)
     {
-        _payload = payload;
+        _payload = new List<MonoBehaviour>(payload);
     }
 
     /// <summary>
@@ -52,6 +54,7 @@ public class GridItem
         , Vector2 size
         )
     {
+        _variableSetters = new Dictionary< string, VariableSetter >();
         _variableEvents = new Dictionary< string, VariableEvent >();
         _size = size;
         _gridCoords = coords;
@@ -80,7 +83,7 @@ public class GridItem
     /// <returns>An array of MonoBehaviour items.</returns>
     public MonoBehaviour[] GetPayload()
     {
-        return _payload;
+        return _payload.ToArray();
     }
 
     /// <summary>
@@ -108,7 +111,7 @@ public class GridItem
     public void SetPayload( MonoBehaviour[] payload )
     {
         _payload = null;
-        _payload = payload;
+        _payload = new List<MonoBehaviour>(payload);
         foreach( var item in _payload )
             if ( item ) _payloadActiveElementCount++;
     }
@@ -124,20 +127,29 @@ public class GridItem
     /// <exception cref="IndexOutOfRangeException">Thrown if the desired index is out 
     /// of the bounds of the existing payload array. If this occurs consider
     /// recreating an extended version of the payload via SetPayload.</exception>
-    public void SetPayload( MonoBehaviour payloadItem, int i )
+    public void SetPayload( MonoBehaviour payloadItem, int i = -1 )
     {
+        if ( i == -1 )
+        {
+            if ( _payload == null ) i = 0;
+            else i = _payload.Count;
+        }
+        
         if ( _payload == null )
         {
-            _payload = new MonoBehaviour[i+1];
+            _payload = new List< MonoBehaviour >( i + 1 );
             _payload[ i ] = payloadItem;
             _payloadActiveElementCount = 1;
         }
-        if ( _payload.Length > i )
+        if ( _payload.Count > i )
         {
             if ( !_payload[ i ] ) _payloadActiveElementCount++;
             _payload[ i ] = payloadItem;
         }
-        else throw new IndexOutOfRangeException();
+        else
+        {
+            _payload.Add( payloadItem );
+        };
 //        Debug.Log("Updated payload for " + this);
     }
 
@@ -147,7 +159,7 @@ public class GridItem
     /// <param name="i">Index of the payload item to be removed.</param>
     public void RemovePayload( int i )
     {
-        if ( i < _payload.Length && _payloadActiveElementCount > 0 )
+        if ( i < _payload.Count && _payloadActiveElementCount > 0 )
         {
             _payloadActiveElementCount-=1;
             _payload[ i ] = null;
@@ -172,9 +184,15 @@ public class GridItem
         return _variables.ContainsKey( key );
     }
 
-    public bool SetVariable< T >( String key, VariableSetter< T > setter )
+    public bool SetVariable( String key, VariableSetter setter )
     {
-        return SetVariable( key, setter( this ) );
+        _variableSetters.Add( key, setter );
+        return UpdateVariable( key );
+    }
+
+    public bool UpdateVariable( String key )
+    {
+        return SetVariable( key, _variableSetters[key](this) );
     }
 
     public GridItem[] GetNeighbours()

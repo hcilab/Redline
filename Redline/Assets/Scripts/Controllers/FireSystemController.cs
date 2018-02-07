@@ -70,7 +70,7 @@ public class FireSystemController : MonoBehaviour
             main.startColor = color;
         } );
         
-        _fireGrid.InitVariable( "flammable", item =>
+        _fireGrid.InitVariable<bool>( "flammable", item =>
         {
             Vector3 pos = _fireGrid.GetPosition( item._gridCoords );
             pos.z = pos.y;

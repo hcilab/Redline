@@ -205,4 +205,15 @@ public class PlayerController : MonoBehaviour
 			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
 		}
 	}
+
+	public bool HasLineOfSight( Vector3 location )
+	{
+		var distance = Vector3.Distance( location, transform.position );
+		if ( distance < 60 )
+		{
+			Ray ray = new Ray(location, transform.position - location);
+			return Physics.Raycast( ray, distance, 8 );
+		}
+		return false;
+	} 
 }

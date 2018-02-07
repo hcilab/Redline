@@ -16,7 +16,8 @@ public class GridController
 	public readonly float _spaceWidth, _spaceHeight, _itemWidth, _itemHeight;
 
 	private LineRenderer _lineRenderer;
-	
+	private bool _gridCanUpdate = false;
+
 	/// <summary>
 	/// Creates a new grid. This grid can hold <i>rows</i> by <i>cols</i>
 	/// cells. Each cells can have <i>payloadDepth</i> number of items associated 
@@ -52,6 +53,20 @@ public class GridController
 				, new Vector2(i/_rows, i%_rows)
 				, new Vector2( _itemWidth, _itemHeight )
 			);
+		}
+	}
+
+	public GridController( int rows, int cols, MonoBehaviour[] payload, GameObject space )
+	: this( rows, cols, payload.Length, space) 
+	{
+		foreach ( GridItem item in _grid )
+		{
+			foreach ( var monoBehaviour in payload )
+			{
+				MonoBehaviour payloadItem = MonoBehaviour.Instantiate( monoBehaviour );
+				Debug.Log( payloadItem  );
+				item.SetPayload( payloadItem );
+			}
 		}
 	}
 
@@ -228,12 +243,25 @@ public class GridController
 			item.AttachVariableEvent( name, variableEvent );
 		}
 	}
-
-	public void InitVariable< T >( string name, GridItem.VariableSetter<T> setter)
+	
+	public void InitVariable< T >( string name, GridItem.VariableSetter setter)
 	{
 		foreach ( GridItem gridItem in _grid )
 		{
 			gridItem.SetVariable( name, setter );
+			_gridCanUpdate = true;
+			gridItem.SetVariable( "canUpdate", true );
+		}
+	}
+
+	public void UpdateVariable<T>( String key )
+	{
+		if ( _gridCanUpdate )
+		{
+			foreach ( var gridItem in _grid )
+			{
+				gridItem.UpdateVariable( key );
+			}	
 		}
 	}
 
