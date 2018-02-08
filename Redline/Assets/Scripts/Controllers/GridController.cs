@@ -64,7 +64,11 @@ public class GridController
 			foreach ( var monoBehaviour in payload )
 			{
 				MonoBehaviour payloadItem = MonoBehaviour.Instantiate( monoBehaviour );
-				Debug.Log( payloadItem  );
+				var pos = GetPosition( item._gridCoords );
+				payloadItem.transform.position = new Vector3(
+					pos.x,
+					1,
+					pos.y);
 				item.SetPayload( payloadItem );
 			}
 		}

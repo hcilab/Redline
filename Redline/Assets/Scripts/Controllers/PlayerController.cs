@@ -211,8 +211,15 @@ public class PlayerController : MonoBehaviour
 		var distance = Vector3.Distance( location, transform.position );
 		if ( distance < 60 )
 		{
-			Ray ray = new Ray(location, transform.position - location);
-			return Physics.Raycast( ray, distance, 8 );
+			Ray ray = new Ray(transform.position, Vector3.Normalize(location - transform.position) * distance);
+			var hit = Physics.Raycast( ray, distance );
+			if( hit )
+				Debug.DrawRay( ray.origin, ray.direction * distance, Color.red  );
+			else
+			{
+				Debug.DrawRay( ray.origin, ray.direction * distance, Color.green );
+			}
+			return !Physics.Raycast( ray, distance );
 		}
 		return false;
 	} 

@@ -132,7 +132,7 @@ public class GridItem
         if ( i == -1 )
         {
             if ( _payload == null ) i = 0;
-            else i = _payload.Count;
+            else i = _payload.Count - 1;
         }
         
         if ( _payload == null )

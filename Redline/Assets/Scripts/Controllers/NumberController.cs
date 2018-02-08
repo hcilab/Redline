@@ -101,8 +101,7 @@ public abstract class FloatingNumber : ObjectPoolItem
 
 	public override void Disable()
 	{
-		transform.position = Camera.main.transform.position + Vector3.Cross(
-			                     new Vector3( 200, 200, 200 ), Vector3.up );
+		transform.position = new Vector3( 200, 200, 200 );
 		Animator.enabled = false;
 		base.Disable();
 	}
