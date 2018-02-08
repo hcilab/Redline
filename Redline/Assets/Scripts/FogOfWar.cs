@@ -12,7 +12,7 @@ public class FogOfWar : MonoBehaviour
 	void Start ()
 	{
 		_fowGrid = new GridController( _width, _height, new []{ _fog } , gameObject );
-		_fowGrid.DrawGrid();
+//		_fowGrid.DrawGrid();
 		_fowGrid.InitVariable<bool>( "visible", item =>
 		{
 			var pos = _fowGrid.GetPosition( item._gridCoords );
