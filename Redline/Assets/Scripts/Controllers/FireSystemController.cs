@@ -73,19 +73,24 @@ public class FireSystemController : MonoBehaviour
         _fireGrid.InitVariable<bool>( "flammable", item =>
         {
             Vector3 pos = _fireGrid.GetPosition( item._gridCoords );
-            pos.z = pos.y;
-            pos.y = 0.2f;
 
-            var posLeft = pos;
-            posLeft.x = pos.x - _fireGrid._itemWidth / 2;
-            var posDown = pos;
-            posDown.z = pos.z + _fireGrid._itemHeight / 2;
+            var posLeft = new Vector3(
+                pos.x + _fireGrid._itemWidth / 2,
+                0.2f,
+                pos.y
+                );
+            
+            var posDown = new Vector3(
+                pos.x,
+                0.2f,
+                pos.y + _fireGrid._itemHeight / 2
+                );
             
             var rayLeft = new Ray( posLeft, Vector3.left );
             var rayDown = new Ray( posDown, Vector3.back );
             
-            Debug.DrawRay( rayLeft.origin, rayLeft.direction * _fireGrid._itemWidth / 2 , Color.white, 30000 );
-            Debug.DrawRay( rayDown.origin, rayDown.direction * _fireGrid._itemHeight / 2, Color.white, 30000 );
+            Debug.DrawRay( rayLeft.origin, rayLeft.direction * _fireGrid._itemWidth, Color.white, 30000 );
+            Debug.DrawRay( rayDown.origin, rayDown.direction * _fireGrid._itemHeight, Color.white, 30000 );
 
             var flammable = !( Physics.Raycast( rayDown, _fireGrid._itemHeight )
                                || Physics.Raycast( rayLeft, _fireGrid._itemWidth ) );
