@@ -69,6 +69,13 @@ public class GridController
 					pos.x,
 					1,
 					pos.y);
+				
+				payloadItem.transform.localScale = new Vector3(
+					_itemWidth,
+					_itemHeight,
+					1f
+					);
+				
 				item.SetPayload( payloadItem );
 			}
 		}
