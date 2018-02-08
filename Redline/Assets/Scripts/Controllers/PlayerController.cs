@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
 
 	[SerializeField] public FireSystemController FireSystemController;
-	
+	[SerializeField] private int _viewDistance = 40;
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
 	[SerializeField] private double _damage = 0.2;
@@ -209,7 +209,7 @@ public class PlayerController : MonoBehaviour
 	public bool HasLineOfSight( Vector3 location )
 	{
 		var distance = Vector3.Distance( location, transform.position );
-		if ( distance < 60 )
+		if ( distance < _viewDistance )
 		{
 			Ray ray = new Ray(transform.position, Vector3.Normalize(location - transform.position) * distance);
 			var hit = Physics.Raycast( ray, distance );
