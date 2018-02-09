@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
 		gameObject.transform.position = gameObject.transform.position + movement * _speed;
 		
-		if ( Input.GetMouseButton( 0 ) )
+		if ( Input.GetMouseButtonDown( 0 ) )
 		{
 			var cursor = new Vector3(
 				Input.mousePosition.x,
@@ -85,14 +85,9 @@ public class PlayerController : MonoBehaviour
 //			ApplyWater( distance );
 
 			//update the distance of the water stream
-			var water = GetComponentInChildren< ParticleSystem >().main;
-			water.startSpeed = new ParticleSystem.MinMaxCurve( ( float ) distance * 30 );
-			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
-			waterEmission.enabled = true;
-		} else if ( Input.GetMouseButtonUp( 0 ) )
-		{
-			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
-			waterEmission.enabled = false;
+			GetComponentInChildren< ParticleSystem >().Clear();
+			GetComponentInChildren< ParticleSystem >().Play();
+//			
 		}
 		LookAtMouse();
 		
