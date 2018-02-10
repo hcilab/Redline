@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using NUnit.Framework.Constraints;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class DamageNumber : FloatingNumber
 {
