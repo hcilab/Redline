@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -71,6 +70,7 @@ public class PlayerController : MonoBehaviour
 		Vector3 movement = new Vector3( x, 0f, z);
 
 		gameObject.transform.position = gameObject.transform.position + movement * _speed;
+		_myBody.velocity = Vector3.zero;
 		
 		if ( Input.GetMouseButtonDown( 0 ) )
 		{
