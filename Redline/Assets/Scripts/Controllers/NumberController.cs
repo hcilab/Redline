@@ -31,7 +31,8 @@ public class NumberController : MonoBehaviour
 		_accumulator += damage;
 		
 		if (!_poolController.ObjectsAvailable() 
-		    || !(Time.time - _lastSpawn > _spawnDelay)) return;
+		    || !(Time.time - _lastSpawn > _spawnDelay)
+		    || _accumulator < 11 ) return;
 		
 		var instance = _poolController.Spawn() as FloatingNumber;
 			
@@ -46,8 +47,8 @@ public class NumberController : MonoBehaviour
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
-		(instance as FloatingNumber).SetNumber(_accumulator);
-		(instance as FloatingNumber).StartPlayback();
+		instance.SetNumber(_accumulator);
+		instance.StartPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
 	}

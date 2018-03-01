@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
 	private GameMaster _gameMaster;
+	[SerializeField] private double _damageTick = 0f;
+	private double _lastTick;
 
 	// Use this for initialization
 	void Start ()
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_damageNumberController = _gameMaster.GetDamageNumberController();
+		_lastTick = 0f;
 	}
 	
 	// Update is called once per frame
@@ -90,14 +93,15 @@ public class PlayerController : MonoBehaviour
 //			
 		}
 		LookAtMouse();
-		
+		 
 		if ( _hitPoints <= 0 )
 		{
 			_gameMaster.OnDeath();
 		}
-		else
+		else if(Time.time - _lastTick > _damageTick) 
 		{
 			TakeDamage();
+			_lastTick = Time.time;
 		}
 	}
 
@@ -156,9 +160,9 @@ public class PlayerController : MonoBehaviour
 			                  *
 			                  Time.deltaTime;
 		}
-		if ( totalDmg > 0.01 && _hitPoints >= 0) 
+		totalDmg = Math.Round( totalDmg * _damageScaling );
+		if ( totalDmg > 0.5 && _hitPoints >= 0) 
 		{
-			totalDmg = Math.Round( totalDmg * _damageScaling );
 			_damageNumberController.SpawnNumber( totalDmg, transform );
 			_hitPoints -= totalDmg;
 		}

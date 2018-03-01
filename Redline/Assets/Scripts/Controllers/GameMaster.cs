@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private NumberController _damageNumberController;
 
 	[SerializeField] private NumberController _scoreNumberController;
+	private float _roundStart;
 
 	// Use this for initialization
 	void Awake()
@@ -36,6 +38,7 @@ public class GameMaster : MonoBehaviour
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
+		_roundStart = Time.time;
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		_hpbarlabel.text = _currentHpBar.name;
 		_player = FindObjectOfType< PlayerController >();
@@ -99,7 +102,7 @@ public class GameMaster : MonoBehaviour
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
-		_deathScreenController.setScore(  _player.GetScore().ToString() );
+		_deathScreenController.setScore(  _player.GetScore().ToString());
 		_deathScreenController.show();
 	}
 
@@ -131,10 +134,13 @@ public class GameMaster : MonoBehaviour
 
 	public void OnVictory( )
 	{
+		var roundEnd = Time.time;
+		var roundDuration = ( roundEnd - _roundStart ) * 500;
+		var bonus = Math.Round(10000 - roundDuration);
 		Paused = true;
 		_gameOver = true;
 		_victoryScreenController.enabled = true;
-		_victoryScreenController.setScore( _player.GetScore().ToString() );
+		_victoryScreenController.setScore( _player.GetScore()  + " + a time bonus of " + bonus );
 		_victoryScreenController.show();
 	}
 
