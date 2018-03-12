@@ -20,15 +20,9 @@ public class HpBarController : MonoBehaviour
 
 
 	// Use this for initialization
-	void Awake ()
+	void Start ()
 	{
-		Debug.Log("Initialized HP bar.");
-
-		SceneManager.sceneLoaded += Initialize;
-	}
-
-	private void Initialize( Scene arg0, LoadSceneMode arg1 )
-	{
+		Debug.Log("Starting up HP bar.");
 		_player = FindObjectOfType<PlayerController>();
 		_bar = transform.Find("bar") as RectTransform;
 		_bkg = transform.Find("bkg") as RectTransform;
@@ -45,17 +39,17 @@ public class HpBarController : MonoBehaviour
 	{
 		_text.enabled = _hasTextField;
 
-		if (_hasTextField) _text.text = Mathf.Round( (float)_player.GetHealth() * 100) + "%";
+		if ( _hasTextField ) _text.text = Mathf.Round( ( float ) _player.GetHealth() * 100 ) + "%";
 
-		_bar.GetComponent<Image>().color = _color.Evaluate((float) _player.GetHealth());
-		
-		_bar.sizeDelta = Vector2.Lerp( 
+		_bar.GetComponent< Image >().color = _color.Evaluate( ( float ) _player.GetHealth() );
+
+		_bar.sizeDelta = Vector2.Lerp(
 			_bar.sizeDelta,
 			new Vector2(
-				(float) (_bkg.sizeDelta.x * _scale.scale(_player.GetHealth())),
+				( float ) ( _bkg.sizeDelta.x * _scale.scale( _player.GetHealth() ) ),
 				_bar.sizeDelta.y
-			), 
+			),
 			3 * Time.deltaTime
-			);
+		);
 	}
 }

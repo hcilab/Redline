@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class WaterController : MonoBehaviour
 {
-	[SerializeField] private double _waterStrength = .5f;
 	private PlayerController _playerController;
 	private FireSystemController _fireSystemController;
 	private ParticleSystem water;
@@ -22,9 +21,7 @@ public class WaterController : MonoBehaviour
 	{
 		if ( other.GetComponent<FlameController>(  ) )
 		{
-			var events = new ParticleCollisionEvent[
-				water.GetSafeCollisionEventSize()
-			];
+			var events = new List<ParticleCollisionEvent>();
 			var waterCount = water.GetCollisionEvents( other, events );
 			
 			try
@@ -32,7 +29,7 @@ public class WaterController : MonoBehaviour
 				double intensity = 0;
 				FlameController flame = _fireSystemController.LowerIntensity(
 					other.transform.position,
-					_waterStrength * waterCount,
+					waterCount,
 					out intensity
 				);
 				_playerController.Score( flame, intensity, other.transform );

@@ -9,10 +9,11 @@ public class NumberController : MonoBehaviour
 	[SerializeField] private float _spawnDelay = 0.3f;
 	[SerializeField] private int _numberPoolSize = 10;
 	[SerializeField] private ObjectPoolItem _numberPrefab;
-	private Canvas _canvas;
+	[SerializeField] private Canvas _canvas;
 	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
+	[SerializeField] private string _poolName;
 
 	void Awake()
 	{
@@ -21,8 +22,7 @@ public class NumberController : MonoBehaviour
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
-		_canvas = FindObjectOfType<Canvas>();
-		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab);
+		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab, _poolName);
 		_lastSpawn = Time.time;
 	}
 

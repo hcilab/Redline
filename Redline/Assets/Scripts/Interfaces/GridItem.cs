@@ -23,7 +23,6 @@ public class GridItem
     private int _payloadActiveElementCount = 0;
     private readonly GridController _parentGrid;
     public readonly Vector2 _gridCoords;
-    private readonly Vector2 _size;
     private Dictionary< string, VariableEvent > _variableEvents;
     private Dictionary< string, VariableSetter > _variableSetters;
 
@@ -39,8 +38,7 @@ public class GridItem
         MonoBehaviour[] payload
         , GridController parent
         , Vector2 coords
-        , Vector2 size 
-        ) : this(parent, coords, size)
+        ) : this(parent, coords)
     {
         _payload = new List<MonoBehaviour>(payload);
     }
@@ -51,12 +49,10 @@ public class GridItem
     public GridItem( 
         GridController parent
         , Vector2 coords
-        , Vector2 size
         )
     {
         _variableSetters = new Dictionary< string, VariableSetter >();
         _variableEvents = new Dictionary< string, VariableEvent >();
-        _size = size;
         _gridCoords = coords;
         _parentGrid = parent;
         _variables = new Dictionary< string, object >();

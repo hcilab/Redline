@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ScoreNumber: FloatingNumber
 {
 
-    public void SetNumber( double number )
+    public new void SetNumber( double number )
     {
         var magnitude = ( float ) number / 400f;
         TextField.fontSize = ( int ) Mathf.Clamp( magnitude * 20 + 14, 14f, 60f );

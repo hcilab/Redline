@@ -51,7 +51,6 @@ public class GridController
 				new MonoBehaviour[_payloadDepth]
 				, this
 				, new Vector2(i/_rows, i%_rows)
-				, new Vector2( _itemWidth, _itemHeight )
 			);
 		}
 	}
@@ -59,11 +58,13 @@ public class GridController
 	public GridController( int rows, int cols, MonoBehaviour[] payload, GameObject space )
 	: this( rows, cols, payload.Length, space) 
 	{
+		var fogGroup = new GameObject(space.name + "Pool");
 		foreach ( GridItem item in _grid )
 		{
 			foreach ( var monoBehaviour in payload )
 			{
 				MonoBehaviour payloadItem = MonoBehaviour.Instantiate( monoBehaviour );
+				payloadItem.transform.SetParent( fogGroup.transform );
 				var pos = GetPosition( item._gridCoords );
 				payloadItem.transform.position = new Vector3(
 					pos.x,

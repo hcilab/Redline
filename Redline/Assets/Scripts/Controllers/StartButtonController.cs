@@ -21,7 +21,7 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 		if ( eventData.button == PointerEventData.InputButton.Left )
 		{
 			_customLevel = _levelSelectionField.GetComponent<InputField>().text;
-			SceneManager.LoadScene( "level" + _customLevel );
+			FindObjectOfType< GameMaster >().StartGame( _customLevel );
 		} else if ( eventData.button == PointerEventData.InputButton.Right )
 		{
 			Debug.Log( _levelSelectionField  );

@@ -38,6 +38,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 		for (int i = 0; i < _poolSize; i++)
 		{
 			ObjectPoolItem newItem = Instantiate( _objectPrefab );
+			newItem.transform.SetParent( transform );
 			newItem.Disable();
 			_pool.Enqueue( newItem );
 		}
@@ -55,7 +56,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	public ObjectPoolItem Spawn()
 	{
 		ObjectPoolItem item = null;
-		if (_pool.Count > 0)
+		if ( ObjectsAvailable() )
 			item = _pool.Dequeue();
 		
 		if (item != null)
@@ -70,6 +71,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	public void Remove(ObjectPoolItem sender)
 	{
 		sender.Disable();
+		sender.transform.SetParent( transform );
 		_pool.Enqueue(sender);
 	}
 

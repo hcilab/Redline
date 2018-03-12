@@ -10,7 +10,9 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class FireSystemController : MonoBehaviour
 {
-    [SerializeField] private int _rows, _columns, _payloadDepth;
+    [SerializeField] private int _rows;
+    [SerializeField] private int _columns; 
+    [SerializeField] private int _payloadDepth;
     [SerializeField] private double _startIntensity;
     [SerializeField] private bool _showGrid;
     [SerializeField] private int _firePoolSize = 20;
@@ -27,7 +29,9 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private double _spreadChance = 0.3;
     [SerializeField] private double _growthFactor;
     [SerializeField] private double _maxFlameIntensity = 3d;
+    [SerializeField] private double _waterStrength = 0.1f;
     private GameMaster _gameMaster;
+    [SerializeField] private int _prewarm = 0;
 
     private void Awake()
     {
@@ -51,23 +55,32 @@ public class FireSystemController : MonoBehaviour
         _flamePrefab.transform.localScale = itemSize;
 
         
-        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab, "FlamePool" );
         
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0d, item =>
         {
-            var color = new Color(
-                1f,
-                1f - (float)item.GetVariable<double>( "intensity" ) / 3,
-                0f
-            );
+            var g = new Gradient();
+            var gColor = new GradientColorKey[3];
+            gColor[ 0 ].color = Color.yellow;
+            gColor[ 0 ].time = 0f;
+            gColor[ 1 ].color = Color.yellow;
+            gColor[ 1 ].time = 0.5f;
+            gColor[ 2 ].color = Color.red;
+            gColor[ 2 ].time = 1f;
+            var gAlpha = new GradientAlphaKey[1];
+            gAlpha[ 0 ].alpha = 1f;
+            gAlpha[ 0 ].time = 0f;
+            g.SetKeys( gColor, gAlpha );
 
             var main = item.GetPayload< FlameController >( 0 )
                 .GetComponent< ParticleSystem >().main;
                 
-            main.startColor = color;
+            main.startColor = g.Evaluate( 
+                (float)( item.GetVariable<double>( "intensity" )/( _maxFlameIntensity ) ) 
+                );
         } );
         
         _fireGrid.InitVariable<bool>( "flammable", item =>
@@ -94,7 +107,6 @@ public class FireSystemController : MonoBehaviour
 
             var flammable = !( Physics.Raycast( rayDown, _fireGrid._itemHeight )
                                || Physics.Raycast( rayLeft, _fireGrid._itemWidth ) );
-            if( !flammable ) Debug.Log( item._gridCoords + "is not flammable"  );
             return flammable;
         } );
         
@@ -121,6 +133,15 @@ public class FireSystemController : MonoBehaviour
         }
         
         _tick = Time.time;
+
+        var orgSpreadChange = _spreadChance;
+        _spreadChance = 1f;
+        for ( int i = 0; i < _prewarm; i++ )
+        {
+            Spread();
+            Grow();
+        }
+        _spreadChance = orgSpreadChange;
     }
 
 
@@ -246,9 +267,10 @@ public class FireSystemController : MonoBehaviour
 
     }
 
-    public FlameController LowerIntensity( Vector3 worldCoords, double waterStrength, out double outIntensity )
+    public FlameController LowerIntensity( Vector3 worldCoords, double particleCount, out double outIntensity )
     {
-        return LowerIntensity( _fireGrid.GetWorldCoords( worldCoords ), waterStrength, out outIntensity );
+        return LowerIntensity( _fireGrid.GetWorldCoords( worldCoords ), 
+            particleCount * _waterStrength, out outIntensity );
     }
 
     public FlameController LowerIntensity( Vector2 coords, double waterStrength, out double outIntensity )

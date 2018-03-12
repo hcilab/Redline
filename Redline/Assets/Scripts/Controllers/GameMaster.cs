@@ -50,9 +50,10 @@ public class GameMaster : MonoBehaviour
 		{
 			Restart();
 		}
-		else if ( Input.GetKeyDown( KeyCode.Escape ) )
+		else if ( Input.GetKeyDown( KeyCode.Escape ) && _gameOver )
 		{
 			SceneManager.LoadScene( "mainMenu" );
+			_gameOver = false;
 		}
 		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
@@ -122,12 +123,12 @@ public class GameMaster : MonoBehaviour
 		return _scoreNumberController;
 	}
 
-	public static ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item)
+	public static ObjectPoolController InstantiatePool(int poolSize, ObjectPoolItem item, string poolName)
 	{
 		ObjectPoolController pool = Instantiate(
           			Resources.Load<ObjectPoolController>("Prefabs/ObjectPool")
           		);
-		
+		pool.name = poolName;
 		pool.Init( poolSize, item);
 		return pool;
 	}
@@ -150,5 +151,11 @@ public class GameMaster : MonoBehaviour
 		_deathScreenController.hide();
 		Paused = false;
 		_gameOver = false;
+	}
+
+	public void StartGame( string customLevel )
+	{
+		
+		SceneManager.LoadScene( "level" + customLevel );
 	}
 }

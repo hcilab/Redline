@@ -9,10 +9,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private int _viewDistance = 40;
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
-	[SerializeField] private double _damage = 0.2;
 	[SerializeField] private double _damageScaling = 10f;
 	[SerializeField] private double _totalHp = 100;
-	[SerializeField] private float _waterStrength = 3;
 	[SerializeField] private bool _showCollider = false;
 	
 	
@@ -75,22 +73,15 @@ public class PlayerController : MonoBehaviour
 		gameObject.transform.position = gameObject.transform.position + movement * _speed;
 		_myBody.velocity = Vector3.zero;
 		
+		var w = GetComponentInChildren< ParticleSystem >().emission;
 		if ( Input.GetMouseButtonDown( 0 ) )
 		{
-			var cursor = new Vector3(
-				Input.mousePosition.x,
-				Input.mousePosition.y,
-				1f
-			);
-			cursor = Camera.main.ScreenToWorldPoint( cursor );
-			cursor.y = transform.position.y;
-			double distance = Vector3.Distance( cursor, transform.position );
-//			ApplyWater( distance );
-
-			//update the distance of the water stream
-			GetComponentInChildren< ParticleSystem >().Clear();
+			w.enabled = true;
 			GetComponentInChildren< ParticleSystem >().Play();
 //			
+		} else if ( Input.GetMouseButtonUp( 0 ) )
+		{
+			w.enabled = false;
 		}
 		LookAtMouse();
 		 
@@ -103,29 +94,6 @@ public class PlayerController : MonoBehaviour
 			TakeDamage();
 			_lastTick = Time.time;
 		}
-	}
-
-	private void ApplyWater( double distance )
-	{
-		double hoseStrength = 1 - distance;
-		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength;
-
-		try
-		{
-			double outIntensity = 0;
-			var flame =
-				FireSystemController.LowerIntensity( 
-					_waterStrength * hoseStrength, 
-					out outIntensity 
-					);
-			_score += hoseStrength * outIntensity * 100;
-			if ( flame != null )
-			{
-				_score += 10;
-				_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
-			}
-		}
-		catch ( Exception ){}
 	}
 
 	private void OnTriggerEnter(Collider other)

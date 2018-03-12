@@ -3,7 +3,7 @@
 public class DamageNumber : FloatingNumber
 {
 
-    public void SetNumber(double number)
+    public new void SetNumber(double number)
     {
         var magnitude = ( float ) number / 100f;
         
