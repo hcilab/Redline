@@ -10,6 +10,7 @@ public class NumberController : MonoBehaviour
 	[SerializeField] private int _numberPoolSize = 10;
 	[SerializeField] private ObjectPoolItem _numberPrefab;
 	[SerializeField] private Canvas _canvas;
+	[SerializeField] private int _poolCount;
 	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
@@ -24,11 +25,12 @@ public class NumberController : MonoBehaviour
 	{
 		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab, _poolName);
 		_lastSpawn = Time.time;
+		_poolCount = _poolController.ObjectCount();
 	}
 
-	public void SpawnNumber(double damage, Transform location)
+	public void SpawnNumber(double content, Vector3 location)
 	{
-		_accumulator += damage;
+		_accumulator += content;
 		
 		if (!_poolController.ObjectsAvailable() 
 		    || !(Time.time - _lastSpawn > _spawnDelay)
@@ -40,9 +42,9 @@ public class NumberController : MonoBehaviour
 				
 		Vector2 screenPosition = Camera.main.WorldToScreenPoint(
 			new Vector3(
-				location.position.x + Random.Range(-.2f, .2f),
+				location.x + Random.Range(-.2f, .2f),
 				0f,
-				location.position.z + Random.Range(-.2f, .2f)
+				location.z + Random.Range(-.2f, .2f)
 			));
 			
 		instance.transform.SetParent( _canvas.transform, false );
@@ -51,11 +53,13 @@ public class NumberController : MonoBehaviour
 		instance.StartPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
+		_poolCount = _poolController.ObjectCount();
 	}
 
 	public void RemoveNumber(ObjectPoolItem sender)
 	{
 		_poolController.Remove(sender);
+		_poolCount = _poolController.ObjectCount();
 	}
 
 	private void OnDestroy()

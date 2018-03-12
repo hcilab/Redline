@@ -18,7 +18,9 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	private ObjectPoolItem _objectPrefab;
 	private int _poolSize;
 	private Queue<ObjectPoolItem> _pool;
-	
+	private Vector3 _orgScale;
+	private Transform _orgTransform;
+
 	//TODO write docs
 	/// <summary>
 	/// 
@@ -30,7 +32,6 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	{
 		_poolSize = poolSize;
 		_objectPrefab = itemPrefab;
-		
 		_pool = new Queue<ObjectPoolItem>(_poolSize);
 		
 		if(_objectPrefab == null) throw new TypeLoadException();
@@ -38,6 +39,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 		for (int i = 0; i < _poolSize; i++)
 		{
 			ObjectPoolItem newItem = Instantiate( _objectPrefab );
+			_orgTransform = newItem.transform;
 			newItem.transform.SetParent( transform );
 			newItem.Disable();
 			_pool.Enqueue( newItem );
@@ -47,6 +49,11 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	public bool ObjectsAvailable()
 	{
 		return _pool.Count > 0;
+	}
+
+	public int ObjectCount()
+	{
+		return _pool.Count;
 	}
 
 	/// <summary>

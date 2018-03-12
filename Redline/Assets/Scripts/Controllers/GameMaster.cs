@@ -138,6 +138,7 @@ public class GameMaster : MonoBehaviour
 		var roundEnd = Time.time;
 		var roundDuration = ( roundEnd - _roundStart ) * 500;
 		var bonus = Math.Round(10000 - roundDuration);
+		bonus = bonus > 0 ? bonus : 0;
 		Paused = true;
 		_gameOver = true;
 		_victoryScreenController.enabled = true;

@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
 	
 	private Rigidbody _myBody;
 	private double _hitPoints;
-	private NumberController _damageNumberController;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
 	private GameMaster _gameMaster;
@@ -55,7 +54,6 @@ public class PlayerController : MonoBehaviour
 
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
-		_damageNumberController = _gameMaster.GetDamageNumberController();
 		_lastTick = 0f;
 	}
 	
@@ -72,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
 		gameObject.transform.position = gameObject.transform.position + movement * _speed;
 		_myBody.velocity = Vector3.zero;
+		_myBody.useGravity = false;
 		
 		var w = GetComponentInChildren< ParticleSystem >().emission;
 		if ( Input.GetMouseButtonDown( 0 ) )
@@ -131,7 +130,7 @@ public class PlayerController : MonoBehaviour
 		totalDmg = Math.Round( totalDmg * _damageScaling );
 		if ( totalDmg > 0.5 && _hitPoints >= 0) 
 		{
-			_damageNumberController.SpawnNumber( totalDmg, transform );
+			_gameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
 			_hitPoints -= totalDmg;
 		}
 	}
@@ -166,7 +165,7 @@ public class PlayerController : MonoBehaviour
 	public void Score( FlameController flame, double intensity, Transform position )
 	{
 		_score += ( intensity + 1 )* 10;
-		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position );
+		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
 		{
 			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
