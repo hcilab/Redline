@@ -49,6 +49,7 @@ public class NumberController : MonoBehaviour
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
+		instance.transform.localScale = new Vector3(1,1,1);
 		instance.SetNumber(_accumulator);
 		instance.StartPlayback();
 		_accumulator = 0;
@@ -95,6 +96,7 @@ public abstract class FloatingNumber : ObjectPoolItem
 	public void StartPlayback()
 	{
 		Animator.enabled = true;
+		Animator.Play( 0 );
 	}
 
 	public abstract void AnimationComplete();
