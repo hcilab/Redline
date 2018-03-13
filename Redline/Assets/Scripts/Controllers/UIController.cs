@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using NUnit.Framework;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour

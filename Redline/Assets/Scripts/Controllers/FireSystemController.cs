@@ -18,6 +18,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private int _firePoolSize = 20;
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
+    [SerializeField] private int _spreadLimit = Int32.MaxValue;
     
     private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
@@ -32,6 +33,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private double _waterStrength = 0.1f;
     private GameMaster _gameMaster;
     [SerializeField] private int _prewarm = 0;
+    [SerializeField] private double _spreadIntensity = 3;
 
     private void Awake()
     {
@@ -63,13 +65,15 @@ public class FireSystemController : MonoBehaviour
         _fireGrid.InitVariable( "intensity", 0d, item =>
         {
             var g = new Gradient();
-            var gColor = new GradientColorKey[3];
-            gColor[ 0 ].color = Color.yellow;
+            var gColor = new GradientColorKey[4];
+            gColor[ 0 ].color = Color.white;
             gColor[ 0 ].time = 0f;
-            gColor[ 1 ].color = Color.yellow;
-            gColor[ 1 ].time = 0.5f;
-            gColor[ 2 ].color = Color.red;
-            gColor[ 2 ].time = 1f;
+            gColor[ 1 ].color = Color.gray;
+            gColor[ 1 ].time = 0.8f;
+            gColor[ 2 ].color = Color.yellow;
+            gColor[ 2 ].time = 0.9f;
+            gColor[ 3 ].color = Color.red;
+            gColor[ 3 ].time = 1f;
             var gAlpha = new GradientAlphaKey[1];
             gAlpha[ 0 ].alpha = 1f;
             gAlpha[ 0 ].time = 0f;
@@ -190,6 +194,8 @@ public class FireSystemController : MonoBehaviour
     /// </summary>
     private void Spread()
     {
+        int spreadCount = 0;
+        
         _edgeFlames = new List< GridItem >();
         foreach ( var item in _activeFlames )
         {
@@ -203,10 +209,20 @@ public class FireSystemController : MonoBehaviour
             }
             if( add ) _edgeFlames.Add( item );
         }
-        
+
+        int next = _edgeFlames.Count;
+        while ( next > 1 )
+        {
+            next--;
+            int k = Random.Range( 0, next + 1 );
+            GridItem f = _edgeFlames[ k ];
+            _edgeFlames[ k ] = _edgeFlames[ next ];
+            _edgeFlames[ next ] = f;
+        }
+        _edgeFlames.Reverse();
         foreach ( GridItem edgeItem in _edgeFlames )
         {
-            if( edgeItem.GetVariable<double>( "intensity" ) < 3 ) continue;
+            if( edgeItem.GetVariable<double>( "intensity" ) < _spreadIntensity ) continue;
             List< GridItem > emptyNeighbours = new List< GridItem >();
             
             foreach( GridItem n in edgeItem.GetNeighbours() )
@@ -219,13 +235,15 @@ public class FireSystemController : MonoBehaviour
 
             foreach ( GridItem neighbour in emptyNeighbours )
             {
-                if( Random.value < ( 1 - _spreadChance ) ) continue;
+                if( Random.value <  1 - _spreadChance ) continue;
+                if ( spreadCount >= _spreadLimit ) break;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
                 if ( !newFlame )
                 {
-                    _gameMaster.OnDeath( );
+//                    _gameMaster.OnDeath( );
                     return;
-                }; 
+                };
+                spreadCount++;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,

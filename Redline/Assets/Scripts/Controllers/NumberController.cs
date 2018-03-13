@@ -10,7 +10,10 @@ public class NumberController : MonoBehaviour
 	[SerializeField] private int _numberPoolSize = 10;
 	[SerializeField] private ObjectPoolItem _numberPrefab;
 	[SerializeField] private Canvas _canvas;
-	[SerializeField] private int _poolCount;
+
+	[SerializeField]
+	public int PoolCount { get; private set; }
+
 	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
@@ -25,7 +28,7 @@ public class NumberController : MonoBehaviour
 	{
 		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab, _poolName);
 		_lastSpawn = Time.time;
-		_poolCount = _poolController.ObjectCount();
+		PoolCount = _poolController.ObjectCount();
 	}
 
 	public void SpawnNumber(double content, Vector3 location)
@@ -54,13 +57,13 @@ public class NumberController : MonoBehaviour
 		instance.StartPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
-		_poolCount = _poolController.ObjectCount();
+		PoolCount = _poolController.ObjectCount();
 	}
 
 	public void RemoveNumber(ObjectPoolItem sender)
 	{
 		_poolController.Remove(sender);
-		_poolCount = _poolController.ObjectCount();
+		PoolCount = _poolController.ObjectCount();
 	}
 
 	private void OnDestroy()
