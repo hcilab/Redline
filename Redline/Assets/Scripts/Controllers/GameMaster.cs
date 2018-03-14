@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using NUnit.Framework.Constraints;
+using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -157,5 +161,27 @@ public class GameMaster : MonoBehaviour
 	{
 		
 		SceneManager.LoadScene( "level" + customLevel );
+	}
+
+	public void SaveToConfig( string level, FireSystemController fireSystemController )
+	{
+		string json = JsonUtility.ToJson( fireSystemController, true );
+		
+		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
+
+		byte[] jsonAsBytes = Encoding.ASCII.GetBytes( json );
+		File.WriteAllBytes( path, jsonAsBytes  );
+	}
+
+	public void LoadFromConfig( string level, FireSystemController fireSystemController )
+	{
+		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
+
+		if ( File.Exists( path ) )
+		{
+			Debug.Log( "Loading data for " + level  );
+			var stringData = File.ReadAllText( path );
+			JsonUtility.FromJsonOverwrite( stringData, fireSystemController );
+		} 
 	}
 }

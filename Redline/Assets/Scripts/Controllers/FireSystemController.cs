@@ -19,6 +19,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
     [SerializeField] private int _spreadLimit = Int32.MaxValue;
+    [SerializeField] private Boolean _loadFromFile = true;
     
     private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
@@ -34,19 +35,30 @@ public class FireSystemController : MonoBehaviour
     private GameMaster _gameMaster;
     [SerializeField] private int _prewarm = 0;
     [SerializeField] private double _spreadIntensity = 3;
+    [SerializeField] private string _configFileName = "";
 
     private void Awake()
     {
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
-     
+        
         SceneManager.sceneLoaded += Initialize;
+        
     }
 
     private void Initialize( Scene arg0, LoadSceneMode arg1 )
     {
-        if( this == null ) return;
+        if ( _configFileName == "" ) _configFileName = arg0.name;
         _gameMaster = FindObjectOfType< GameMaster >();
+        
+        if ( _loadFromFile )
+        {
+            _gameMaster.LoadFromConfig( _configFileName, this );
+        }
+        else
+        {
+            _gameMaster.SaveToConfig( _configFileName, this );
+        }
         
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         Vector3 floorSize = gameObject.transform.localScale;
@@ -209,7 +221,7 @@ public class FireSystemController : MonoBehaviour
             }
             if( add ) _edgeFlames.Add( item );
         }
-
+        
         int next = _edgeFlames.Count;
         while ( next > 1 )
         {
@@ -242,7 +254,7 @@ public class FireSystemController : MonoBehaviour
                 {
 //                    _gameMaster.OnDeath( );
                     return;
-                };
+                }; 
                 spreadCount++;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
