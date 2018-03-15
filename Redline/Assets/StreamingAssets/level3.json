@@ -1,0 +1,36 @@
+{
+    "_rows": 20,
+    "_columns": 20,
+    "_payloadDepth": 1,
+    "_startIntensity": 2.0,
+    "_showGrid": false,
+    "_firePoolSize": 100,
+    "_updateInterval": 0.44999998807907107,
+    "_startingFlames": [
+        {
+            "x": 1.0,
+            "y": 1.0
+        },
+        {
+            "x": 18.0,
+            "y": 18.0
+        },
+        {
+            "x": 1.0,
+            "y": 18.0
+        },
+        {
+            "x": 2.0,
+            "y": 10.0
+        }
+    ],
+    "_spreadLimit": 1,
+    "_loadFromFile": false,
+    "_spreadChance": 0.25,
+    "_growthFactor": 0.2,
+    "_maxFlameIntensity": 10.0,
+    "_waterStrength": 0.02,
+    "_prewarm": 30,
+    "_spreadIntensity": 4.0,
+    "_configFileName": "level3"
+}
