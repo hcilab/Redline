@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 using NUnit.Framework.Constraints;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
@@ -25,6 +26,7 @@ public class GameMaster : MonoBehaviour
 
 	[SerializeField] private NumberController _scoreNumberController;
 	private float _roundStart;
+	[SerializeField] private Canvas _UI;
 
 	// Use this for initialization
 	void Awake()
@@ -36,14 +38,13 @@ public class GameMaster : MonoBehaviour
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
+		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		SceneManager.sceneLoaded += Initialize;
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_roundStart = Time.time;
-		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
-		_hpbarlabel.text = _currentHpBar.name;
 		_player = FindObjectOfType< PlayerController >();
 	}
 
@@ -51,16 +52,18 @@ public class GameMaster : MonoBehaviour
 	{
 		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
 		{
-			Restart();
+			NextLevel("restart");
 		}
 		else if ( Input.GetKeyDown( KeyCode.Escape ) && _gameOver )
 		{
+			ResetUi();
 			SceneManager.LoadScene( "mainMenu" );
+			_UI.gameObject.SetActive( false );
 			_gameOver = false;
 		}
 		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
-			NextLevel();
+			NextLevel(null);
 		}
 		else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
@@ -72,18 +75,35 @@ public class GameMaster : MonoBehaviour
 		}
 	}
 
-	private void NextLevel()
+	private void NextLevel( [CanBeNull] string customLevel )
 	{
+		ResetUi();
+		int nextLvl;
 		string currentLvl = SceneManager.GetActiveScene().name.Substring( 5 );
+
+		if ( customLevel == "restart" )
+		{
+			nextLvl = Int32.Parse( currentLvl );
+		}
+		else if ( customLevel != null )
+		{
+			nextLvl = Int32.Parse( customLevel );
+		}
+		else
+		{
+			nextLvl = Int32.Parse( currentLvl ) + 1;
+		}
+	
 		Debug.Log( currentLvl );
-		var nextLvl = Int32.Parse( currentLvl ) + 1;
 
 		if ( nextLvl > 3 )
 		{
+			_UI.gameObject.SetActive( false );
 			SceneManager.LoadScene( "mainMenu" );
 		}
 		else
 		{
+			_UI.gameObject.SetActive( true );
 			SceneManager.LoadScene( "level" + nextLvl );
 		}
 	}
@@ -91,13 +111,13 @@ public class GameMaster : MonoBehaviour
 	private void ChangeHpBar( int direction )
 	{
 		Debug.Log( "change HP bar" );
-		_currentHpBar.enabled = false;
+		_currentHpBar.gameObject.SetActive( false );
 
-		_currentHpBarindex = (((_currentHpBarindex + direction) % _hpBarControllers.Count)
+		_currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
 		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
 		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
 
-		_currentHpBar.enabled = true;
+		_currentHpBar.gameObject.SetActive( true );
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
@@ -108,12 +128,6 @@ public class GameMaster : MonoBehaviour
 		_deathScreenController.enabled = true;
 		_deathScreenController.setScore(  _player.GetScore().ToString());
 		_deathScreenController.show();
-	}
-
-	private static void Restart()
-	{
-		string sceneName = SceneManager.GetActiveScene().name;
-		SceneManager.LoadScene( sceneName );
 	}
 
 	public NumberController GetDamageNumberController()
@@ -153,14 +167,14 @@ public class GameMaster : MonoBehaviour
 	{
 		_victoryScreenController.hide();
 		_deathScreenController.hide();
+		_hpbarlabel.text = _currentHpBar.name;
 		Paused = false;
 		_gameOver = false;
 	}
 
 	public void StartGame( string customLevel )
 	{
-		
-		SceneManager.LoadScene( "level" + customLevel );
+		NextLevel( customLevel );
 	}
 
 	public void SaveToConfig( string level, FireSystemController fireSystemController )

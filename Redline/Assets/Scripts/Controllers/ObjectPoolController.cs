@@ -82,11 +82,7 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 
 	private void OnDestroy()
 	{
-		//loop through and clear all items in the pool
-		foreach (ObjectPoolItem item in _pool)
-		{
-			Destroy( item );
-		}
+		_pool.Clear();
 	}
 
 	public IEnumerator<FlameController> GetEnumerator()

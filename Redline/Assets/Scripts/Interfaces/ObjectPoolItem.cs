@@ -12,5 +12,4 @@ public abstract class ObjectPoolItem : MonoBehaviour
     {
         enabled = true;
     }
-
 }
