@@ -338,5 +338,6 @@ public class FireSystemController : MonoBehaviour
      private void OnDestroy()
     {
         _fireGrid.Dispose();
+        SceneManager.sceneLoaded -= Initialize;
     }
 }
