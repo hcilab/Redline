@@ -82,9 +82,9 @@ public class FireSystemController : MonoBehaviour
             gColor[ 0 ].color = Color.white;
             gColor[ 0 ].time = 0f;
             gColor[ 1 ].color = Color.gray;
-            gColor[ 1 ].time = 0.8f;
+            gColor[ 1 ].time = 0.25f;
             gColor[ 2 ].color = Color.yellow;
-            gColor[ 2 ].time = 0.9f;
+            gColor[ 2 ].time = 0.5f;
             gColor[ 3 ].color = Color.red;
             gColor[ 3 ].time = 1f;
             var gAlpha = new GradientAlphaKey[1];
