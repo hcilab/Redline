@@ -48,6 +48,7 @@ public class FireSystemController : MonoBehaviour
 
     private void Initialize( Scene arg0, LoadSceneMode arg1 )
     {
+        if( gameObject == null ) return;
         if ( _configFileName == "" ) _configFileName = arg0.name;
         _gameMaster = FindObjectOfType< GameMaster >();
         
