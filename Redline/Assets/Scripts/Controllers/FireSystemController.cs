@@ -26,7 +26,7 @@ public class FireSystemController : MonoBehaviour
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
     private GridController _fireGrid;
-    private float _tick;
+    private float _tick = -1;
     private FlameController _flamePrefab;
     [SerializeField] private double _spreadChance = 0.3;
     [SerializeField] private double _growthFactor;
@@ -36,6 +36,8 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private int _prewarm = 0;
     [SerializeField] private double _spreadIntensity = 3;
     [SerializeField] private string _configFileName = "";
+    [SerializeField] private int _levelTime = 60;
+    private float _timeLeft = Int32.MaxValue;
 
     private void Awake()
     {
@@ -159,13 +161,20 @@ public class FireSystemController : MonoBehaviour
             Grow();
         }
         _spreadChance = orgSpreadChange;
+        
+        //start the timer
+        _timeLeft = _levelTime;
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if ( _tick < 0 ) return; //don't start until initialization is done
         if( _gameMaster == null || _gameMaster.Paused ) return;
+
+        if ( _timeLeft <= 0 ) _gameMaster.OnTimeout();
         
         if ( _showGrid )
         {
@@ -187,6 +196,8 @@ public class FireSystemController : MonoBehaviour
         
         
         if ( _showGrid ) _fireGrid.DrawGrid();
+
+        _timeLeft -= Time.deltaTime;
 
     }
 
@@ -339,5 +350,10 @@ public class FireSystemController : MonoBehaviour
     {
         _fireGrid.Dispose();
         SceneManager.sceneLoaded -= Initialize;
+    }
+
+    public float GetTimeLeft()
+    {
+        return _timeLeft;
     }
 }

@@ -121,11 +121,12 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public void OnDeath( )
+	public void OnDeath( [CanBeNull] string message )
 	{
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
+		_deathScreenController.setMessage( message );
 		_deathScreenController.setScore(  _player.GetScore().ToString());
 		_deathScreenController.show();
 	}
@@ -162,6 +163,13 @@ public class GameMaster : MonoBehaviour
 		_victoryScreenController.setScore( _player.GetScore()  + " + a time bonus of " + bonus );
 		_victoryScreenController.show();
 	}
+	
+	
+
+	public void OnTimeout()
+	{
+		OnDeath( "You ran out of time!" );
+	}
 
 	public void ResetUi()
 	{
@@ -197,5 +205,10 @@ public class GameMaster : MonoBehaviour
 			var stringData = File.ReadAllText( path );
 			JsonUtility.FromJsonOverwrite( stringData, fireSystemController );
 		} 
+	}
+
+	public string GetTimeRemaining()
+	{
+		return Math.Round(_player.FireSystemController.GetTimeLeft()).ToString();
 	}
 }

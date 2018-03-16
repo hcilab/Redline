@@ -21,12 +21,13 @@
         }
     ],
     "_spreadLimit": 4,
-    "_loadFromFile": false,
+    "_loadFromFile": true,
     "_spreadChance": 0.25,
     "_growthFactor": 0.2,
     "_maxFlameIntensity": 10.0,
     "_waterStrength": 0.05,
     "_prewarm": 5,
     "_spreadIntensity": 3.0,
-    "_configFileName": "level1"
+    "_configFileName": "level1",
+    "_levelTime": 30
 }
