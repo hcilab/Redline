@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour
 		
 		Vector3 movement = new Vector3( x, 0f, z);
 
-		gameObject.transform.position = gameObject.transform.position + movement * _speed;
+		gameObject.transform.position = gameObject.transform.position + movement * _speed * Time.deltaTime;
 		_myBody.velocity = Vector3.zero;
 		_myBody.useGravity = false;
 		
