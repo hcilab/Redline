@@ -38,20 +38,21 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private string _configFileName = "";
     [SerializeField] private int _levelTime = 60;
     private float _timeLeft = Int32.MaxValue;
+    private bool initialized = false;
 
-    private void Awake()
+    private void OnEnable()
     {
-        _edgeFlames = new List< GridItem >();
-        _activeFlames = new List< GridItem >();
-        
         SceneManager.sceneLoaded += Initialize;
         
     }
 
     private void Initialize( Scene arg0, LoadSceneMode arg1 )
     {
-        if( gameObject == null ) return;
+        _edgeFlames = new List< GridItem >();
+        _activeFlames = new List< GridItem >();
+     
         if ( _configFileName == "" ) _configFileName = arg0.name;
+        
         _gameMaster = FindObjectOfType< GameMaster >();
         
         if ( _loadFromFile )
@@ -155,15 +156,19 @@ public class FireSystemController : MonoBehaviour
 
         var orgSpreadChange = _spreadChance;
         _spreadChance = 1f;
+        
         for ( int i = 0; i < _prewarm; i++ )
         {
             Spread();
             Grow();
         }
+        
         _spreadChance = orgSpreadChange;
         
         //start the timer
         _timeLeft = _levelTime;
+
+        initialized = true;
 
     }
 
@@ -171,7 +176,7 @@ public class FireSystemController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( _tick < 0 ) return; //don't start until initialization is done
+        if ( !initialized ) return; //don't start until initialization is done
         if( _gameMaster == null || _gameMaster.Paused ) return;
 
         if ( _timeLeft <= 0 ) _gameMaster.OnTimeout();
@@ -288,12 +293,6 @@ public class FireSystemController : MonoBehaviour
         }
     }
 
-    public void SpreadWater( Vector3 position )
-    {
-        //TODO lower intensity terrain
-        //the terrain will spread negative height outwards until it reaches 0
-    }
-
     public double GetFlameIntensity( FlameController flame )
     {
         foreach ( var activeFlame in _activeFlames )
@@ -346,7 +345,12 @@ public class FireSystemController : MonoBehaviour
         return flame;
     }
 
-     private void OnDestroy()
+    private void OnDisable()
+    {
+        initialized = false;
+    }
+
+    private void OnDestroy()
     {
         _fireGrid.Dispose();
         SceneManager.sceneLoaded -= Initialize;
