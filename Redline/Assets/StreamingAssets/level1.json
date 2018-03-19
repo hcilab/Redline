@@ -5,29 +5,21 @@
     "_startIntensity": 2.0,
     "_showGrid": false,
     "_firePoolSize": 100,
-    "_updateInterval": 0.30000001192092898,
+    "_updateInterval": 0.25,
     "_startingFlames": [
         {
-            "x": 18.0,
-            "y": 2.0
-        },
-        {
-            "x": 1.0,
-            "y": 18.0
-        },
-        {
-            "x": 19.0,
-            "y": 3.0
+            "x": 10.0,
+            "y": 13.0
         }
     ],
     "_spreadLimit": 4,
     "_loadFromFile": true,
     "_spreadChance": 0.25,
     "_growthFactor": 0.2,
-    "_maxFlameIntensity": 10.0,
+    "_maxFlameIntensity": 5.0,
     "_waterStrength": 0.05,
-    "_prewarm": 5,
-    "_spreadIntensity": 3.0,
+    "_prewarm": 10,
+    "_spreadIntensity": 2.5,
     "_configFileName": "level1",
-    "_levelTime": 30
+    "_levelTime": 60
 }

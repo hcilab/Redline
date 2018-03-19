@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class PlayerController : MonoBehaviour
 	private GameMaster _gameMaster;
 	[SerializeField] private double _damageTick = 0f;
 	private double _lastTick;
+	[SerializeField] private double _loggingTick = 1f;
+	private double _lastLog = 0f;
+	private double _logDamage = 0f;
+	private double _logScore = 0f;
 
 	// Use this for initialization
 	void Start ()
@@ -95,6 +100,21 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	public void LogData()
+	{
+		_gameMaster.DataCollector.LogData(
+			Time.time
+			, _gameMaster.SessionID
+			, SceneManager.GetActiveScene().name
+			, _gameMaster.GetHpBarType()
+			, _hitPoints
+			, _logDamage
+			, _score - _logScore
+			, _enemiesNearBy.Count
+			, _gameMaster.GetActiveFlames()
+		);
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		EnemyController enemy = other.GetComponentInParent<EnemyController>();
@@ -133,6 +153,17 @@ public class PlayerController : MonoBehaviour
 			_gameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
 			_hitPoints -= totalDmg;
 		}
+
+		_logDamage += totalDmg;
+		if ( Time.time - _lastLog > _loggingTick )
+		{
+			// time, id, level, hp, damage, score, 
+			LogData();
+			_logDamage = 0f;
+			_logScore = _score;
+			_lastLog = Time.time;
+		}
+		
 	}
 
 	private void LookAtMouse( )

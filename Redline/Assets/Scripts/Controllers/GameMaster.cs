@@ -23,8 +23,12 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private NumberController _damageNumberController;
 
 	[SerializeField] private NumberController _scoreNumberController;
-	private float _roundStart;
 	[SerializeField] private Canvas _UI;
+
+	[SerializeField] public DataCollectionController DataCollector;
+	private float _roundStart;
+	private FireSystemController _fireSystem;
+	public int SessionID = 0;
 
 	// Use this for initialization
 	void Awake()
@@ -44,6 +48,7 @@ public class GameMaster : MonoBehaviour
 	{
 		_roundStart = Time.time;
 		_player = FindObjectOfType< PlayerController >();
+		_fireSystem = FindObjectOfType< FireSystemController >();
 	}
 
 	private void Update()
@@ -70,6 +75,10 @@ public class GameMaster : MonoBehaviour
 		else if ( Input.GetKeyDown( KeyCode.Comma ) )
 		{
 			ChangeHpBar( 1 );
+		}
+		else if ( Input.GetKeyDown( KeyCode.Backspace ) )
+		{
+			DataCollector.Submit( "Hello World" );
 		}
 	}
 
@@ -121,6 +130,7 @@ public class GameMaster : MonoBehaviour
 
 	public void OnDeath( [CanBeNull] string message )
 	{
+		_player.LogData();
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
@@ -151,6 +161,7 @@ public class GameMaster : MonoBehaviour
 
 	public void OnVictory( )
 	{
+		_player.LogData();
 		var roundEnd = Time.time;
 		var roundDuration = ( roundEnd - _roundStart ) * 500;
 		var bonus = Math.Round(10000 - roundDuration);
@@ -178,14 +189,15 @@ public class GameMaster : MonoBehaviour
 		_gameOver = false;
 	}
 
-	public void StartGame( string customLevel )
+	public void StartGame( string customLevel, int sessionId )
 	{
+		SessionID = sessionId;
 		NextLevel( customLevel );
 	}
 
-	public void SaveToConfig( string level, FireSystemController fireSystemController )
+	public void SaveToConfig( string level, MonoBehaviour gameObject )
 	{
-		string json = JsonUtility.ToJson( fireSystemController, true );
+		string json = JsonUtility.ToJson( gameObject, true );
 		
 		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
 
@@ -193,7 +205,7 @@ public class GameMaster : MonoBehaviour
 		File.WriteAllBytes( path, jsonAsBytes  );
 	}
 
-	public void LoadFromConfig( string level, FireSystemController fireSystemController )
+	public void LoadFromConfig( string level, MonoBehaviour gameObject )
 	{
 		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
 
@@ -201,12 +213,22 @@ public class GameMaster : MonoBehaviour
 		{
 			Debug.Log( "Loading data for " + level  );
 			var stringData = File.ReadAllText( path );
-			JsonUtility.FromJsonOverwrite( stringData, fireSystemController );
+			JsonUtility.FromJsonOverwrite( stringData, gameObject );
 		} 
 	}
 
 	public string GetTimeRemaining()
 	{
 		return Math.Round(_player.FireSystemController.GetTimeLeft()).ToString();
+	}
+
+	public int GetActiveFlames()
+	{
+		return _fireSystem.GetActiveFlames();
+	}
+
+	public string GetHpBarType()
+	{
+		return _hpbarlabel.text;
 	}
 }

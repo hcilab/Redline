@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,7 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 {
 	private Button _startButton;
 	private string _customLevel;
+	private int _sessionID;
 	[SerializeField] private GameObject _levelSelectionField;
 
 	private void Start()
@@ -20,8 +22,9 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 	{
 		if ( eventData.button == PointerEventData.InputButton.Left )
 		{
-			_customLevel = _levelSelectionField.GetComponent<InputField>().text;
-			FindObjectOfType< GameMaster >().StartGame( _customLevel );
+			_customLevel = _levelSelectionField.GetComponents<InputField>()[0].text;
+			_sessionID = Int32.Parse(_levelSelectionField.GetComponents<InputField>()[1].text);
+			FindObjectOfType< GameMaster >().StartGame( _customLevel, _sessionID );
 		} else if ( eventData.button == PointerEventData.InputButton.Right )
 		{
 			Debug.Log( _levelSelectionField  );

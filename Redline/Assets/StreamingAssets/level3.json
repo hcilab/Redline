@@ -5,7 +5,7 @@
     "_startIntensity": 2.0,
     "_showGrid": false,
     "_firePoolSize": 100,
-    "_updateInterval": 0.44999998807907107,
+    "_updateInterval": 0.3,
     "_startingFlames": [
         {
             "x": 1.0,
@@ -24,13 +24,13 @@
             "y": 10.0
         }
     ],
-    "_spreadLimit": 1,
+    "_spreadLimit": 4,
     "_loadFromFile": false,
     "_spreadChance": 0.25,
-    "_growthFactor": 0.2,
-    "_maxFlameIntensity": 10.0,
-    "_waterStrength": 0.02,
-    "_prewarm": 30,
-    "_spreadIntensity": 4.0,
+    "_growthFactor": 0.05,
+    "_maxFlameIntensity": 7.0,
+    "_waterStrength": 0.05,
+    "_prewarm": 15,
+    "_spreadIntensity": 2.0,
     "_configFileName": "level3"
 }
