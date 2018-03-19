@@ -12,6 +12,7 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 	private string _customLevel;
 	private int _sessionID;
 	[SerializeField] private GameObject _levelSelectionField;
+	[SerializeField] private GameObject _sessionIdField;
 
 	private void Start()
 	{
@@ -22,8 +23,8 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 	{
 		if ( eventData.button == PointerEventData.InputButton.Left )
 		{
-			_customLevel = _levelSelectionField.GetComponents<InputField>()[0].text;
-			_sessionID = Int32.Parse(_levelSelectionField.GetComponents<InputField>()[1].text);
+			_customLevel = _levelSelectionField.GetComponent<InputField>().text;
+			_sessionID = Int32.Parse(_sessionIdField.GetComponent<InputField>().text);
 			FindObjectOfType< GameMaster >().StartGame( _customLevel, _sessionID );
 		} else if ( eventData.button == PointerEventData.InputButton.Right )
 		{
