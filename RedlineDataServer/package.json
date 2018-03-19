@@ -1,0 +1,29 @@
+{
+  "name": "redline-data-server",
+  "version": "0.0.1",
+  "description": "Data service for the Redline experimental environment. Logs data into a MongoDB server",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "lodash": "^4.17.5",
+    "mongoose": "^5.0.10",
+    "node-json2html": "^1.2.0",
+    "server": "^1.0.18",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hcilab/Redline.git"
+  },
+  "author": "Jason Wuertz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hcilab/Redline/issues"
+  },
+  "homepage": "https://github.com/hcilab/Redline#readme"
+}

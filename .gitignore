@@ -42,3 +42,5 @@ Redline/obj/
 Redline/\.idea/
 
 Redline/ProjectSettings/
+
+*/node_modules/
