@@ -126,7 +126,7 @@ public class GameMaster : MonoBehaviour
 
 	public void OnDeath( [CanBeNull] string message )
 	{
-		_player.LogData();
+		_player.LogCumulativeData();
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;
@@ -157,7 +157,7 @@ public class GameMaster : MonoBehaviour
 
 	public void OnVictory( )
 	{
-		_player.LogData();
+		_player.LogCumulativeData();
 		var roundEnd = Time.time;
 		var roundDuration = ( roundEnd - _roundStart ) * 500;
 		var bonus = Math.Round(10000 - roundDuration);

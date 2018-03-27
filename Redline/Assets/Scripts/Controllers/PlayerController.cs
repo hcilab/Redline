@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 	private double _lastLog = 0f;
 	private double _logDamage = 0f;
 	private double _logScore = 0f;
+	private int _logFireExtinguished = 0;
+	private double _totalDamageTaken = 0f;
 
 	// Use this for initialization
 	void Start ()
@@ -98,6 +100,15 @@ public class PlayerController : MonoBehaviour
 			TakeDamage();
 			_lastTick = Time.time;
 		}
+		
+		if ( Time.time - _lastLog > _loggingTick )
+		{
+			// time, id, level, hp, damage, score, 
+			LogData();
+			_logDamage = 0f;
+			_logScore = _logFireExtinguished;
+			_lastLog = Time.time;
+		}
 	}
 
 	public void LogData()
@@ -110,10 +121,27 @@ public class PlayerController : MonoBehaviour
 			, _gameMaster.GetHpBarType()
 			, _hitPoints
 			, _logDamage
-			, _score - _logScore
+			, _logFireExtinguished - _logScore
 			, _enemiesNearBy.Count
 			, _gameMaster.GetActiveFlames()
 		);
+	}
+
+	public void LogCumulativeData()
+	{
+		_gameMaster.DataCollector.LogData( 
+			Time.time
+			, _gameMaster.GetTimeRemaining()
+			, _gameMaster.SessionID
+			, SceneManager.GetActiveScene().name
+			, _gameMaster.GetHpBarType()
+			, _hitPoints
+			, _totalDamageTaken
+			, _logFireExtinguished
+			, _enemiesNearBy.Count
+			, _gameMaster.GetActiveFlames()
+			, DataCollectionController.DataType.Final
+			);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -155,15 +183,8 @@ public class PlayerController : MonoBehaviour
 			_hitPoints -= totalDmg;
 		}
 
+		_totalDamageTaken += totalDmg;
 		_logDamage += totalDmg;
-		if ( Time.time - _lastLog > _loggingTick )
-		{
-			// time, id, level, hp, damage, score, 
-			LogData();
-			_logDamage = 0f;
-			_logScore = _score;
-			_lastLog = Time.time;
-		}
 		
 	}
 
@@ -200,6 +221,7 @@ public class PlayerController : MonoBehaviour
 		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
 		{
+			_logFireExtinguished++;
 			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
 		}
 	}
