@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_gameMaster.DataCollector.LogData(
 			Time.time
+			, _gameMaster.GetTimeRemaining()
 			, _gameMaster.SessionID
 			, SceneManager.GetActiveScene().name
 			, _gameMaster.GetHpBarType()

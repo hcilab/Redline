@@ -6,6 +6,7 @@ const { render, json, status, header } = server.reply;
 var redline_entry_schema =  mongoose.Schema({
     date: { type: Date, default: Date.now }
   , time: String
+  , counter: String
   , id: Number
   , level: String
   , hp: Number
@@ -21,10 +22,13 @@ mongoose.connect(uri);
 
 // mongoose.connect("mongodb://localhost/redline");
 var db = mongoose.connection;
-const entry_model = db.model( 'entry', redline_entry_schema );
+const entry_model = db.model( 'atomic_entries', redline_entry_schema );
+const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
 let tableData = {
-  entry: []
+  atomic_entries: [],
+  cumulative_entries: []
+
 };
 
 const cors = [
@@ -42,11 +46,20 @@ server(
   cors,
   [
     get( '/', ctx => render("index.hbs", tableData ) )
-  , post('/', ctx => {
+  , post('/', async ctx => {
     ctx.log.info( ctx.data );
-    tableData.entry.push( ctx.data );
+    tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
-    entry.save().then(()=> ctx.log.info('entry saved'));
+    await entry.save();
+    ctx.log.info('entry saved');
+    return status(200);
+  })
+  , post('/final/', async ctx => {
+    ctx.log.info( ctx.data );
+    tableData.cumulative_entries.push( ctx.data );
+    const entry = new final_model( ctx.data );
+    await entry.save();
+    ctx.log.info( "final entry saved");
     return status(200);
   })
   , error( ctx => {
