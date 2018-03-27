@@ -275,6 +275,7 @@ public class FireSystemController : MonoBehaviour
                     return;
                 }; 
                 spreadCount++;
+                newFlame.GetComponent< Collider >().enabled = false;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
@@ -284,6 +285,8 @@ public class FireSystemController : MonoBehaviour
 //                Debug.Log("Setting new flame to " + neighbour._gridCoords);
 //                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
+                newFlame.GetComponent< Collider >().enabled = true;
+                
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 1d );
                 neighbour.SetVariable( "onfire", true );
