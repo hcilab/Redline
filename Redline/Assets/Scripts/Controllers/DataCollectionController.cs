@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -6,7 +7,12 @@ using UnityEngine.Networking;
 
 public class DataCollectionController : MonoBehaviour
 {
+    public enum DataType { Atomic, Final }
+    
     [SerializeField] private string _serverAddress;
+    [SerializeField] private int _serverPort;
+    [SerializeField] private String atomic_endpoint;
+    [SerializeField] private String final_endpoint;
     [SerializeField] private bool _sendRemote;
     private string _dataFile;
 
@@ -15,26 +21,30 @@ public class DataCollectionController : MonoBehaviour
         FindObjectOfType<GameMaster>().LoadFromConfig( "data_service", this );
         InitDatafile(  );
     }
-
-    public void Submit( string data )
-    {
-        WWWForm dataObj = new WWWForm();
-        dataObj.AddField( "data", data );
-        Submit( dataObj );
-    }
     
-    public void Submit( WWWForm dataObj )
+    public void Submit( WWWForm dataObj, DataType dataType )
     {
         if ( _sendRemote )
         {
-            StartCoroutine( Upload( dataObj ) );
+            StartCoroutine( Upload( dataObj, dataType ) );
         }
     }
 
-    IEnumerator Upload( WWWForm dataObj )
+    IEnumerator Upload( WWWForm dataObj, DataType dataType )
     {
-        UnityWebRequest req = UnityWebRequest.Post( _serverAddress, dataObj );
+        String path = _serverAddress + ":" + _serverPort;
+        switch ( dataType )
+        {
+                case DataType.Atomic:
+                    path += "/";
+                    break;
+                case DataType.Final:
+                    path += "/final/";
+                    break;
+        }
+        UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         yield return req.Send();
+        Debug.Log("Data upload complete.");
     }
 
     private void InitDatafile( string fileName = "redline_data.csv" )
@@ -86,6 +96,6 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "score", score.ToString() );
         dataObj.AddField( "proximity", flamesNearBy );
         dataObj.AddField( "active", activeFlames );
-        Submit( dataObj );
+        Submit( dataObj, DataType.Atomic );
     }
 }

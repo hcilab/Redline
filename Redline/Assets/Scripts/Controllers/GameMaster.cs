@@ -76,10 +76,6 @@ public class GameMaster : MonoBehaviour
 		{
 			ChangeHpBar( 1 );
 		}
-		else if ( Input.GetKeyDown( KeyCode.Backspace ) )
-		{
-			DataCollector.Submit( "Hello World" );
-		}
 	}
 
 	private void NextLevel( [CanBeNull] string customLevel )
