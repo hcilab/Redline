@@ -1,0 +1,292 @@
+time, id, level, hp, bar_type, damage, score, proximity, active
+1.072851,0,level1,1000,Offset HP Bar,0,0,4, 5
+2.074796,0,level1,1000,Offset HP Bar,0,0,6, 11
+3.089381,0,level1,1000,Offset HP Bar,0,0,7, 12
+4.104403,0,level1,949,Offset HP Bar,51,293,9, 15
+5.113837,0,level1,899,Offset HP Bar,50,5485.5,6, 17
+6.126715,0,level1,897,Offset HP Bar,2,6441.5,1, 16
+7.134291,0,level1,897,Offset HP Bar,0,3248.5,0, 14
+8.147721,0,level1,895,Offset HP Bar,2,1804,5, 15
+9.148259,0,level1,895,Offset HP Bar,0,4934.5,0, 13
+10.16013,0,level1,895,Offset HP Bar,0,564,5, 13
+11.1609,0,level1,893,Offset HP Bar,2,5327,1, 14
+12.17464,0,level1,893,Offset HP Bar,0,5634,4, 11
+13.17602,0,level1,892,Offset HP Bar,1,4851,3, 12
+14.19067,0,level1,892,Offset HP Bar,0,3292.5,4, 10
+15.19151,0,level1,892,Offset HP Bar,0,3151,0, 11
+16.20021,0,level1,892,Offset HP Bar,0,922,5, 13
+17.20813,0,level1,883,Offset HP Bar,9,4782.5,3, 11
+18.22415,0,level1,881,Offset HP Bar,2,5068,4, 9
+19.23137,0,level1,881,Offset HP Bar,0,5332,2, 7
+20.23804,0,level1,881,Offset HP Bar,0,4715,0, 5
+21.23915,0,level1,881,Offset HP Bar,0,1302.5,2, 3
+22.24916,0,level1,881,Offset HP Bar,0,3077.5,0, 2
+23.126,0,level1,881,Offset HP Bar,0,625,0, 0
+1.079715,1,level1,1000,Offset HP Bar,0,0,0, 5
+2.084251,1,level1,1000,Offset HP Bar,0,0,5, 10
+3.08976,1,level1,1000,Offset HP Bar,0,3298.5,2, 9
+4.0901,1,level1,1000,Offset HP Bar,0,4578,1, 7
+5.091725,1,level1,1000,Offset HP Bar,0,1940,3, 8
+6.097065,1,level1,1000,Offset HP Bar,0,3018.5,4, 5
+7.106619,1,level1,1000,Offset HP Bar,0,1910.5,0, 2
+8.123158,1,level1,1000,Offset HP Bar,0,1500.5,0, 2
+9.129998,1,level1,1000,Offset HP Bar,0,505,1, 2
+10.14384,1,level1,1000,Offset HP Bar,0,1343,0, 1
+10.63817,1,level1,1000,Offset HP Bar,0,228.5,0, 0
+14.16082,1,level1,1000,Offset HP Bar,0,228.5,0, 0
+14.16082,1,level1,1000,Offset HP Bar,0,0,0, 0
+14.17747,1,level2,1000,Offset HP Bar,0,0,0, 17
+15.18159,1,level2,1000,Offset HP Bar,0,0,7, 18
+16.19103,1,level2,987,Offset HP Bar,13,2919,2, 19
+17.2062,1,level2,987,Offset HP Bar,0,6480,2, 19
+18.20713,1,level2,987,Offset HP Bar,0,3605,1, 13
+19.21476,1,level2,987,Offset HP Bar,0,1118,0, 20
+20.22698,1,level2,987,Offset HP Bar,0,1900.5,0, 18
+21.23655,1,level2,987,Offset HP Bar,0,3303,5, 17
+22.23814,1,level2,967,Offset HP Bar,20,7120.5,2, 21
+23.24314,1,level2,967,Offset HP Bar,0,7815,0, 22
+24.24476,1,level2,967,Offset HP Bar,0,1196,4, 22
+25.24533,1,level2,958,Offset HP Bar,9,1978,10, 25
+26.2537,1,level2,934,Offset HP Bar,24,8267.5,3, 26
+27.25434,1,level2,905,Offset HP Bar,29,8519,6, 23
+28.26696,1,level2,897,Offset HP Bar,8,6726,1, 24
+29.27656,1,level2,897,Offset HP Bar,0,3717,0, 23
+30.28945,1,level2,897,Offset HP Bar,0,1970,0, 23
+31.29865,1,level2,897,Offset HP Bar,0,371.5,0, 24
+32.3079,1,level2,896,Offset HP Bar,1,70,6, 26
+33.30794,1,level2,842,Offset HP Bar,54,4918.5,12, 26
+34.31527,1,level2,719,Offset HP Bar,123,12718.5,12, 25
+35.31645,1,level2,677,Offset HP Bar,42,13964,2, 25
+36.32456,1,level2,677,Offset HP Bar,0,10978,0, 23
+37.33983,1,level2,673,Offset HP Bar,4,1075.5,8, 21
+38.34814,1,level2,655,Offset HP Bar,18,4450,1, 22
+39.3517,1,level2,655,Offset HP Bar,0,6911.5,0, 21
+40.36338,1,level2,655,Offset HP Bar,0,4906,0, 18
+41.37843,1,level2,655,Offset HP Bar,0,4942,0, 18
+42.37926,1,level2,655,Offset HP Bar,0,5238.5,4, 16
+43.39322,1,level2,618,Offset HP Bar,37,4952,3, 17
+44.40068,1,level2,618,Offset HP Bar,0,9894.5,0, 15
+45.40239,1,level2,618,Offset HP Bar,0,2880.5,0, 13
+46.40888,1,level2,604,Offset HP Bar,14,989.5,5, 14
+47.41035,1,level2,604,Offset HP Bar,0,5254,3, 11
+48.41611,1,level2,604,Offset HP Bar,0,6927,0, 11
+49.41707,1,level2,604,Offset HP Bar,0,4424.5,3, 7
+50.42534,1,level2,604,Offset HP Bar,0,1956,2, 5
+51.42577,1,level2,604,Offset HP Bar,0,2908.5,0, 2
+51.71842,1,level2,604,Offset HP Bar,0,381.5,0, 0
+53.19074,1,level2,604,Offset HP Bar,0,381.5,0, 0
+53.19074,1,level2,604,Offset HP Bar,0,0,0, 0
+53.20727,1,level3,1000,Offset HP Bar,0,0,0, 14
+54.20858,1,level3,1000,Offset HP Bar,0,0,0, 14
+55.22119,1,level3,1000,Offset HP Bar,0,0,1, 15
+56.22372,1,level3,997,Offset HP Bar,3,1310.5,4, 22
+57.23971,1,level3,997,Offset HP Bar,0,2709,0, 17
+58.24737,1,level3,997,Offset HP Bar,0,144.5,0, 16
+59.25447,1,level3,997,Offset HP Bar,0,483,3, 17
+60.27054,1,level3,997,Offset HP Bar,0,2740,0, 12
+61.2863,1,level3,997,Offset HP Bar,0,76,0, 11
+62.29195,1,level3,997,Offset HP Bar,0,0,0, 12
+63.29199,1,level3,997,Offset HP Bar,0,0,0, 16
+64.29202,1,level3,997,Offset HP Bar,0,0,1, 16
+65.29227,1,level3,983,Offset HP Bar,14,878,7, 15
+66.29458,1,level3,979,Offset HP Bar,4,4305,1, 10
+67.30125,1,level3,979,Offset HP Bar,0,1269.5,0, 7
+68.30837,1,level3,979,Offset HP Bar,0,96,0, 6
+69.30855,1,level3,979,Offset HP Bar,0,0,0, 7
+70.31637,1,level3,979,Offset HP Bar,0,0,0, 9
+71.33024,1,level3,979,Offset HP Bar,0,0,1, 9
+72.34078,1,level3,960,Offset HP Bar,19,919.5,4, 9
+73.3479,1,level3,949,Offset HP Bar,11,4871,1, 5
+74.36368,1,level3,949,Offset HP Bar,0,3531.5,0, 3
+75.3782,1,level3,949,Offset HP Bar,0,976.5,0, 1
+75.96622,1,level3,949,Offset HP Bar,0,115,0, 0
+77.93977,1,level3,949,Offset HP Bar,0,115,0, 0
+77.93977,1,level3,949,Offset HP Bar,0,0,0, 0
+1.333791,1,level1,1000,Offset HP Bar,0,0,4, 5
+2.347794,1,level1,1000,Offset HP Bar,0,0,6, 8
+3.358362,1,level1,1000,Offset HP Bar,0,2733,0, 7
+4.369597,1,level1,1000,Offset HP Bar,0,3163.5,0, 8
+5.380164,1,level1,1000,Offset HP Bar,0,3476.5,3, 8
+6.390731,1,level1,1000,Offset HP Bar,0,3879.5,3, 7
+7.401297,1,level1,1000,Offset HP Bar,0,3436,0, 5
+8.411972,1,level1,1000,Offset HP Bar,0,2175.5,0, 5
+9.422431,1,level1,1000,Offset HP Bar,0,1250,3, 3
+10.39986,1,level1,1000,Offset HP Bar,0,1655,0, 0
+2.63575,60,1,level1,999,Offset HP Bar,1,0,4,5
+3.650165,59,1,level1,999,Offset HP Bar,0,0,5,9
+4.660367,58,1,level1,999,Offset HP Bar,0,214.5,4,11
+5.670871,57,1,level1,999,Offset HP Bar,0,4054.5,1,11
+6.681887,56,1,level1,999,Offset HP Bar,0,2977,0,14
+7.692399,55,1,level1,999,Offset HP Bar,0,1311.5,3,20
+8.702966,54,1,level1,993,Offset HP Bar,6,0,10,24
+9.716486,53,1,level1,932,Offset HP Bar,61,0,16,27
+10.72705,52,1,level1,880,Offset HP Bar,52,0,8,38
+11.73859,51,1,level1,838,Offset HP Bar,42,0,9,41
+12.74928,50,1,level1,777,Offset HP Bar,61,1450.5,9,49
+13.75973,49,1,level1,777,Offset HP Bar,0,155.5,2,55
+14.75994,48,1,level1,777,Offset HP Bar,0,0,0,58
+15.76258,47,1,level1,777,Offset HP Bar,0,0,2,65
+16.77314,46,1,level1,777,Offset HP Bar,0,0,3,73
+17.77401,45,1,level1,777,Offset HP Bar,0,0,4,77
+18.78458,44,1,level1,777,Offset HP Bar,0,0,5,84
+19.79515,43,1,level1,777,Offset HP Bar,0,0,7,87
+20.80571,42,1,level1,748,Offset HP Bar,29,0,8,94
+21.81628,41,1,level1,687,Offset HP Bar,61,0,10,100
+22.827,40,1,level1,626,Offset HP Bar,61,0,10,100
+23.83771,39,1,level1,565,Offset HP Bar,61,0,10,100
+24.84798,38,1,level1,504,Offset HP Bar,61,0,10,100
+25.85861,37,1,level1,443,Offset HP Bar,61,0,10,100
+6.718858,60,1,level1,999,Offset HP Bar,1,0,4,5
+7.732659,59,1,level1,999,Offset HP Bar,0,0,7,11
+8.747726,58,1,level1,998,Offset HP Bar,1,0,7,12
+9.758378,57,1,level1,941,Offset HP Bar,57,0,8,17
+10.76908,56,1,level1,880,Offset HP Bar,61,0,8,20
+11.77945,55,1,level1,819,Offset HP Bar,61,0,10,25
+1.079325,60,1,level1,1000,Offset HP Bar,0,0,0,5
+2.093329,59,1,level1,1000,Offset HP Bar,0,0,4,8
+3.103977,58,1,level1,1000,Offset HP Bar,0,0,6,11
+4.105387,57,1,level1,974,Offset HP Bar,26,0,7,17
+5.115331,56,1,level1,913,Offset HP Bar,61,0,10,21
+6.125898,55,1,level1,852,Offset HP Bar,61,0,12,27
+7.136466,54,1,level1,791,Offset HP Bar,61,0,13,32
+8.147117,53,1,level1,703,Offset HP Bar,88,0,15,35
+9.157598,52,1,level1,581,Offset HP Bar,122,0,17,45
+10.16817,51,1,level1,459,Offset HP Bar,122,0,18,48
+11.17873,50,1,level1,316,Offset HP Bar,143,0,20,54
+12.1893,49,1,level1,133,Offset HP Bar,183,0,20,58
+12.95235,48,1,level1,-2,Offset HP Bar,135,0,20,60
+1.580531,60,1,level1,1000,Offset HP Bar,0,0,4,5
+2.594534,59,1,level1,1000,Offset HP Bar,0,0,6,7
+3.599554,58,1,level1,997,Offset HP Bar,3,0,7,11
+4.610302,57,1,level1,943,Offset HP Bar,54,0,7,12
+5.622646,56,1,level1,883,Offset HP Bar,60,0,10,20
+6.624651,55,1,level1,823,Offset HP Bar,60,0,12,23
+7.627089,54,1,level1,763,Offset HP Bar,60,0,15,32
+8.631978,53,1,level1,666,Offset HP Bar,97,0,15,33
+1.398953,60,1,level1,1000,Offset HP Bar,0,0,0,5
+2.399146,59,1,level1,1000,Offset HP Bar,0,0,6,10
+3.400018,58,1,level1,1000,Offset HP Bar,0,0,7,12
+4.401002,57,1,level1,947,Offset HP Bar,53,0,9,15
+5.411572,56,1,level1,886,Offset HP Bar,61,0,10,19
+6.419288,55,1,level1,826,Offset HP Bar,60,0,11,25
+7.420391,54,1,level1,766,Offset HP Bar,60,147.5,11,29
+8.435048,53,1,level1,730,Offset HP Bar,36,6457.5,5,32
+9.445663,52,1,level1,730,Offset HP Bar,0,6625,3,34
+10.45638,51,1,level1,730,Offset HP Bar,0,4098,0,39
+11.46033,50,1,level1,730,Offset HP Bar,0,2083,0,41
+12.47067,49,1,level1,730,Offset HP Bar,0,20.5,1,49
+13.48318,48,1,level1,730,Offset HP Bar,0,0,1,54
+5.283716,60,1,level1,1000,Offset HP Bar,0,0,4,5
+6.288024,59,1,level1,1000,Offset HP Bar,0,0,5,9
+7.298591,58,1,level1,965,Offset HP Bar,35,0,11,11
+8.309301,57,1,level1,848,Offset HP Bar,117,0,16,16
+9.322228,56,1,level1,725,Offset HP Bar,123,0,19,20
+10.32497,55,1,level1,590,Offset HP Bar,135,538,20,25
+11.33568,54,1,level1,509,Offset HP Bar,81,8278,12,29
+12.3429,53,1,level1,469,Offset HP Bar,40,8917,5,27
+13.34464,52,1,level1,461,Offset HP Bar,8,5972,3,31
+14.35497,51,1,level1,461,Offset HP Bar,0,1566,0,38
+15.36547,50,1,level1,461,Offset HP Bar,0,723.5,0,43
+16.37604,49,1,level1,461,Offset HP Bar,0,17,1,51
+17.3872,48,1,level1,461,Offset HP Bar,0,0,4,55
+3.32941,60,1,level1,1000,Offset HP Bar,0,0,4,5
+4.343425,59,1,level1,1000,Offset HP Bar,0,0,5,7
+5.354445,58,1,level1,1000,Offset HP Bar,0,0,7,12
+6.364544,57,1,level1,956,Offset HP Bar,44,0,8,14
+7.375415,56,1,level1,895,Offset HP Bar,61,48,9,20
+8.385677,55,1,level1,874,Offset HP Bar,21,5717,2,22
+9.396573,54,1,level1,874,Offset HP Bar,0,5837,0,22
+10.4073,53,1,level1,874,Offset HP Bar,0,779,2,28
+11.41814,52,1,level1,874,Offset HP Bar,0,46.5,4,32
+12.42834,51,1,level1,874,Offset HP Bar,0,0,8,40
+13.43966,50,1,level1,823,Offset HP Bar,51,0,9,44
+14.44968,49,1,level1,808,Offset HP Bar,15,5645.5,5,50
+15.46016,48,1,level1,808,Offset HP Bar,0,7689.5,2,46
+16.47073,47,1,level1,805,Offset HP Bar,3,3059,7,52
+17.48129,46,1,level1,710,Offset HP Bar,95,907,18,56
+18.49427,45,1,level1,588,Offset HP Bar,122,2665,17,60
+19.50587,44,1,level1,467,Offset HP Bar,121,712.999999999996,19,64
+20.51618,43,1,level1,345,Offset HP Bar,122,0,19,66
+2.682275,60,1,level1,1000,Offset HP Bar,0,0,4,5
+3.696429,59,1,level1,1000,Offset HP Bar,0,0,5,7
+4.706911,58,1,level1,1000,Offset HP Bar,0,0,7,12
+5.707699,57,1,level1,957,Offset HP Bar,43,0,8,14
+6.718458,56,1,level1,896,Offset HP Bar,61,0,11,23
+7.729287,55,1,level1,866,Offset HP Bar,30,119,4,23
+8.739592,54,1,level1,866,Offset HP Bar,0,201,0,22
+9.750159,53,1,level1,866,Offset HP Bar,0,89,0,27
+10.76326,52,1,level1,862,Offset HP Bar,4,26,9,36
+11.7748,51,1,level1,801,Offset HP Bar,61,0,10,42
+12.78695,50,1,level1,740,Offset HP Bar,61,0,11,49
+13.79005,49,1,level1,693,Offset HP Bar,47,67,3,54
+14.79064,48,1,level1,693,Offset HP Bar,0,137,6,60
+15.80274,47,1,level1,625,Offset HP Bar,68,56,21,64
+16.80615,46,1,level1,532,Offset HP Bar,93,0,10,72
+17.80757,45,1,level1,507,Offset HP Bar,25,0,6,75
+18.82295,44,1,level1,507,Offset HP Bar,0,0,5,84
+19.8278,43,1,level1,507,Offset HP Bar,0,50,5,85
+20.84085,42,1,level1,505,Offset HP Bar,2,117,9,90
+21.85365,41,1,level1,483,Offset HP Bar,22,181,5,95
+22.86468,40,1,level1,483,Offset HP Bar,0,248,5,96
+23.87165,39,1,level1,472,Offset HP Bar,11,185,5,99
+24.88755,38,1,level1,472,Offset HP Bar,0,165,6,98
+25.8981,37,1,level1,415,Offset HP Bar,57,106,7,100
+26.90819,36,1,level1,355,Offset HP Bar,60,272,9,100
+27.90956,35,1,level1,345,Offset HP Bar,10,357,2,100
+28.92153,34,1,level1,345,Offset HP Bar,0,217,4,98
+29.9317,33,1,level1,345,Offset HP Bar,0,211,1,98
+30.94323,32,1,level1,274,Offset HP Bar,71,67,22,99
+31.94783,31,1,level1,61,Offset HP Bar,213,289,18,100
+32.60352,30,1,level1,0,Offset HP Bar,1000,3421,5,100
+4.359831,60,2,level1,1000,Offset HP Bar,0,0,0,5
+5.373835,59,2,level1,1000,Offset HP Bar,0,0,6,10
+6.386096,58,2,level1,998,Offset HP Bar,2,2,4,11
+7.40277,57,2,level1,998,Offset HP Bar,0,4,0,11
+8.418574,56,2,level1,998,Offset HP Bar,0,1,1,13
+9.432246,55,2,level1,998,Offset HP Bar,0,0,5,15
+10.4361,54,2,level1,976,Offset HP Bar,22,0,8,20
+11.4398,53,2,level1,937,Offset HP Bar,39,4,4,23
+12.4551,52,2,level1,933,Offset HP Bar,4,3,5,27
+13.47012,51,2,level1,932,Offset HP Bar,1,1,5,31
+14.48627,50,2,level1,932,Offset HP Bar,0,6,3,32
+15.49015,49,2,level1,932,Offset HP Bar,0,0,4,30
+16.49186,48,2,level1,908,Offset HP Bar,24,7,5,34
+17.50094,47,2,level1,904,Offset HP Bar,4,7,0,34
+18.50573,46,2,level1,904,Offset HP Bar,0,1,0,28
+19.5191,45,2,level1,891,Offset HP Bar,13,1,11,30
+20.52575,44,2,level1,853,Offset HP Bar,38,6,3,32
+21.53658,43,2,level1,845,Offset HP Bar,8,5,6,32
+22.54829,42,2,level1,786,Offset HP Bar,59,5,6,33
+23.55672,41,2,level1,768,Offset HP Bar,18,9,8,38
+24.56126,40,2,level1,731,Offset HP Bar,37,4,3,39
+25.56699,39,2,level1,731,Offset HP Bar,0,6,2,41
+26.56785,38,2,level1,721,Offset HP Bar,10,1,10,40
+27.58234,37,2,level1,681,Offset HP Bar,40,8,4,48
+28.5932,36,2,level1,653,Offset HP Bar,28,9,11,53
+29.59834,35,2,level1,604,Offset HP Bar,49,7,5,50
+30.61234,34,2,level1,604,Offset HP Bar,0,4,2,59
+31.61824,33,2,level1,604,Offset HP Bar,0,7,5,63
+32.63159,32,2,level1,569,Offset HP Bar,35,5,14,66
+33.64946,31,2,level1,488,Offset HP Bar,81,9,13,66
+34.6566,30,2,level1,460,Offset HP Bar,28,2,3,71
+35.66485,29,2,level1,460,Offset HP Bar,0,4,3,74
+36.66794,28,2,level1,460,Offset HP Bar,0,1,5,79
+37.66914,27,2,level1,368,Offset HP Bar,92,2,22,89
+38.68243,26,2,level1,276,Offset HP Bar,92,7,15,100
+39.69041,25,2,level1,195,Offset HP Bar,81,10,14,100
+40.70393,24,2,level1,158,Offset HP Bar,37,10,4,100
+41.70481,23,2,level1,158,Offset HP Bar,0,7,2,99
+42.70683,22,2,level1,139,Offset HP Bar,19,2,14,99
+43.70813,21,2,level1,91,Offset HP Bar,48,2,3,100
+44.72263,20,2,level1,91,Offset HP Bar,0,2,1,100
+45.74271,19,2,level1,77,Offset HP Bar,14,1,8,100
+46.74844,18,2,level1,49,Offset HP Bar,28,5,2,99
+47.75539,17,2,level1,49,Offset HP Bar,0,3,0,100
+48.77553,16,2,level1,49,Offset HP Bar,0,0,0,98
+49.78655,15,2,level1,49,Offset HP Bar,0,1,0,99
+50.79162,14,2,level1,49,Offset HP Bar,0,0,0,100
+51.79402,13,2,level1,47,Offset HP Bar,2,2,3,100
+52.80909,12,2,level1,47,Offset HP Bar,0,3,2,99
+53.81715,11,2,level1,46,Offset HP Bar,1,4,2,100
+54.83447,10,2,level1,2,Offset HP Bar,44,5,8,99
+54.90341,9,2,level1,0,Offset HP Bar,1000,195,8,99
