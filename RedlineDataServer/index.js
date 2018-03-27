@@ -48,19 +48,19 @@ server(
   [
     get( '/', ctx => render("index.hbs", tableData ) )
   , post('/', async ctx => {
-    ctx.log.info( ctx.data );
+    ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
     await entry.save();
-    ctx.log.info('entry saved');
+    ctx.log.info('creating atomic entry for session ' + ctx.data.id );
     return status(200);
   })
   , post('/final/', async ctx => {
-    ctx.log.info( ctx.data );
+    ctx.log.debug( ctx.data );
     tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
     await entry.save();
-    ctx.log.info( "final entry saved");
+    ctx.log.info('creating final entry for session ' + ctx.data.id );
     return status(200);
   })
   , error( ctx => {
