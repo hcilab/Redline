@@ -42,6 +42,7 @@ server(
     security: {
       csrf: false
     }
+    , port: 9500
   },
   cors,
   [
