@@ -1,0 +1,7 @@
+{
+ apps: [{
+  name: 'Redline',
+  script: 'index.js',
+  interpreter: 'node@8.9.2'
+ }]
+}
