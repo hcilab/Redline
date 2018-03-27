@@ -221,8 +221,10 @@ public class PlayerController : MonoBehaviour
 		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
 		{
-			_logFireExtinguished++;
-			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+			if ( _enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() ) )
+			{
+				_logFireExtinguished++;
+			}
 		}
 	}
 
