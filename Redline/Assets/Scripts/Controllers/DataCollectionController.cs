@@ -73,7 +73,8 @@ public class DataCollectionController : MonoBehaviour
         , double damage
         , double score
         , int flamesNearBy
-        , int activeFlames )
+        , int activeFlames
+        , DataType type = DataType.Atomic )
     {
         if( !File.Exists( _dataFile ) )
         {
@@ -96,6 +97,6 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "score", score.ToString() );
         dataObj.AddField( "proximity", flamesNearBy );
         dataObj.AddField( "active", activeFlames );
-        Submit( dataObj, DataType.Atomic );
+        Submit( dataObj, type );
     }
 }
