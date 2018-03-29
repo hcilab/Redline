@@ -1,4 +1,7 @@
 {
     "_serverAddress": "hcidev.cs.unb.ca",
+    "_serverPort": 9500,
+    "_atomicEndpoint": "/",
+    "_finalEndpoint": "/final/",
     "_sendRemote": true
 }

@@ -11,8 +11,8 @@ public class DataCollectionController : MonoBehaviour
     
     [SerializeField] private string _serverAddress;
     [SerializeField] private int _serverPort;
-    [SerializeField] private String atomic_endpoint;
-    [SerializeField] private String final_endpoint;
+    [SerializeField] private String _atomicEndpoint;
+    [SerializeField] private String _finalEndpoint;
     [SerializeField] private bool _sendRemote;
     private string _dataFile;
 
@@ -44,7 +44,15 @@ public class DataCollectionController : MonoBehaviour
         }
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         yield return req.Send();
-        Debug.Log("Data upload complete.");
+
+        if ( req.isError )
+        {
+            Debug.LogError( "Networking error: " + req.error );
+            Debug.LogError( "Networking response: " + req.responseCode );
+        } else if ( req.isDone )
+        {
+            Debug.Log("Data upload complete.");
+        }
     }
 
     private void InitDatafile( string fileName = "redline_data.csv" )
@@ -76,6 +84,7 @@ public class DataCollectionController : MonoBehaviour
         , int activeFlames
         , DataType type = DataType.Atomic )
     {
+        #if UNITY_STANDALONE_WIN || UNITY_EDITOR
         if( !File.Exists( _dataFile ) )
         {
             InitDatafile();
@@ -85,7 +94,8 @@ public class DataCollectionController : MonoBehaviour
             time, counter, sessionId, level, hitPoints, bar_type, damage,
             score, flamesNearBy, activeFlames );
         File.AppendAllText( _dataFile, dataString );
-        
+        #endif    
+    
         WWWForm dataObj = new WWWForm();
         dataObj.AddField( "time", time.ToString());
         dataObj.AddField( "counter", counter );
