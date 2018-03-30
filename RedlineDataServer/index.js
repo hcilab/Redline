@@ -31,11 +31,11 @@ let tableData = {
 
 };
 
-const cors = [
-  ctx => header("Access-Control-Allow-Origin", "*"),
-  ctx => header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"),
-  ctx => ctx.method.toLowerCase() === 'options' ? 200 : false
-];
+const corsExpress = require('cores')({
+  origin: ['http://hcidev.cs.unb.ca', 'https://hcidev.cs.unb.ca']
+});
+
+const cors = server.utils.modern(corsExpress);
 
 server(
   {
