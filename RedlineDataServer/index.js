@@ -46,7 +46,7 @@ server(
   },
   cors,
   [
-    get( '/', ctx => render("index.hbs", tableData ) )
+    get( '/', ctx => render("index.html") )
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
