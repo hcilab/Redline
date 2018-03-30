@@ -46,7 +46,11 @@ server(
   },
   cors,
   [
-    get( '/', ctx => render("index.html") )
+    get( '/', ctx => {
+      header("Access-Control-Allow-Origin", "*");
+      header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      render("index.html");
+    })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
