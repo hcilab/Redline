@@ -31,7 +31,7 @@ let tableData = {
 
 };
 
-const corsExpress = require('cores')({
+const corsExpress = require('cors')({
   origin: ['http://hcidev.cs.unb.ca', 'https://hcidev.cs.unb.ca']
 });
 
