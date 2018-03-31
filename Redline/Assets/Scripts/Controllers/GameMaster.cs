@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -201,16 +202,28 @@ public class GameMaster : MonoBehaviour
 		File.WriteAllBytes( path, jsonAsBytes  );
 	}
 
+	private IEnumerator DownloadConfig( string url )
+	{
+		using ( WWW www = new WWW( url ) )
+		{
+			yield return www;
+			JsonUtility.FromJsonOverwrite( www.text, gameObject );
+		}
+	}
+
 	public void LoadFromConfig( string level, MonoBehaviour gameObject )
 	{
 		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
-
-		if ( File.Exists( path ) )
-		{
-			Debug.Log( "Loading data for " + level  );
-			var stringData = File.ReadAllText( path );
-			JsonUtility.FromJsonOverwrite( stringData, gameObject );
-		} 
+		#if UNITY_WEBGL
+			StartCoroutine( DownloadConfig( path ) );
+		#else
+			if ( File.Exists( path ) )
+			{
+				Debug.Log( "Loading data for " + level  );
+				var stringData = File.ReadAllText( path );
+				JsonUtility.FromJsonOverwrite( stringData, gameObject );
+			} 
+		#endif
 	}
 
 	public string GetTimeRemaining()

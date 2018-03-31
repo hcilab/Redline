@@ -112,3 +112,18 @@ time, id, level, hp, bar_type, damage, score, proximity, active
 8.411972,1,level1,1000,Offset HP Bar,0,2175.5,0, 5
 9.422431,1,level1,1000,Offset HP Bar,0,1250,3, 3
 10.39986,1,level1,1000,Offset HP Bar,0,1655,0, 0
+8.810965,60,42,level1,1000,Offset HP Bar,0,0,0,3
+3.531752,60,42,level1,1000,Offset HP Bar,0,0,0,3
+4.545751,59,42,level1,1000,Offset HP Bar,0,0,0,5
+5.556612,58,42,level1,1000,Offset HP Bar,0,0,0,6
+6.566885,57,42,level1,1000,Offset HP Bar,0,0,0,7
+7.577734,56,42,level1,1000,Offset HP Bar,0,0,0,9
+8.588068,55,42,level1,1000,Offset HP Bar,0,0,0,11
+9.59868,54,42,level1,1000,Offset HP Bar,0,0,0,13
+10.60915,53,42,level1,1000,Offset HP Bar,0,0,6,16
+11.61979,52,42,level1,994,Offset HP Bar,6,3,3,17
+12.63028,51,42,level1,994,Offset HP Bar,0,3,0,16
+13.64085,50,42,level1,994,Offset HP Bar,0,3,0,18
+14.6515,49,42,level1,994,Offset HP Bar,0,0,1,17
+15.66203,48,42,level1,994,Offset HP Bar,0,1,0,19
+16.67259,47,42,level1,994,Offset HP Bar,0,0,0,21
