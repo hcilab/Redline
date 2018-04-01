@@ -19,7 +19,7 @@ public class DataCollectionController : MonoBehaviour
     private void Awake()
     {
         FindObjectOfType<GameMaster>().LoadFromConfig( "data_service", this );
-        InitDatafile(  );
+        Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
     }
     
     public void Submit( WWWForm dataObj, DataType dataType )
@@ -32,7 +32,7 @@ public class DataCollectionController : MonoBehaviour
 
     IEnumerator Upload( WWWForm dataObj, DataType dataType )
     {
-        String path = _serverAddress + ":" + _serverPort;
+        String path = "http://" + _serverAddress + ":" + _serverPort;
         switch ( dataType )
         {
                 case DataType.Atomic:
@@ -45,7 +45,7 @@ public class DataCollectionController : MonoBehaviour
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         yield return req.Send();
 
-        if ( req.isError )
+        if ( req.isNetworkError )
         {
             Debug.LogError( "Networking error: " + req.error );
             Debug.LogError( "Networking response: " + req.responseCode );
