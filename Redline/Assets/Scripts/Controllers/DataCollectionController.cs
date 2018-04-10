@@ -80,8 +80,9 @@ public class DataCollectionController : MonoBehaviour
         , double hitPoints
         , double damage
         , double score
-        , int flamesNearBy
-        , int activeFlames
+        , double flamesNearBy
+        , double averageIntensity
+        , double activeFlames
         , DataType type = DataType.Atomic )
     {
         #if UNITY_STANDALONE_WIN || UNITY_EDITOR
@@ -90,9 +91,9 @@ public class DataCollectionController : MonoBehaviour
             InitDatafile();
         }
         
-        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}\n", 
+        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}, {10}\n", 
             time, counter, sessionId, level, hitPoints, bar_type, damage,
-            score, flamesNearBy, activeFlames );
+            score, flamesNearBy, averageIntensity, activeFlames );
         File.AppendAllText( _dataFile, dataString );
         #endif    
     
@@ -106,6 +107,7 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "damage", damage.ToString() );
         dataObj.AddField( "score", score.ToString() );
         dataObj.AddField( "proximity", flamesNearBy );
+        dataObj.AddField( "avg_intensity_in_proximity", averageIntensity.ToString() );
         dataObj.AddField( "active", activeFlames );
         Submit( dataObj, type );
     }

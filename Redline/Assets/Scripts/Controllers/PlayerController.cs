@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
 	private double _logScore = 0f;
 	private int _logFireExtinguished = 0;
 	private double _totalDamageTaken = 0f;
+	private double _averageEnemiesNearBy;
+	private double _averageNearByIntensity;
+	private double _averageActiveFlames;
 
 	// Use this for initialization
 	void Start ()
@@ -113,6 +116,12 @@ public class PlayerController : MonoBehaviour
 
 	public void LogData()
 	{
+
+		var averageIntensity = AverageIntensity( _enemiesNearBy );
+
+		_averageNearByIntensity = (_averageNearByIntensity + averageIntensity) / 2;
+		
+		
 		_gameMaster.DataCollector.LogData(
 			Time.time
 			, _gameMaster.GetTimeRemaining()
@@ -123,8 +132,19 @@ public class PlayerController : MonoBehaviour
 			, _logDamage
 			, _logFireExtinguished - _logScore
 			, _enemiesNearBy.Count
+			, averageIntensity
 			, _gameMaster.GetActiveFlames()
 		);
+	}
+
+	private double AverageIntensity( List< Collider > enemiesNearBy )
+	{
+		double total = 0f;
+		foreach ( var collider in enemiesNearBy )
+		{
+			total += FireSystemController.GetFlameIntensity( collider.GetComponentInParent< FlameController >() );
+		}
+		return total / enemiesNearBy.Count;
 	}
 
 	public void LogCumulativeData()
@@ -138,8 +158,9 @@ public class PlayerController : MonoBehaviour
 			, _hitPoints
 			, _totalDamageTaken
 			, _logFireExtinguished
-			, _enemiesNearBy.Count
-			, _gameMaster.GetActiveFlames()
+			, _averageEnemiesNearBy
+			, _averageNearByIntensity
+			, _averageActiveFlames
 			, DataCollectionController.DataType.Final
 			);
 	}
