@@ -119,8 +119,9 @@ public class PlayerController : MonoBehaviour
 
 		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
-		_averageNearByIntensity = (_averageNearByIntensity + averageIntensity) / 2;
-		
+		_averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
+		_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
+		_averageActiveFlames = ( _averageActiveFlames + _gameMaster.GetActiveFlames() ) / 2;
 		
 		_gameMaster.DataCollector.LogData(
 			Time.time

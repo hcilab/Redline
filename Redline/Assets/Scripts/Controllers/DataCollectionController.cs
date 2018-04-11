@@ -45,7 +45,7 @@ public class DataCollectionController : MonoBehaviour
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         yield return req.Send();
 
-        if ( req.isNetworkError )
+        if ( req.isError )
         {
             Debug.LogError( "Networking error: " + req.error );
             Debug.LogError( "Networking response: " + req.responseCode );
@@ -106,9 +106,9 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "bar", bar_type );
         dataObj.AddField( "damage", damage.ToString() );
         dataObj.AddField( "score", score.ToString() );
-        dataObj.AddField( "proximity", flamesNearBy );
+        dataObj.AddField( "proximity", flamesNearBy.ToString() );
         dataObj.AddField( "avg_intensity_in_proximity", averageIntensity.ToString() );
-        dataObj.AddField( "active", activeFlames );
+        dataObj.AddField( "active", activeFlames.ToString() );
         Submit( dataObj, type );
     }
 }
