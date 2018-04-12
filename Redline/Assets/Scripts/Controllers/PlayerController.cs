@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
 		 
 		if ( _hitPoints <= 0 )
 		{
+			_hitPoints = 100;
 			_gameMaster.OnDeath( null );
 		}
 		else if(Time.time - _lastTick > _damageTick) 
