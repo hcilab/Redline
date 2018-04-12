@@ -10,10 +10,11 @@ var redline_entry_schema =  mongoose.Schema({
   , id: Number
   , level: String
   , hp: Number
-  , bar_type: String
+  , bar: String
   , damage: Number
   , score: Number
   , proximity: Number
+  , avg_intensity_in_proximity: Number
   , active: Number
 });
 
