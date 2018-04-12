@@ -54,7 +54,7 @@ server(
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
-    await entry.save();
+    entry.save();
     ctx.log.info('creating atomic entry for session ' + ctx.data.id );
     return status(200);
   })
@@ -62,7 +62,7 @@ server(
     ctx.log.debug( ctx.data );
     tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
-    await entry.save();
+    entry.save();
     ctx.log.info('creating final entry for session ' + ctx.data.id );
     return status(200);
   })
