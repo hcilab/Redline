@@ -28,9 +28,9 @@ public class PlayerController : MonoBehaviour
 	private double _logScore = 0f;
 	private int _logFireExtinguished = 0;
 	private double _totalDamageTaken = 0f;
-	private double _averageEnemiesNearBy;
-	private double _averageNearByIntensity;
-	private double _averageActiveFlames;
+	private double _averageEnemiesNearBy = 0;
+	private double _averageNearByIntensity = 0;
+	private double _averageActiveFlames = 0;
 
 	// Use this for initialization
 	void Start ()
@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_lastTick = 0f;
+		_averageActiveFlames = _gameMaster.GetActiveFlames();
 	}
 	
 	// Update is called once per frame
@@ -119,7 +120,8 @@ public class PlayerController : MonoBehaviour
 
 		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
-		_averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
+		if ( Math.Abs( _averageNearByIntensity ) < 0.005 ) _averageNearByIntensity = averageIntensity;
+		else _averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
 		_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
 		_averageActiveFlames = ( _averageActiveFlames + _gameMaster.GetActiveFlames() ) / 2;
 		
@@ -143,9 +145,13 @@ public class PlayerController : MonoBehaviour
 		double total = 0f;
 		foreach ( var collider in enemiesNearBy )
 		{
-			total += FireSystemController.GetFlameIntensity( collider.GetComponentInParent< FlameController >() );
+			total += 
+				FireSystemController.GetFlameIntensity( 
+					collider.GetComponentInParent< FlameController >() );
 		}
-		return total / enemiesNearBy.Count;
+		if( enemiesNearBy.Count > 0 )
+			return total / enemiesNearBy.Count;
+		return 0;
 	}
 
 	public void LogCumulativeData()
