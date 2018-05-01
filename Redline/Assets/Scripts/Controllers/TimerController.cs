@@ -10,8 +10,9 @@ public class TimerController : MonoBehaviour
 	private GameMaster _gameMaster;
 	
 	// Use this for initialization
-	void Start () {
-		_textField = GetComponentInChildren< Text >();
+	void Start ()
+	{
+		_textField = GameObject.Find( "Timer" ).GetComponent<Text>();
 		_gameMaster = FindObjectOfType< GameMaster >();
 	}
 	
