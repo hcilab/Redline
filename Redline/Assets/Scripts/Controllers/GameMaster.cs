@@ -52,22 +52,24 @@ public class GameMaster : MonoBehaviour
 		_fireSystem = FindObjectOfType< FireSystemController >();
 	}
 
+	public void RestartLevel()
+	{
+		NextLevel("restart");
+	}
+
 	private void Update()
 	{
 		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
 		{
-			NextLevel("restart");
+			RestartLevel();
 		}
 		else if ( Input.GetKeyDown( KeyCode.Escape ) && _gameOver )
 		{
-			ResetUi();
-			SceneManager.LoadScene( "mainMenu" );
-			_UI.gameObject.SetActive( false );
-			_gameOver = false;
+			GoToMenu();
 		}
 		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
-			NextLevel(null);
+			NextLevel();
 		}
 		else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
@@ -79,7 +81,15 @@ public class GameMaster : MonoBehaviour
 		}
 	}
 
-	private void NextLevel( [CanBeNull] string customLevel )
+	public void GoToMenu()
+	{
+		ResetUi();
+		SceneManager.LoadScene( "mainMenu" );
+		_UI.gameObject.SetActive( false );
+		_gameOver = false;
+	}
+
+	public void NextLevel( [CanBeNull] string customLevel = null )
 	{
 		ResetUi();
 		int nextLvl;
@@ -132,7 +142,10 @@ public class GameMaster : MonoBehaviour
 		_gameOver = true;
 		_deathScreenController.enabled = true;
 		_deathScreenController.setMessage( message );
-		_deathScreenController.setScore(  _player.GetScore().ToString());
+		_deathScreenController.setScore(  _player.GetScore().ToString());;
+		_deathScreenController.SetFlameRating( _fireSystem.GetActiveFlames(), _fireSystem.GetTotalFlames(), 0f, 0f );
+		_deathScreenController.SetHealthRating( _player.GetRemainingHitPoints(), _player.GetStartingHealth() );
+		_deathScreenController.SetTimeRating( GetTimeRemaining(), _fireSystem.TotalTime() );
 		_deathScreenController.show();
 	}
 
@@ -226,9 +239,9 @@ public class GameMaster : MonoBehaviour
 		#endif
 	}
 
-	public string GetTimeRemaining()
+	public double GetTimeRemaining()
 	{
-		return Math.Round(_player.FireSystemController.GetTimeLeft()).ToString();
+		return Math.Round( _player.FireSystemController.GetTimeLeft() );
 	}
 
 	public int GetActiveFlames()

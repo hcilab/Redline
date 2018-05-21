@@ -94,4 +94,9 @@ public class ObjectPoolController : MonoBehaviour, IEnumerable<FlameController>
 	{
 		return _pool.GetEnumerator();
 	}
+
+	public int Count()
+	{
+		return _poolSize;
+	}
 }

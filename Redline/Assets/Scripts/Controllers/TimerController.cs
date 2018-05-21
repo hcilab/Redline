@@ -19,6 +19,6 @@ public class TimerController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		_textField.text = _gameMaster.GetTimeRemaining();
+		_textField.text = _gameMaster.GetTimeRemaining().ToString();
 	}
 }

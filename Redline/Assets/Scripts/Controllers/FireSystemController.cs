@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -191,7 +192,7 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _gameMaster.OnVictory();
+            _gameMaster.OnDeath("no");
         }
         
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
@@ -369,5 +370,15 @@ public class FireSystemController : MonoBehaviour
     public int GetActiveFlames()
     {
         return _activeFlames.Count;
+    }
+
+    public int GetTotalFlames()
+    {
+        return _flamePool.Count();
+    }
+
+    public float TotalTime()
+    {
+        return _levelTime;
     }
 }

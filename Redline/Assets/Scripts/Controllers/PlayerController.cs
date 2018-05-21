@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
 		
 		_gameMaster.DataCollector.LogData(
 			Time.time
-			, _gameMaster.GetTimeRemaining()
+			, _gameMaster.GetTimeRemaining().ToString()
 			, _gameMaster.SessionID
 			, SceneManager.GetActiveScene().name
 			, _gameMaster.GetHpBarType()
@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_gameMaster.DataCollector.LogData( 
 			Time.time
-			, _gameMaster.GetTimeRemaining()
+			, _gameMaster.GetTimeRemaining().ToString()
 			, _gameMaster.SessionID
 			, SceneManager.GetActiveScene().name
 			, _gameMaster.GetHpBarType()
@@ -239,6 +239,11 @@ public class PlayerController : MonoBehaviour
 		return _hitPoints / _totalHp;
 	}
 
+	public double GetRemainingHitPoints()
+	{
+		return _hitPoints;
+	}
+
 	public double GetScore()
 	{
 		return _score;
@@ -273,5 +278,10 @@ public class PlayerController : MonoBehaviour
 			return !Physics.Raycast( ray, distance );
 		}
 		return false;
-	} 
+	}
+
+	public float GetStartingHealth()
+	{
+		return ( float ) _totalHp;
+	}
 }
