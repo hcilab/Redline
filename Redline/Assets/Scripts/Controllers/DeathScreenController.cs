@@ -38,8 +38,8 @@ public class DeathScreenController : MonoBehaviour
 
 	public void setScore( string score )
 	{
-		var scoreText = transform.Find( "final_score" ) as RectTransform;
-		scoreText.GetComponent< Text >().text = "Final Score: " + score;
+//		var scoreText = transform.Find( "final_score" ) as RectTransform;
+//		scoreText.GetComponent< Text >().text = "Final Score: " + score;
 	}
 
 	public void SetHealthRating( double hpRemaining, float totalHp )
