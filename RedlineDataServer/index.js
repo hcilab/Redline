@@ -54,11 +54,11 @@ server(
      let valid = false;
      let randomID = 0;
      do {
-       randomID = Math.random() * 10000 + 1;
-       console.log( "Trying ID " + randomID );
-       final_model.findOne( { 'id': randomID }, 'id', ( err, result ) => {
-         if( result == null ) valid = true;
-         else valid = false;
+       randomID = (Math.random() * 10000 + 1).toFixed(0);
+       final_model.count( { 'id': randomID }, (error, count) => {
+         console.log( "Count for " + randomID + " is " + count );
+         if( count > 0 ) valid = false;
+         else valid = true;
        });
      } while ( !valid );
      return status(200).send(randomID);
