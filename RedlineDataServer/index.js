@@ -55,9 +55,10 @@ server(
      let randomID = 0;
      do {
        randomID = Math.random() * 10000 + 1;
-       final_model.findOne({'id': randomID}, 'id', (err, entry) => {
-         if( result ) valid = false;
-         else valid = true;
+       console.log( "Trying ID " + randomID );
+       final_model.findOne( { 'id': randomID }, 'id', ( err, result ) => {
+         if( result == null ) valid = true;
+         else valid = false;
        });
      } while ( !valid );
      return status(200).send(randomID);
