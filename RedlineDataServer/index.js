@@ -51,17 +51,11 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
-     let valid = false;
-     let randomID = 0;
-     do {
-       randomID = (Math.random() * 10000 + 1).toFixed(0);
-       final_model.count( { 'id': randomID }, (error, count) => {
-         console.log( "Count for " + randomID + " is " + count );
-         if( count > 0 ) valid = false;
-         else valid = true;
-       });
-     } while ( !valid );
-     return status(200).send(randomID);
+    timeout( () => {
+      let id = generateID(),
+      return status(200).send(id);
+    }, 3000 );
+    return status(500);
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
@@ -84,3 +78,12 @@ server(
     return status(500).send(ctx.error.message);
   })
 ]);
+
+generateID( ) {
+  let randomID = 0;
+  randomID = (Math.random() * 10000 + 1).toFixed(0);
+  final_model.count( { 'id': randomID }, (err, count) => {
+      if( count == 0 ) return randomID;
+      else generateID( fn );
+  });
+}
