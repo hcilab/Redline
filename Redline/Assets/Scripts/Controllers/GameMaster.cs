@@ -29,7 +29,12 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] public DataCollectionController DataCollector;
 	private float _roundStart;
 	private FireSystemController _fireSystem;
-	public int SessionID = 0;
+	private int _sessionID;
+
+	public int SessionID
+	{
+		get { return _sessionID; }	
+	}
 
 	// Use this for initialization
 	void Awake()
@@ -41,6 +46,7 @@ public class GameMaster : MonoBehaviour
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
+		_sessionID = DataCollector.GetNewID();
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		SceneManager.sceneLoaded += Initialize;
 	}
@@ -199,9 +205,8 @@ public class GameMaster : MonoBehaviour
 		_gameOver = false;
 	}
 
-	public void StartGame( string customLevel, int sessionId )
+	public void StartGame( string customLevel )
 	{
-		SessionID = sessionId;
 		NextLevel( customLevel );
 	}
 

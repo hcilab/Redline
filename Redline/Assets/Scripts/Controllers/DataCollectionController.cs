@@ -30,9 +30,33 @@ public class DataCollectionController : MonoBehaviour
         }
     }
 
+    public int GetNewID()
+    {
+        String path = GetServerPath() + "/id";
+        UnityWebRequest req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req ) );
+        do
+        {} while ( !req.downloadHandler.isDone );
+        var result = JsonUtility.FromJson<IdObject>( req.downloadHandler.text );
+        Debug.Log( result  );
+        return Int32.Parse( result.id );
+    }
+
+    IEnumerator Download( UnityWebRequest req )
+    {
+        yield return req.Send();
+        if ( req.isError ) LogNetworkError( req );
+        else if ( req.isDone ) Debug.Log( "New ID recieved: " + req.downloadHandler.text );
+    }
+
+    private class IdObject
+    {
+        public string id;
+    }
+
     IEnumerator Upload( WWWForm dataObj, DataType dataType )
     {
-        String path = "http://" + _serverAddress + ":" + _serverPort;
+        var path = GetServerPath();
         switch ( dataType )
         {
                 case DataType.Atomic:
@@ -47,12 +71,23 @@ public class DataCollectionController : MonoBehaviour
 
         if ( req.isError )
         {
-            Debug.LogError( "Networking error: " + req.error );
-            Debug.LogError( "Networking response: " + req.responseCode );
+            LogNetworkError( req );
         } else if ( req.isDone )
         {
             Debug.Log("Data upload complete.");
         }
+    }
+
+    private static void LogNetworkError( UnityWebRequest req )
+    {
+        Debug.LogError( "Networking error: " + req.error );
+        Debug.LogError( "Networking response: " + req.responseCode );
+    }
+
+    private string GetServerPath()
+    {
+        String path = "http://" + _serverAddress + ":" + _serverPort;
+        return path;
     }
 
     private void InitDatafile( string fileName = "redline_data.csv" )
