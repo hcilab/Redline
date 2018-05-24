@@ -50,16 +50,18 @@ server(
     get( '/', ctx => {
       return render("index.html");
     })
-  , get('/id', ctx => {
-    let id = await generateID(0);
-    if ( id > 0 ) return status(200).send(id);
-    return status(500).send("cannot find suitable id");
+  , get('/id', async ctx => {
+    let id = -1;
+    await generateID(0, genID => id = genID ).then( genID => id = genID, () => {
+      return status(500).send("cannot find suitable id");
+    });
+    return status(200).send({ 'id': id });
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
-    entry.save();
+    await entry.save();
     ctx.log.info('creating atomic entry for session ' + ctx.data.id );
     return status(200);
   })
@@ -67,7 +69,7 @@ server(
     ctx.log.debug( ctx.data );
     tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
-    entry.save();
+    await entry.save();
     ctx.log.info('creating final entry for session ' + ctx.data.id );
     return status(200);
   })
@@ -78,12 +80,14 @@ server(
 ]);
 
 function generateID( counter ) {
-  if( counter > 100 ) return -1;
-  let randomID = 0;
-  randomID = (Math.random() * 10000 + 1).toFixed(0);
-  final_model.count( { 'id': randomID }, function (err, count) {
-      console.log( "count for " + randomID + " is " + count );
-      if( count != 0 ) return generateID( ++counter );
-      else return randomID ;
+  return new Promise( (resolve, reject) => {
+    if( counter > 100 ) reject();
+    let randomID = 0;
+    randomID = (Math.random() * 10000 + 1).toFixed(0);
+    final_model.count( { 'id': randomID }, function (err, count) {
+        console.log( "count for " + randomID + " is " + count );
+        if( count != 0 ) generateID( ++counter );
+        else resolve( ("000000" + randomID).slice(-6) );
+    });
   });
 }
