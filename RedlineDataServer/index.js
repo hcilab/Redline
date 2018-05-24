@@ -83,11 +83,11 @@ function generateID( counter ) {
   return new Promise( (resolve, reject) => {
     if( counter > 100 ) reject();
     let randomID = 0;
-    randomID = (Math.random() * 10000 + 1).toFixed(0);
+    randomID = ( "000000" + (Math.random() * 10000 + 1).toFixed(0) ).slice(-6);
     final_model.count( { 'id': randomID }, function (err, count) {
         console.log( "count for " + randomID + " is " + count );
         if( count != 0 ) generateID( ++counter );
-        else resolve( ("000000" + randomID).slice(-6) );
+        else resolve( randomID );
     });
   });
 }
