@@ -51,10 +51,11 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
+    let id = -1;
     setTimeout( () => {
-      let id = generateID();
-      return status(200).send(id);
+      id = generateID();
     }, 3000 );
+    if ( id > 0 ) return status(200).send(id);
     return status(500);
   })
   , post('/', async ctx => {
