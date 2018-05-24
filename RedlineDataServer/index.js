@@ -51,12 +51,9 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
-    setTimeout(
-    generateID(0, function( id ) {
-      if ( id > 0 ) return status(200).send(id);
-      return status(500).send("cannot find suitable id");
-    }), 5000);
-    return status(500).send("function timed out");
+    let id = await generateID(0);
+    if ( id > 0 ) return status(200).send(id);
+    return status(500).send("cannot find suitable id");
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
@@ -80,13 +77,13 @@ server(
   })
 ]);
 
-function generateID( counter, fn ) {
-  if( counter > 100 ) fn( -1 );
+function generateID( counter ) {
+  if( counter > 100 ) return -1;
   let randomID = 0;
   randomID = (Math.random() * 10000 + 1).toFixed(0);
   final_model.count( { 'id': randomID }, function (err, count) {
       console.log( "count for " + randomID + " is " + count );
-      if( count != 0 ) generateID( ++counter );
-      else fn( randomID );
+      if( count != 0 ) return generateID( ++counter );
+      else return randomID ;
   });
 }
