@@ -52,7 +52,7 @@ server(
     })
   , get('/id', ctx => {
     setTimeout(
-    generateID(0, ( id ) => {
+    generateID(0, function( id ) {
       if ( id > 0 ) return status(200).send(id);
       return status(500).send("cannot find suitable id");
     }), 5000);
@@ -84,7 +84,7 @@ function generateID( counter, fn ) {
   if( counter > 100 ) fn( -1 );
   let randomID = 0;
   randomID = (Math.random() * 10000 + 1).toFixed(0);
-  final_model.count( { 'id': randomID }, (err, count) => {
+  final_model.count( { 'id': randomID }, function (err, count) {
       console.log( "count for " + randomID + " is " + count );
       if( count != 0 ) generateID( ++counter );
       else fn( randomID );
