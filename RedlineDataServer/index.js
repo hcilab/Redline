@@ -51,10 +51,12 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
+    setTimeout(
     generateID(0, ( id ) => {
       if ( id > 0 ) return status(200).send(id);
-      return status(500);
-    });
+      return status(500).send("cannot find suitable id");
+    }), 5000);
+    return status(500).send("function timed out");
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
