@@ -79,7 +79,7 @@ server(
   })
 ]);
 
-generateID( ) {
+function generateID( ) {
   let randomID = 0;
   randomID = (Math.random() * 10000 + 1).toFixed(0);
   final_model.count( { 'id': randomID }, (err, count) => {
