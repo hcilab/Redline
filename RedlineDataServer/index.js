@@ -51,9 +51,10 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
-    let id = generateID(0);
-    if ( id > 0 ) return status(200).send(id);
-    return status(500);
+    generateID(0, ( id ) => {
+      if ( id > 0 ) return status(200).send(id);
+      return status(500);
+    });
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
@@ -77,13 +78,13 @@ server(
   })
 ]);
 
-function generateID( counter ) {
-  if( counter > 100 ) return -1;
+function generateID( counter, fn ) {
+  if( counter > 100 ) fn( -1 );
   let randomID = 0;
   randomID = (Math.random() * 10000 + 1).toFixed(0);
   final_model.count( { 'id': randomID }, (err, count) => {
       console.log( "count for " + randomID + " is " + count );
-      if( count == 0 ) return randomID;
-      else return generateID( ++counter );
+      if( count != 0 ) generateID( ++counter );
+      else fn( randomID );
   });
 }
