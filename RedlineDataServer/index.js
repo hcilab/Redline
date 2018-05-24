@@ -52,7 +52,7 @@ server(
     })
   , get('/id', ctx => {
     timeout( () => {
-      let id = generateID(),
+      let id = generateID();
       return status(200).send(id);
     }, 3000 );
     return status(500);
@@ -83,6 +83,7 @@ generateID( ) {
   let randomID = 0;
   randomID = (Math.random() * 10000 + 1).toFixed(0);
   final_model.count( { 'id': randomID }, (err, count) => {
+      console.log( "count for " + randomID + " is " + count );
       if( count == 0 ) return randomID;
       else generateID( fn );
   });
