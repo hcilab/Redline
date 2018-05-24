@@ -50,6 +50,18 @@ server(
     get( '/', ctx => {
       return render("index.html");
     })
+  , get('/id', ctx => {
+     let valid = false;
+     let randomID = 0;
+     do {
+       randomID = Math.random() * 10000 + 1;
+       final_model.findOne({'id': randomID}, 'id', (err, entry) => {
+         if( result ) valid = false;
+         else valid = true;
+       });
+     } while ( !valid );
+     return status(200).send(randomID);
+  })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
