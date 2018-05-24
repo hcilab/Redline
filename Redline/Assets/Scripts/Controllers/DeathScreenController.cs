@@ -10,17 +10,19 @@ public class DeathScreenController : MonoBehaviour
 	private int _timeRating;
 	private int _overallRating;
 
+	[SerializeField] private GameMaster _gameMaster;
 	[SerializeField] private float _starWidth = 100;
 	[SerializeField] private RectTransform _hpRatingBar;
 	[SerializeField] private RectTransform _flameRatingBar;
 	[SerializeField] private RectTransform _timeRatingBar;
+	[SerializeField] private Text _sessionId;
 	
 	
 //	[SerializeField] private Animator _animator;
 
 	void Awake()
 	{
-//		_animator.enabled = false;
+		_sessionId.text = _gameMaster.SessionID.ToString();
 	}
 
 	public void show()

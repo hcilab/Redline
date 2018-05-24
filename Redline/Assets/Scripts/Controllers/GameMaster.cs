@@ -20,6 +20,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
+	[SerializeField] private InputField _sessionIdLabel;
 
 	[SerializeField] private NumberController _damageNumberController;
 
@@ -47,6 +48,7 @@ public class GameMaster : MonoBehaviour
 
 		DontDestroyOnLoad( Instance );
 		_sessionID = DataCollector.GetNewID();
+		_sessionIdLabel.text = _sessionID.ToString();
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		SceneManager.sceneLoaded += Initialize;
 	}
