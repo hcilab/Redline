@@ -51,7 +51,7 @@ server(
       return render("index.html");
     })
   , get('/id', ctx => {
-    timeout( () => {
+    setTimeout( () => {
       let id = generateID();
       return status(200).send(id);
     }, 3000 );
