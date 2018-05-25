@@ -107,7 +107,7 @@ public class GameMaster : MonoBehaviour
 		{
 			nextLvl = Int32.Parse( currentLvl );
 		}
-		else if ( customLevel != null )
+		else if ( !string.IsNullOrEmpty( customLevel ) )
 		{
 			nextLvl = Int32.Parse( customLevel );
 		}

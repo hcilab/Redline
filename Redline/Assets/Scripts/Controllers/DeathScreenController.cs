@@ -46,7 +46,9 @@ public class DeathScreenController : MonoBehaviour
 
 	public void SetHealthRating( double hpRemaining, float totalHp )
 	{
-		_hpRating = (int) ( RoundStarRating( ( float ) hpRemaining / totalHp * 5 ) * 2 );
+		_hpRating = ( int ) ( RoundStarRating(
+			Mathf.Clamp( (float)( hpRemaining / totalHp ) + 0.15f, 0f, 1f ) //give 10% hp mercy 
+			* 5) * 2 );
 	}
 
 	public void SetFlameRating( int activeFlames, int totalFlames, float averageIntensity, float maxIntensity )
@@ -56,7 +58,9 @@ public class DeathScreenController : MonoBehaviour
 
 	public void SetTimeRating( double timeRemaining, float totalTime )
 	{
-		_timeRating = (int) ( RoundStarRating( ( float ) (timeRemaining / totalTime * 5) ) * 2);
+		_timeRating = (int) ( RoundStarRating( 
+			              Mathf.Clamp( (float) timeRemaining / ( totalTime - 20 ), 0f, 1f ) //give 20 second mercy
+		                                       * 5) * 2);
 	}
 
 	private float RoundStarRating( float rating )
@@ -74,6 +78,15 @@ public class DeathScreenController : MonoBehaviour
 		Debug.Log( _flameRating );
 		Debug.Log( _timeRating );
 		Debug.Log( _hpRating );
+		if ( _hpRating == 0 )
+		{
+			_flameRating = 5;
+			_timeRating = 5;
+		} else if ( _timeRating == 0 )
+		{
+			_flameRating /= 2;
+			_hpRating /= 2;
+		}
 		_flameRatingBar.sizeDelta = new Vector2( _flameRating * _starWidth / 2, 60 );
 		_hpRatingBar.sizeDelta = new Vector2( _hpRating * _starWidth / 2, 60 );
 		_timeRatingBar.sizeDelta = new Vector2( _timeRating * _starWidth / 2, 60 );
