@@ -37,7 +37,10 @@ public class CustomFlameCulling : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		if(_cullingGroup!= null)
+		if ( _cullingGroup != null )
+		{
 			_cullingGroup.Dispose();
+			_cullingGroup = null;
+		}
 	}
 }
