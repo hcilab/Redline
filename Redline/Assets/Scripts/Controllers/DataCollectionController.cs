@@ -89,24 +89,21 @@ public class DataCollectionController : MonoBehaviour
         }
     }
 
-    public bool HasUploadBacklog()
-    {
-        return _uploadBacklog.Count != 0;
-    }
-
     public IEnumerator ProcessUploadBacklog( ProgressUpdate progressUpdate )
     {
-        UnityWebRequest webRequest;
-        while ( _uploadBacklog.Count != 0 ) {
-            webRequest = _uploadBacklog.Dequeue();
+        var totalBacklog = _uploadBacklog.Count;
+        if ( totalBacklog == 0 ) progressUpdate( 1 );
+        while ( _uploadBacklog.Count != 0 )
+        {
+            var webRequest = _uploadBacklog.Dequeue();
             yield return webRequest.Send();
             if ( webRequest.isError )
             {
-                throw new Exception("Litterally can't even upload...");
+                throw new Exception( "Litterally can't even upload..." );
             }
             if ( webRequest.isDone )
             {
-                progressUpdate( _uploadBacklog.Count );
+                progressUpdate( 1f - _uploadBacklog.Count / totalBacklog );
             }
         }
     }

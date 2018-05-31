@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -32,6 +33,8 @@ public class GameMaster : MonoBehaviour
 	private float _roundStart;
 	private FireSystemController _fireSystem;
 	private int _sessionID;
+	[SerializeField] private GameObject _uploadModal;
+	private bool _uploadComplete = false;
 
 	public int SessionID
 	{
@@ -96,6 +99,8 @@ public class GameMaster : MonoBehaviour
 		{
 			ChangeHpBar( 1 );
 		}
+
+		if ( _uploadComplete ) _uploadModal.SetActive( false );
 	}
 
 	public void GoToMenu()
@@ -158,6 +163,15 @@ public class GameMaster : MonoBehaviour
 			_player.LogCumulativeData();
 		Paused = true;
 		_gameOver = true;
+
+		StartCoroutine( DataCollector.ProcessUploadBacklog( progress =>
+		{
+			_uploadModal.SetActive( true );
+			_uploadModal.GetComponentInChildren< Text >().text = "Uploading data: " + progress + "%";
+			Debug.Log( "Upload progress: " + progress );
+			if ( progress >= 1 ) _uploadComplete = true;
+		} ) );
+		
 		_deathScreenController.enabled = true;
 		_deathScreenController.setMessage( message );
 		_deathScreenController.setScore(  _player.GetScore().ToString());;
