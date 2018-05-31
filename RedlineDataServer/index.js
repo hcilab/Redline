@@ -53,8 +53,8 @@ server(
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
-      genID => status(200).send( {'id': genID } ),
-      () => status(500).send("cannot find suitable id")
+      id => return status(200).send( {'id': id } ),
+      () => return status(500).send("cannot find suitable id")
     );
     return status(500).send("error while requesting a new ID");
   })
