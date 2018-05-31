@@ -21,6 +21,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
 	[SerializeField] private InputField _sessionIdLabel;
+	[SerializeField] private Button _startButton;
 
 	[SerializeField] private NumberController _damageNumberController;
 
@@ -47,10 +48,18 @@ public class GameMaster : MonoBehaviour
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
-		_sessionID = DataCollector.GetNewID();
-		_sessionIdLabel.text = _sessionID.ToString();
 		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		SceneManager.sceneLoaded += Initialize;
+	}
+
+	private void Start()
+	{
+		DataCollector.GetNewID( id =>
+		{
+			_sessionID = id;
+			_sessionIdLabel.text = _sessionID.ToString();
+			_startButton.interactable = true;
+		} );
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
@@ -145,7 +154,8 @@ public class GameMaster : MonoBehaviour
 
 	public void OnDeath( [CanBeNull] string message )
 	{
-		_player.LogCumulativeData();
+		if( !_gameOver ) 
+			_player.LogCumulativeData();
 		Paused = true;
 		_gameOver = true;
 		_deathScreenController.enabled = true;

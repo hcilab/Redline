@@ -182,7 +182,11 @@ public class FireSystemController : MonoBehaviour
         if ( !initialized ) return; //don't start until initialization is done
         if( _gameMaster == null || _gameMaster.Paused ) return;
 
-        if ( _timeLeft <= 0 ) _gameMaster.OnTimeout();
+        if ( _timeLeft <= 0 )
+        {
+            _gameMaster.OnTimeout();
+            enabled = false;
+        }
         
         if ( _showGrid )
         {
@@ -192,7 +196,8 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _gameMaster.OnDeath("no");
+            _gameMaster.OnDeath("Flames extinguished.");
+            enabled = false;
         }
         
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )

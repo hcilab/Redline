@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -8,6 +10,10 @@ using UnityEngine.Networking;
 public class DataCollectionController : MonoBehaviour
 {
     public enum DataType { Atomic, Final }
+
+    public delegate void WebCallback( int id );
+
+    public delegate void ProgressUpdate( float progress );
     
     [SerializeField] private string _serverAddress;
     [SerializeField] private int _serverPort;
@@ -15,11 +21,13 @@ public class DataCollectionController : MonoBehaviour
     [SerializeField] private String _finalEndpoint;
     [SerializeField] private bool _sendRemote;
     private string _dataFile;
+    private Queue<UnityWebRequest> _uploadBacklog;
 
     private void Awake()
     {
         FindObjectOfType<GameMaster>().LoadFromConfig( "data_service", this );
         Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
+        _uploadBacklog = new Queue<UnityWebRequest>();
     }
     
     public void Submit( WWWForm dataObj, DataType dataType )
@@ -30,23 +38,25 @@ public class DataCollectionController : MonoBehaviour
         }
     }
 
-    public int GetNewID()
+    public void GetNewID( WebCallback cb ) 
     {
         String path = GetServerPath() + "/id";
-        UnityWebRequest req = UnityWebRequest.Get( path );
-        StartCoroutine( Download( req ) );
-        do
-        {} while ( !req.downloadHandler.isDone );
-        var result = JsonUtility.FromJson<IdObject>( req.downloadHandler.text );
-        Debug.Log( result  );
-        return Int32.Parse( result.id );
-    }
+            var req = UnityWebRequest.Get( path );
+            StartCoroutine( Download( req, cb ) );
+      }
+        
 
-    IEnumerator Download( UnityWebRequest req )
+    IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
-        yield return req.Send();
+        req.Send();
+        yield return new WaitUntil( () => req.isDone && req.downloadHandler.isDone );
         if ( req.isError ) LogNetworkError( req );
-        else if ( req.isDone ) Debug.Log( "New ID recieved: " + req.downloadHandler.text );
+        else if ( req.isDone )
+        {
+            Debug.Log( "New ID recieved: " + req.downloadHandler.text );
+            cb( Int32.Parse(
+                JsonUtility.FromJson< IdObject >( req.downloadHandler.text ).id ) );
+        }
     }
 
     private class IdObject
@@ -72,9 +82,32 @@ public class DataCollectionController : MonoBehaviour
         if ( req.isError )
         {
             LogNetworkError( req );
+            _uploadBacklog.Enqueue( req );
         } else if ( req.isDone )
         {
             Debug.Log("Data upload complete.");
+        }
+    }
+
+    public bool HasUploadBacklog()
+    {
+        return _uploadBacklog.Count != 0;
+    }
+
+    public IEnumerator ProcessUploadBacklog( ProgressUpdate progressUpdate )
+    {
+        UnityWebRequest webRequest;
+        while ( _uploadBacklog.Count != 0 ) {
+            webRequest = _uploadBacklog.Dequeue();
+            yield return webRequest.Send();
+            if ( webRequest.isError )
+            {
+                throw new Exception("Litterally can't even upload...");
+            }
+            if ( webRequest.isDone )
+            {
+                progressUpdate( _uploadBacklog.Count );
+            }
         }
     }
 
