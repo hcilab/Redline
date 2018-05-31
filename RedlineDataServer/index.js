@@ -52,10 +52,11 @@ server(
     })
   , get('/id', async ctx => {
     let id = -1;
-    await generateID(0, genID => id = genID ).then( genID => id = genID, () => {
-      return status(500).send("cannot find suitable id");
-    });
-    return status(200).send({ 'id': id });
+    await generateID( 0 ).then(
+      genID => status(200).send( {'id': genID } ),
+      () => status(500).send("cannot find suitable id")
+    );
+    return status(500).send("error while requesting a new ID");
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
@@ -63,7 +64,7 @@ server(
     const entry = new entry_model( ctx.data );
     await entry.save();
     ctx.log.info('creating atomic entry for session ' + ctx.data.id );
-    return status(200);
+    return status(200).send("data successfully logged");
   })
   , post('/final/', async ctx => {
     ctx.log.debug( ctx.data );
@@ -71,7 +72,7 @@ server(
     const entry = new final_model( ctx.data );
     await entry.save();
     ctx.log.info('creating final entry for session ' + ctx.data.id );
-    return status(200);
+    return status(200).send("data successfully logged");
   })
   , error( ctx => {
     ctx.log.error( ctx.error.message );
