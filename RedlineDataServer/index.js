@@ -53,9 +53,11 @@ server(
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
-      id => status(200).send( {'id': id } ),
-      () => status(500).send("cannot find suitable id")
+      gid => id = gid
     );
+    if( id != -1 ) return status(200).send( { "id": id } );
+    return status(500).send("Error generating new session ID");
+
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
