@@ -79,6 +79,7 @@ server(
     ctx.log.error( ctx.error.message );
     return status(500).send(ctx.error.message);
   })
+  , ctx => status(404).send(ctx);
 ]);
 
 function generateID( counter ) {
