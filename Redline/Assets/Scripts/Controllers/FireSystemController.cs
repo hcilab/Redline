@@ -196,7 +196,7 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _gameMaster.OnDeath("Flames extinguished.");
+            _gameMaster.GameOver( GameMaster.GameEnd.Victory );
             enabled = false;
         }
         

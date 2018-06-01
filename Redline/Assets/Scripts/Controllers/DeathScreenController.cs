@@ -16,8 +16,8 @@ public class DeathScreenController : MonoBehaviour
 	[SerializeField] private RectTransform _flameRatingBar;
 	[SerializeField] private RectTransform _timeRatingBar;
 	[SerializeField] private Text _sessionId;
-	
-	
+	[SerializeField] private Button _nextLevelButton;
+	[SerializeField] private Text _infoMessage;	
 //	[SerializeField] private Animator _animator;
 
 	void Awake()
@@ -29,12 +29,10 @@ public class DeathScreenController : MonoBehaviour
 	{
 		UpdateRatings();
 		gameObject.SetActive( true );
-//		_animator.enabled = true;
 	}
 
 	public void hide()
 	{
-//		_animator.enabled = false;
 		gameObject.SetActive( false );
 	}
 
@@ -80,15 +78,21 @@ public class DeathScreenController : MonoBehaviour
 		Debug.Log( _flameRating );
 		Debug.Log( _timeRating );
 		Debug.Log( _hpRating );
-//		if ( _hpRating == 0 )
-//		{
-//			_flameRating = 5;
-//			_timeRating = 5;
-//		} else if ( _timeRating == 0 )
-//		{
-//			_flameRating /= 2;
-//			_hpRating /= 2;
-//		}
+
+		if ( _flameRating >= 5
+		     && _timeRating >= 5
+		     && _hpRating >= 5 )
+		{
+			_nextLevelButton.interactable = true;
+			_infoMessage.enabled = false;
+		}
+		else
+		{
+			_nextLevelButton.interactable = false;
+			_infoMessage.enabled = true;
+			_infoMessage.text = "In order to proceed you must reach at least 2.5 stars in each category.";
+		}
+		
 		_flameRatingBar.sizeDelta = new Vector2( _flameRating * _starWidth / 2, 60 );
 		_hpRatingBar.sizeDelta = new Vector2( _hpRating * _starWidth / 2, 60 );
 		_timeRatingBar.sizeDelta = new Vector2( _timeRating * _starWidth / 2, 60 );
@@ -96,8 +100,7 @@ public class DeathScreenController : MonoBehaviour
 
 	public void setMessage( string message )
 	{
-		if( message == null ) message = "Oh no! You died!";
 		var msgText = transform.Find( "message" ) as RectTransform;
-//		msgText.GetComponent< Text >().text = message;
+		msgText.GetComponent< Text >().text = message;
 	}
 }

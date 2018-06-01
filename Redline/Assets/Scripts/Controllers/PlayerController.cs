@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
 		if ( _hitPoints <= 0 )
 		{
 			_hitPoints = 100;
-			_gameMaster.OnDeath( null );
+			_gameMaster.GameOver( GameMaster.GameEnd.Death );
 			enabled = false;
 		}
 		else if(Time.time - _lastTick > _damageTick) 

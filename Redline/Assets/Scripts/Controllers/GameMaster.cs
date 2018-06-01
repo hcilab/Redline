@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -27,18 +28,33 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private NumberController _damageNumberController;
 
 	[SerializeField] private NumberController _scoreNumberController;
-	[SerializeField] private Canvas _UI;
+	[SerializeField] private Canvas _gameInterface;
 
 	[SerializeField] public DataCollectionController DataCollector;
 	private float _roundStart;
 	private FireSystemController _fireSystem;
-	private int _sessionID;
+	private int _sessionId;
 	[SerializeField] private GameObject _uploadModal;
 	private bool _uploadComplete = false;
+	private MainMenuController _mainMenu;
 
 	public int SessionID
 	{
-		get { return _sessionID; }	
+		get { return _sessionId; }	
+	}
+	
+	public enum GameEnd 
+	{
+		Victory,
+		Timeout,
+		Death
+	}
+
+	[UsedImplicitly]
+	private class Levels
+	{ 
+		public const string MainMenu = "mainMenu";
+		public const string Level1 = "level1";
 	}
 
 	// Use this for initialization
@@ -59,17 +75,26 @@ public class GameMaster : MonoBehaviour
 	{
 		DataCollector.GetNewID( id =>
 		{
-			_sessionID = id;
-			_sessionIdLabel.text = _sessionID.ToString();
+			_sessionId = id;
+			_sessionIdLabel.text = _sessionId.ToString();
 			_startButton.interactable = true;
 		} );
 	}
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
-		_roundStart = Time.time;
-		_player = FindObjectOfType< PlayerController >();
-		_fireSystem = FindObjectOfType< FireSystemController >();
+		switch ( arg0.name )
+		{
+				case Levels.MainMenu:
+					_mainMenu = FindObjectOfType< MainMenuController >();
+					_mainMenu.SetSessionId( _sessionId.ToString() );
+					break;
+				default:
+					_roundStart = Time.time;
+					_player = FindObjectOfType< PlayerController >();
+					_fireSystem = FindObjectOfType< FireSystemController >();
+					break;
+		}
 	}
 
 	public void RestartLevel()
@@ -106,8 +131,8 @@ public class GameMaster : MonoBehaviour
 	public void GoToMenu()
 	{
 		ResetUi();
-		SceneManager.LoadScene( "mainMenu" );
-		_UI.gameObject.SetActive( false );
+		SceneManager.LoadScene( Levels.MainMenu );
+		_gameInterface.gameObject.SetActive( false );
 		_gameOver = false;
 	}
 
@@ -134,12 +159,12 @@ public class GameMaster : MonoBehaviour
 
 		if ( nextLvl > 3 )
 		{
-			_UI.gameObject.SetActive( false );
-			SceneManager.LoadScene( "mainMenu" );
+			_gameInterface.gameObject.SetActive( false );
+			SceneManager.LoadScene( Levels.MainMenu );
 		}
 		else
 		{
-			_UI.gameObject.SetActive( true );
+			_gameInterface.gameObject.SetActive( true );
 			SceneManager.LoadScene( "level" + nextLvl );
 		}
 	}
@@ -157,7 +182,7 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public void OnDeath( [CanBeNull] string message )
+	public void GameOver( [CanBeNull] GameEnd reason )
 	{
 		if( !_gameOver ) 
 			_player.LogCumulativeData();
@@ -171,6 +196,23 @@ public class GameMaster : MonoBehaviour
 			Debug.Log( "Upload progress: " + progress );
 			if ( progress >= 1 ) _uploadComplete = true;
 		} ) );
+
+		string message;
+		switch ( reason )
+		{
+				case GameEnd.Victory:
+					message = "Congratulations you did it!";
+					break;
+				case GameEnd.Death:
+					message = "You're gonna hurt yourself! Get out of there!";
+					break;
+				case GameEnd.Timeout:
+					message = "Reinforcements have arrived! Take a breather!";
+					break;
+				default:
+					message = "Game Over!";
+					break;
+		}
 		
 		_deathScreenController.enabled = true;
 		_deathScreenController.setMessage( message );
@@ -200,26 +242,11 @@ public class GameMaster : MonoBehaviour
 		pool.Init( poolSize, item);
 		return pool;
 	}
-
-	public void OnVictory( )
-	{
-		_player.LogCumulativeData();
-		var roundEnd = Time.time;
-		var roundDuration = ( roundEnd - _roundStart ) * 500;
-		var bonus = Math.Round(10000 - roundDuration);
-		bonus = bonus > 0 ? bonus : 0;
-		Paused = true;
-		_gameOver = true;
-		_victoryScreenController.enabled = true;
-		_victoryScreenController.setScore( _player.GetScore()  + " + a time bonus of " + bonus );
-		_victoryScreenController.show();
-	}
-	
 	
 
 	public void OnTimeout()
 	{
-		OnDeath( "You ran out of time!" );
+		GameOver( GameEnd.Timeout );
 	}
 
 	public void ResetUi()
