@@ -45,7 +45,8 @@ Redline/ProjectSettings/
 */node_modules/
 
 # no more data files
-*.csv
+.csv
+*/redline_data.csv
 
 Redline/Assets/Plugins/
 Redline/UnityPackageManager/
