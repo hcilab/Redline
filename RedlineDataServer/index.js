@@ -7,7 +7,7 @@ var redline_entry_schema =  mongoose.Schema({
     date: { type: Date, default: Date.now }
   , time: String
   , counter: String
-  , id: Number
+  , id: { type: Number, unique: true }
   , level: String
   , hp: Number
   , bar: String
@@ -22,7 +22,7 @@ var redline_final_entry_schema =  mongoose.Schema({
     date: { type: Date, default: Date.now }
   , time: String
   , counter: String
-  , id: Number
+  , id: { type: Number, unique: true }
   , trial: Number
   , level: String
   , hp: Number
@@ -80,7 +80,8 @@ server(
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
     await entry.save();
-    ctx.log.info('creating atomic entry for session ' + ctx.data.id );
+    ctx.log.info('ATOMIC ENTRY ' + ctx.data.id + ' ' + ctx.data.level );
+    ctx.log.debug(ctx.data);
     return status(200).send("data successfully logged");
   })
   , post('/final/', async ctx => {
@@ -91,7 +92,11 @@ server(
       entry.trial = count;
     });
     await entry.save();
-    ctx.log.info('creating final entry for session ' + ctx.data.id );
+    ctx.log.info(
+      'FINAL ENTRY ' + ctx.data.id
+    + ' TRIAL ' + ctx.data.trial
+    + ' ' + ctx.data.level );
+    ctx.log.debug( ctx.data );
     return status(200).send("data successfully logged");
   })
   , error( ctx => {
@@ -107,7 +112,7 @@ function generateID( counter ) {
     let randomID = 0;
     randomID = ( "000000" + (Math.random() * 10000 + 1).toFixed(0) ).slice(-6);
     final_model.count( { 'id': randomID }, function (err, count) {
-        console.log( "count for " + randomID + " is " + count );
+        console.debug( "count for " + randomID + " is " + count );
         if( count != 0 ) generateID( ++counter );
         else resolve( randomID );
     });
