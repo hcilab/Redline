@@ -93,7 +93,7 @@ server(
     await entry.save();
     ctx.log.info(
       'FINAL ENTRY ' + ctx.data.id
-    + ' TRIAL ' + ctx.data.trial
+    + ' TRIAL ' + entry.trial
     + ' ' + ctx.data.level );
     ctx.log.debug( ctx.data );
     return status(200).send("data successfully logged");
