@@ -76,12 +76,20 @@ server(
   })
   , get('/bar', async ctx => {
     let bar = 1;
+    let totalCount = 0;
+
+    await final_model.count().then( count => {
+      totalCount = count;
+    });
+
     await final_model.count( {'bar': 'Offset HP Bar' } ).then( count => {
       ctx.log.debug( "There are currently " + count + " Offset entries");
-      bar = count % 2;
+      if( count > totalCount/2 ) bar = 0;
+      else bar = count % 2;
     }).catch( () => {
       return status(500).send("An error occured allocating a bar type.");
     });
+
     return status(200).send( { "bar": bar } );
   })
   , post('/', async ctx => {
