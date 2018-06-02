@@ -74,6 +74,16 @@ server(
     return status(500).send("Error generating new session ID");
 
   })
+  , get('/bar', async ctx => {
+    let bar = 1;
+    await final_model.count( {'bar': 'Offset HP Bar' } ).then( count => {
+      ctx.log.debug( "There are currently " + count + " Offset entries");
+      bar = count % 2;
+    }).catch( () => {
+      return status(500).send("An error occured allocating a bar type.");
+    });
+    return status(200).send( { "bar": bar } );
+  })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
@@ -94,6 +104,7 @@ server(
     ctx.log.info(
       'FINAL ENTRY ' + ctx.data.id
     + ' TRIAL ' + entry.trial
+    + ' BAR ' + ctx.data.bar
     + ' ' + ctx.data.level );
     ctx.log.debug( ctx.data );
     return status(200).send("data successfully logged");
