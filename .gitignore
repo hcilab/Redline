@@ -44,6 +44,12 @@ Redline/ProjectSettings/
 
 */node_modules/
 
+# no more data files
+*.csv
+
+Redline/Assets/Plugins/
+Redline/UnityPackageManager/
+
 
 # Created by https://www.gitignore.io/api/node
 
