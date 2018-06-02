@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,6 +50,16 @@ public class GameMaster : MonoBehaviour
 		Timeout,
 		Death
 	}
+	
+	private class IdObject
+	{
+		public string id;
+	}
+
+	private class BarObject
+	{
+		public string bar;
+	}
 
 	[UsedImplicitly]
 	private class Levels
@@ -67,15 +78,22 @@ public class GameMaster : MonoBehaviour
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
-		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
+//		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
 		SceneManager.sceneLoaded += Initialize;
 	}
 
 	private void Start()
 	{
-		DataCollector.GetNewID( id =>
+		DataCollector.GetBarType( data =>
 		{
-			_sessionId = id;
+			ChangeHpBar( Int32.Parse(
+				JsonUtility.FromJson< BarObject >( data ).bar ) );
+		} );
+		
+		DataCollector.GetNewID( data =>
+		{
+			_sessionId = Int32.Parse(
+				JsonUtility.FromJson< IdObject >( data ).id );
 			_sessionIdLabel.text = _sessionId.ToString();
 			_startButton.interactable = true;
 		} );
@@ -118,11 +136,11 @@ public class GameMaster : MonoBehaviour
 		}
 		else if ( Input.GetKeyDown( KeyCode.Period ) )
 		{
-			ChangeHpBar( -1 );
+			ScrollHpBar( -1 );
 		}
 		else if ( Input.GetKeyDown( KeyCode.Comma ) )
 		{
-			ChangeHpBar( 1 );
+			ScrollHpBar( 1 );
 		}
 
 		if ( _uploadComplete ) _uploadModal.SetActive( false );
@@ -169,13 +187,17 @@ public class GameMaster : MonoBehaviour
 		}
 	}
 
-	private void ChangeHpBar( int direction )
+	private void ScrollHpBar( int direction )
+	{
+		_currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
+		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
+		ChangeHpBar( _currentHpBarindex );
+	}
+
+	private void ChangeHpBar( int index )
 	{
 		Debug.Log( "change HP bar" );
 		_currentHpBar.gameObject.SetActive( false );
-
-		_currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
-		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
 		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
 
 		_currentHpBar.gameObject.SetActive( true );

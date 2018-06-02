@@ -11,7 +11,7 @@ public class DataCollectionController : MonoBehaviour
 {
     public enum DataType { Atomic, Final }
 
-    public delegate void WebCallback( int id );
+    public delegate void WebCallback( string data );
 
     public delegate void ProgressUpdate( float progress );
     
@@ -41,11 +41,17 @@ public class DataCollectionController : MonoBehaviour
     public void GetNewID( WebCallback cb ) 
     {
         String path = GetServerPath() + "/id";
-            var req = UnityWebRequest.Get( path );
-            StartCoroutine( Download( req, cb ) );
-      }
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, cb ) );
+    }
+    
+    public void GetBarType( WebCallback cb )
+    {
+        String path = GetServerPath() + "/bar";
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, cb ) );
+    }
         
-
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
         req.Send();
@@ -54,14 +60,8 @@ public class DataCollectionController : MonoBehaviour
         else if ( req.isDone )
         {
             Debug.Log( "New ID recieved: " + req.downloadHandler.text );
-            cb( Int32.Parse(
-                JsonUtility.FromJson< IdObject >( req.downloadHandler.text ).id ) );
+            cb( req.downloadHandler.text );
         }
-    }
-
-    private class IdObject
-    {
-        public string id;
     }
 
     IEnumerator Upload( WWWForm dataObj, DataType dataType )

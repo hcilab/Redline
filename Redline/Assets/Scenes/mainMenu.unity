@@ -2368,17 +2368,17 @@ Prefab:
         type: 2}
       propertyPath: _hpBarControllers.Array.data[0]
       value: 
-      objectReference: {fileID: 663099706}
+      objectReference: {fileID: 1181823200}
     - target: {fileID: 114305783154324880, guid: e17b19d0ac18c6044893dc3bc80df798,
         type: 2}
       propertyPath: _hpBarControllers.Array.data[1]
       value: 
-      objectReference: {fileID: 1181823200}
+      objectReference: {fileID: 1385916312}
     - target: {fileID: 114305783154324880, guid: e17b19d0ac18c6044893dc3bc80df798,
         type: 2}
       propertyPath: _hpBarControllers.Array.data[2]
       value: 
-      objectReference: {fileID: 1385916312}
+      objectReference: {fileID: 663099706}
     - target: {fileID: 114305783154324880, guid: e17b19d0ac18c6044893dc3bc80df798,
         type: 2}
       propertyPath: _hpbarlabel
