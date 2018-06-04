@@ -8,21 +8,6 @@ var redline_entry_schema =  mongoose.Schema({
   , time: String
   , counter: String
   , id: { type: Number, unique: true }
-  , level: String
-  , hp: Number
-  , bar: String
-  , damage: Number
-  , score: Number
-  , proximity: Number
-  , avg_intensity_in_proximity: Number
-  , active: Number
-});
-
-var redline_final_entry_schema =  mongoose.Schema({
-    date: { type: Date, default: Date.now }
-  , time: String
-  , counter: String
-  , id: { type: Number, unique: true }
   , trial: Number
   , level: String
   , hp: Number
@@ -40,7 +25,7 @@ mongoose.connect(uri);
 // mongoose.connect("mongodb://localhost/redline");
 var db = mongoose.connection;
 const entry_model = db.model( 'atomic_entries', redline_entry_schema );
-const final_model = db.model( 'cumulative_entries', redline_final_entry_schema );
+const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
 let tableData = {
   atomic_entries: [],
@@ -96,8 +81,17 @@ server(
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
+
+    await final_model.count( { 'id': entry.id } ).then( count => {
+      entry.trial = count;
+    });
+
     await entry.save();
-    ctx.log.info('ATOMIC ENTRY ' + ctx.data.id + ' ' + ctx.data.level );
+    ctx.log.info('ATOMIC ENTRY ' + ctx.data.id
+    + ' TRIAL '
+    + entry.trial
+    + ' '
+    + ctx.data.level );
     ctx.log.debug(ctx.data);
     return status(200).send("data successfully logged");
   })
