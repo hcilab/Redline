@@ -14,6 +14,56 @@
   - **Knowledge of Performance** (KP) <br> provides feedback of the quality or pattern of play (i.e. trigger pressed too early, aim too high)
   - **Knowledge of Results** (KR) <br> indicate level of success of an action (i.e. hit markers, enemy death or points)
 
-  ## Study
-  - 18 participants
-  - custom fps game
+## Study
+- 18 participants
+  - novice gamers only
+- custom fps game
+  - unreal engine + NFringe
+- 5 day experiment
+- beginning and end of week there was a *shooting gallery* game to asses aiming skills of the players. This was used as a baseline for learning and skill development.
+- Throughout the week participants played the game which consisted of a walkthrough a level with simple bots, unlimited ammo
+- Used bullet magnetism for aiming assistance
+- variables
+ - for the shooting gallery the following variables were used to asses performance
+   - score, hit ration and headshots
+ - walkthrough variables
+   - hit ratio, headshots, deaths, time
+ - also measured
+    - competence and autonomy (PENS)
+    - interest-enjoyment and pressure (IMI)
+    - suspense (Moulard's Suspense scale)
+    - Attribution (Player Attribution scale)
+
+## Results
+
+ - aim assist lead to greater increase in performance
+ - aim assist throughout skill development phases did not have a significant difference on skill development when removing the assistance
+ - perceived competence was higher with assistance present
+
+ # THE EFFECTS OF NAVIGATION ASSISTANCE ON SPATIAL LEARNING AND PERFORMANCE
+
+ - paper explores the impact navigation assistance techniques have on learning and performance of wayfinding tasks.
+ - does the guidance hypothesis apply to navigation assistance?
+ - focuses on incidental learning
+ - conducted 2 studies
+   1. Relationship assistance provided for navigation of an unfamiliar environment and route-finding ability and player experience.
+       - online Study - 30 MTurk (15f 15m)
+       - single session
+       - 3 levels of assistance - large map available on demand (M key)
+         1. No assistance
+         2. moderate assistance - minimap
+         3. strong assistance - path in the game world
+       - two maps (Quake and Wolfenstein)
+       - training consisted of 8 navigation tasks with assistance
+       - testing phase consisted of four more navigation tasks without assistance as well as questionnaires
+       - **RESULTS** assistance reduce the amount of time required to complete a task, less time looking at the map and shorter distance travelled. **No reduction in performance**. Assistance also resulted in less perceived effort and frustration, higher performance and lower mental demand.
+         - Removing assistance after training with it for testing did not have a significant impact on player experience
+   2. Multi day study (3 days) to observe long term effects of navigation assistance techniques. Study 1 was basically duplicated but now with more sessions
+      - 46 MTruk participants
+      - **RESULTS** only new results was that training with assistance reduce anxiety, longer training did not have any significant impacts
+
+  **Notes**
+  - Should probably create a profile of what kind of participants we're targeting on MTurk
+  - Should set an FPS requirement and also record that in our data
+  - State anxiety may provide some interesting data
+  - Effects were most pronounced short term
