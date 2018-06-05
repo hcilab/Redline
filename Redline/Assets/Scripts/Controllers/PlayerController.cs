@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
@@ -31,12 +32,16 @@ public class PlayerController : MonoBehaviour
 	private double _averageEnemiesNearBy = 0;
 	private double _averageNearByIntensity = 0;
 	private double _averageActiveFlames = 0;
+	private int _frames;
+	private double _averageFps;
+	private bool _initalizeAverages = true;
 
 	// Use this for initialization
 	void Start ()
 	{
 		_gameMaster = FindObjectOfType< GameMaster >();
 		
+		_frames = 0;
 		_hitPoints = _totalHp;
 
 		if ( _showCollider )
@@ -72,6 +77,7 @@ public class PlayerController : MonoBehaviour
 
 	void Update ()
 	{
+		_frames++;
 		if ( _gameMaster.Paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
@@ -110,22 +116,34 @@ public class PlayerController : MonoBehaviour
 		if ( Time.time - _lastLog > _loggingTick )
 		{
 			// time, id, level, hp, damage, score, 
-			LogData();
+			LogData( _frames / _loggingTick );
+			_frames = 0;
 			_logDamage = 0f;
 			_logScore = _logFireExtinguished;
 			_lastLog = Time.time;
 		}
 	}
 
-	public void LogData()
+	public void LogData( double fps )
 	{
-
+		
 		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
-		if ( Math.Abs( _averageNearByIntensity ) < 0.005 ) _averageNearByIntensity = averageIntensity;
-		else _averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
-		_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
-		_averageActiveFlames = ( _averageActiveFlames + _gameMaster.GetActiveFlames() ) / 2;
+		if ( _initalizeAverages )
+		{
+			_averageNearByIntensity = averageIntensity;
+			_averageEnemiesNearBy = _enemiesNearBy.Count;
+			_averageActiveFlames = _gameMaster.GetActiveFlames();
+			_averageFps = fps;
+		}
+		else
+		{
+			if ( Math.Abs( _averageNearByIntensity ) < 0.005 ) _averageNearByIntensity = averageIntensity;
+			else _averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
+			_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
+			_averageActiveFlames = ( _averageActiveFlames + _gameMaster.GetActiveFlames() ) / 2;
+			_averageFps = ( _averageFps + fps ) / 2;
+		}
 		
 		_gameMaster.DataCollector.LogData(
 			Time.time
@@ -139,6 +157,7 @@ public class PlayerController : MonoBehaviour
 			, _enemiesNearBy.Count
 			, averageIntensity
 			, _gameMaster.GetActiveFlames()
+			, fps
 		);
 	}
 
@@ -170,6 +189,7 @@ public class PlayerController : MonoBehaviour
 			, _averageEnemiesNearBy
 			, _averageNearByIntensity
 			, _averageActiveFlames
+			, _averageFps
 			, DataCollectionController.DataType.Final
 			);
 	}

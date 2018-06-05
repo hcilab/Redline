@@ -123,7 +123,7 @@ public class DataCollectionController : MonoBehaviour
     private void InitDatafile( string fileName = "redline_data.csv" )
     {
         var headerString = Encoding.ASCII.GetBytes( 
-            "time, counter, id, level, hp, bar_type, damage, score, proximity, active\n" );
+            "time, counter, id, level, hp, bar_type, damage, score, proximity, active, fps\n" );
         _dataFile = Path.Combine( Application.streamingAssetsPath, Path.Combine( "data", fileName ) );
         if ( !File.Exists( _dataFile ) )
         {
@@ -148,6 +148,7 @@ public class DataCollectionController : MonoBehaviour
         , double flamesNearBy
         , double averageIntensity
         , double activeFlames
+        , double fps
         , DataType type = DataType.Atomic )
     {
         #if UNITY_STANDALONE_WIN || UNITY_EDITOR
@@ -156,9 +157,9 @@ public class DataCollectionController : MonoBehaviour
             InitDatafile();
         }
         
-        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}, {10}\n", 
+        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n", 
             time, counter, sessionId, level, hitPoints, bar_type, damage,
-            score, flamesNearBy, averageIntensity, activeFlames );
+            score, flamesNearBy, averageIntensity, activeFlames, fps );
         File.AppendAllText( _dataFile, dataString );
         #endif    
     
@@ -174,6 +175,7 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "proximity", flamesNearBy.ToString() );
         dataObj.AddField( "avg_intensity_in_proximity", averageIntensity.ToString() );
         dataObj.AddField( "active", activeFlames.ToString() );
+        dataObj.AddField( "fps", fps.ToString() );
         Submit( dataObj, type );
     }
 }
