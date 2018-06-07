@@ -5,16 +5,12 @@ using UnityEngine;
 
 public class WaterController : MonoBehaviour
 {
-	private PlayerController _playerController;
-	private FireSystemController _fireSystemController;
+	[SerializeField] private LevelManager _levelManager;
 	private ParticleSystem water;
 	
 	// Use this for initialization
 	void Start () {
 		water = GetComponent< ParticleSystem >();
-		_playerController = GetComponentInParent< PlayerController >();
-		
-		_fireSystemController = _playerController.FireSystemController;
 	}
 
 	private void OnParticleCollision( GameObject other )
@@ -27,12 +23,12 @@ public class WaterController : MonoBehaviour
 			try
 			{
 				double intensity = 0;
-				FlameController flame = _fireSystemController.LowerIntensity(
+				FlameController flame = _levelManager.FireSystem.LowerIntensity(
 					other.transform.position,
 					waterCount,
 					out intensity
 				);
-				_playerController.Score( flame, intensity, other.transform );
+				_levelManager.Player.Score( flame, intensity, other.transform );
 			}
 			catch ( IndexOutOfRangeException ){}
 		}

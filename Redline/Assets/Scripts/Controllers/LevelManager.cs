@@ -6,6 +6,12 @@ public class LevelManager : MonoBehaviour
 	[SerializeField] private PlayerController _player;
 	[SerializeField] private FireSystemController _fireSystem;
 	private GameMaster _gameMaster;
+	private float _startTime;
+
+	public float StartTime
+	{
+		get { return _startTime; }
+	}
 	
 	public PlayerController Player
 	{
@@ -23,15 +29,17 @@ public class LevelManager : MonoBehaviour
 	}
 	
 	// Use this for initialization
-	void Start ()
+	private void Awake()
 	{
 		SceneManager.sceneLoaded += InitializeLevel;
 	}
 
 	private void InitializeLevel( Scene arg0, LoadSceneMode arg1 )
 	{
+		Debug.Log("initializing level"  );
 		_gameMaster = FindObjectOfType< GameMaster >();
 		
-		GameMaster.RegisterLevel( this );
+		_gameMaster.RegisterLevel( this );
+		_startTime = Time.time;
 	}
 }

@@ -51,6 +51,13 @@ public class DataCollectionController : MonoBehaviour
         var req = UnityWebRequest.Get( path );
         StartCoroutine( Download( req, cb ) );
     }
+
+    public void LoadConfig( string level, WebCallback cb )
+    {
+        string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, cb ) );
+    }
         
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {

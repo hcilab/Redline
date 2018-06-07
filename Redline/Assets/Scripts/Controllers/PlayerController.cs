@@ -6,24 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-
-	[SerializeField] public FireSystemController FireSystemController;
+	[SerializeField] private LevelManager _levelManager;
 	[SerializeField] private int _viewDistance = 40;
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
 	[SerializeField] private double _damageScaling = 10f;
 	[SerializeField] private double _totalHp = 100;
 	[SerializeField] private bool _showCollider = false;
+	[SerializeField] private double _damageTick = 0f;
+	[SerializeField] private double _loggingTick = 1f;
 	
 	
 	private Rigidbody _myBody;
 	private double _hitPoints;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
-	private GameMaster _gameMaster;
-	[SerializeField] private double _damageTick = 0f;
 	private double _lastTick;
-	[SerializeField] private double _loggingTick = 1f;
 	private double _lastLog = 0f;
 	private double _logDamage = 0f;
 	private double _logScore = 0f;
@@ -39,7 +37,6 @@ public class PlayerController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		_gameMaster = FindObjectOfType< GameMaster >();
 		
 		_frames = 0;
 		_hitPoints = _totalHp;
@@ -70,7 +67,7 @@ public class PlayerController : MonoBehaviour
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_lastTick = 0f;
-		_averageActiveFlames = _gameMaster.GetActiveFlames();
+		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
 	}
 	
 	// Update is called once per frame
@@ -78,7 +75,7 @@ public class PlayerController : MonoBehaviour
 	void Update ()
 	{
 		_frames++;
-		if ( _gameMaster.Paused ) return;
+		if ( _levelManager.GameMaster.Paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
 		float z = Input.GetAxis("Vertical");
@@ -104,7 +101,7 @@ public class PlayerController : MonoBehaviour
 		if ( _hitPoints <= 0 )
 		{
 			_hitPoints = 100;
-			_gameMaster.GameOver( GameMaster.GameEnd.Death );
+			_levelManager.GameMaster.GameOver( GameMaster.GameEnd.Death );
 			enabled = false;
 		}
 		else if(Time.time - _lastTick > _damageTick) 
@@ -133,7 +130,7 @@ public class PlayerController : MonoBehaviour
 		{
 			_averageNearByIntensity = averageIntensity;
 			_averageEnemiesNearBy = _enemiesNearBy.Count;
-			_averageActiveFlames = _gameMaster.GetActiveFlames();
+			_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
 			_averageFps = fps;
 		}
 		else
@@ -141,22 +138,22 @@ public class PlayerController : MonoBehaviour
 			if ( Math.Abs( _averageNearByIntensity ) < 0.005 ) _averageNearByIntensity = averageIntensity;
 			else _averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
 			_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
-			_averageActiveFlames = ( _averageActiveFlames + _gameMaster.GetActiveFlames() ) / 2;
+			_averageActiveFlames = ( _averageActiveFlames + _levelManager.GameMaster.GetActiveFlames() ) / 2;
 			_averageFps = ( _averageFps + fps ) / 2;
 		}
 		
-		_gameMaster.DataCollector.LogData(
+		_levelManager.GameMaster.DataCollector.LogData(
 			Time.time
-			, _gameMaster.GetTimeRemaining().ToString()
-			, _gameMaster.SessionID
+			, _levelManager.GameMaster.GetTimeRemaining().ToString()
+			, _levelManager.GameMaster.SessionID
 			, SceneManager.GetActiveScene().name
-			, _gameMaster.GetHpBarType()
+			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _logDamage
 			, _logFireExtinguished - _logScore
 			, _enemiesNearBy.Count
 			, averageIntensity
-			, _gameMaster.GetActiveFlames()
+			, _levelManager.GameMaster.GetActiveFlames()
 			, fps
 		);
 	}
@@ -167,7 +164,7 @@ public class PlayerController : MonoBehaviour
 		foreach ( var collider in enemiesNearBy )
 		{
 			total += 
-				FireSystemController.GetFlameIntensity( 
+				_levelManager.FireSystem.GetFlameIntensity( 
 					collider.GetComponentInParent< FlameController >() );
 		}
 		if( enemiesNearBy.Count > 0 )
@@ -177,12 +174,12 @@ public class PlayerController : MonoBehaviour
 
 	public void LogCumulativeData()
 	{
-		_gameMaster.DataCollector.LogData( 
+		_levelManager.GameMaster.DataCollector.LogData( 
 			Time.time
-			, _gameMaster.GetTimeRemaining().ToString()
-			, _gameMaster.SessionID
+			, _levelManager.GameMaster.GetTimeRemaining().ToString()
+			, _levelManager.GameMaster.SessionID
 			, SceneManager.GetActiveScene().name
-			, _gameMaster.GetHpBarType()
+			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _totalDamageTaken
 			, _logFireExtinguished
@@ -220,7 +217,7 @@ public class PlayerController : MonoBehaviour
 		foreach (Collider enemyCollider in _enemiesNearBy)
 		{
 			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
-			totalDmg += FireSystemController.GetFlameIntensity( enemy )
+			totalDmg += _levelManager.FireSystem.GetFlameIntensity( enemy )
 			                  /
 			                  Vector3.Distance(enemy.transform.position, transform.position)
 			                  *
@@ -229,7 +226,7 @@ public class PlayerController : MonoBehaviour
 		totalDmg = Math.Round( totalDmg * _damageScaling );
 		if ( totalDmg > 0.5 && _hitPoints >= 0) 
 		{
-			_gameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
+			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
 			_hitPoints -= totalDmg;
 		}
 
@@ -273,7 +270,7 @@ public class PlayerController : MonoBehaviour
 	public void Score( FlameController flame, double intensity, Transform position )
 	{
 		_score += ( intensity + 1 )* 10;
-		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
+		_levelManager.GameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
 		{
 			if ( _enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() ) )

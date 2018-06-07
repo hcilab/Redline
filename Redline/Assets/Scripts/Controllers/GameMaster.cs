@@ -17,14 +17,11 @@ public class GameMaster : MonoBehaviour
 	public bool Paused;
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
-	private PlayerController _player;
 	[SerializeField] private DeathScreenController _deathScreenController;
 	[SerializeField] private DeathScreenController _victoryScreenController;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
-	[SerializeField] private InputField _sessionIdLabel;
-	[SerializeField] private Button _startButton;
 
 	[SerializeField] private NumberController _damageNumberController;
 
@@ -32,12 +29,12 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private Canvas _gameInterface;
 
 	[SerializeField] public DataCollectionController DataCollector;
-	private float _roundStart;
-	private FireSystemController _fireSystem;
-	private int _sessionId;
 	[SerializeField] private GameObject _uploadModal;
+	
+	private int _sessionId;
 	private bool _uploadComplete = false;
 	private MainMenuController _mainMenu;
+	private LevelManager _levelManager;
 
 	public int SessionID
 	{
@@ -53,12 +50,12 @@ public class GameMaster : MonoBehaviour
 	
 	private class IdObject
 	{
-		public string id;
+		public string id = "NONE";
 	}
 
 	private class BarObject
 	{
-		public string bar;
+		public string bar = "NONE";
 	}
 
 	[UsedImplicitly]
@@ -78,8 +75,6 @@ public class GameMaster : MonoBehaviour
 			Destroy( this );
 
 		DontDestroyOnLoad( Instance );
-//		_currentHpBarindex = _hpBarControllers.IndexOf( _currentHpBar );
-		SceneManager.sceneLoaded += Initialize;
 	}
 
 	private void Start()
@@ -94,25 +89,14 @@ public class GameMaster : MonoBehaviour
 		{
 			_sessionId = Int32.Parse(
 				JsonUtility.FromJson< IdObject >( data ).id );
-			_sessionIdLabel.text = _sessionId.ToString();
-			_startButton.interactable = true;
+			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
 		} );
 	}
 
-	private void Initialize( Scene arg0, LoadSceneMode arg1 )
+	public void RegisterLevel( LevelManager levelManager )
 	{
-		switch ( arg0.name )
-		{
-				case Levels.MainMenu:
-					_mainMenu = FindObjectOfType< MainMenuController >();
-					_mainMenu.SetSessionId( _sessionId.ToString() );
-					break;
-				default:
-					_roundStart = Time.time;
-					_player = FindObjectOfType< PlayerController >();
-					_fireSystem = FindObjectOfType< FireSystemController >();
-					break;
-		}
+		Debug.Log( "Registering new level"  );
+		_levelManager = levelManager;
 	}
 
 	public void RestartLevel()
@@ -207,7 +191,7 @@ public class GameMaster : MonoBehaviour
 	public void GameOver( [CanBeNull] GameEnd reason )
 	{
 		if( !_gameOver ) 
-			_player.LogCumulativeData();
+			_levelManager.Player.LogCumulativeData();
 		Paused = true;
 		_gameOver = true;
 
@@ -238,10 +222,10 @@ public class GameMaster : MonoBehaviour
 		
 		_deathScreenController.enabled = true;
 		_deathScreenController.setMessage( message );
-		_deathScreenController.setScore(  _player.GetScore().ToString());;
-		_deathScreenController.SetFlameRating( _fireSystem.GetActiveFlames(), _fireSystem.GetTotalFlames(), 0f, 0f );
-		_deathScreenController.SetHealthRating( _player.GetRemainingHitPoints(), _player.GetStartingHealth() );
-		_deathScreenController.SetTimeRating( GetTimeRemaining(), _fireSystem.TotalTime() );
+		_deathScreenController.setScore(  _levelManager.Player.GetScore().ToString());;
+		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
+		_deathScreenController.SetHealthRating( _levelManager.Player.GetRemainingHitPoints(), _levelManager.Player.GetStartingHealth() );
+		_deathScreenController.SetTimeRating( GetTimeRemaining(), _levelManager.FireSystem.TotalTime() );
 		_deathScreenController.show();
 	}
 
@@ -295,38 +279,24 @@ public class GameMaster : MonoBehaviour
 		File.WriteAllBytes( path, jsonAsBytes  );
 	}
 
-	private IEnumerator DownloadConfig( string url )
-	{
-		using ( WWW www = new WWW( url ) )
-		{
-			yield return www;
-			JsonUtility.FromJsonOverwrite( www.text, gameObject );
-		}
-	}
-
 	public void LoadFromConfig( string level, MonoBehaviour gameObject )
 	{
 		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
-		#if UNITY_WEBGL
-			StartCoroutine( DownloadConfig( path ) );
-		#else
-			if ( File.Exists( path ) )
-			{
-				Debug.Log( "Loading data for " + level  );
-				var stringData = File.ReadAllText( path );
-				JsonUtility.FromJsonOverwrite( stringData, gameObject );
-			} 
-		#endif
+		DataCollector.LoadConfig( path, data =>
+		{
+			Debug.Log( "Attempting to load " + data + " into " + gameObject.name );
+			JsonUtility.FromJsonOverwrite( data, gameObject );
+		} );
 	}
 
 	public double GetTimeRemaining()
 	{
-		return Math.Round( _player.FireSystemController.GetTimeLeft() );
+		return Math.Round( _levelManager.FireSystem.GetTimeLeft() );
 	}
 
 	public int GetActiveFlames()
 	{
-		return _fireSystem.GetActiveFlames();
+			return _levelManager.FireSystem.GetActiveFlames();
 	}
 
 	public string GetHpBarType()

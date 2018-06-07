@@ -75,10 +75,6 @@ public class DeathScreenController : MonoBehaviour
 
 	private void UpdateRatings()
 	{
-		Debug.Log( _flameRating );
-		Debug.Log( _timeRating );
-		Debug.Log( _hpRating );
-
 		if ( _flameRating >= 5
 		     && _timeRating >= 5
 		     && _hpRating >= 5 )

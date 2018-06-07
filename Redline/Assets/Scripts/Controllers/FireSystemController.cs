@@ -29,6 +29,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private string _configFileName = "";
     [SerializeField] private int _levelTime = 60;
     [SerializeField] private int _payloadDepth;
+    [SerializeField] private LevelManager _levelManager;
     
     private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
@@ -37,7 +38,6 @@ public class FireSystemController : MonoBehaviour
     private GridController _fireGrid;
     private float _tick = -1;
     private FlameController _flamePrefab;
-    private GameMaster _gameMaster;
     private float _timeLeft = Int32.MaxValue;
     private bool initialized = false;
 
@@ -53,16 +53,14 @@ public class FireSystemController : MonoBehaviour
         _activeFlames = new List< GridItem >();
      
         if ( _configFileName == "" ) _configFileName = arg0.name;
-        
-        _gameMaster = FindObjectOfType< GameMaster >();
-        
+                
         if ( _loadFromFile )
         {
-            _gameMaster.LoadFromConfig( _configFileName, this );
+            _levelManager.GameMaster.LoadFromConfig( _configFileName, this );
         }
         else
         {
-            _gameMaster.SaveToConfig( _configFileName, this );
+            _levelManager.GameMaster.SaveToConfig( _configFileName, this );
         }
         
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
@@ -169,7 +167,7 @@ public class FireSystemController : MonoBehaviour
         //start the timer
         _timeLeft = _levelTime;
 
-        _gameMaster.ResetUi();
+        _levelManager.GameMaster.ResetUi();
         
         initialized = true;
 
@@ -180,11 +178,11 @@ public class FireSystemController : MonoBehaviour
     void Update()
     {
         if ( !initialized ) return; //don't start until initialization is done
-        if( _gameMaster == null || _gameMaster.Paused ) return;
+        if( _levelManager.GameMaster == null || _levelManager.GameMaster.Paused ) return;
 
         if ( _timeLeft <= 0 )
         {
-            _gameMaster.OnTimeout();
+            _levelManager.GameMaster.OnTimeout();
             enabled = false;
         }
         
@@ -196,7 +194,7 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _gameMaster.GameOver( GameMaster.GameEnd.Victory );
+            _levelManager.GameMaster.GameOver( GameMaster.GameEnd.Victory );
             enabled = false;
         }
         
@@ -277,7 +275,7 @@ public class FireSystemController : MonoBehaviour
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
                 if ( !newFlame )
                 {
-//                    _gameMaster.OnDeath( );
+//                    _levelManager.GameMaster.OnDeath( );
                     return;
                 }; 
                 spreadCount++;
