@@ -1,0 +1,1 @@
+You are the first firefighter to arrive at a developing house fire. The rest of your crew is on the way but while you're waiting you might as well try to put out the fire. Reinforcements will take XX seconds to arrive. Be careful that you don't get too close or you might have to pull out. If you do happen to put the fire out before it becomes too big we'll be very grateful!
