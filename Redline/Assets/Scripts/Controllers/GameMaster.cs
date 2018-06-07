@@ -35,6 +35,8 @@ public class GameMaster : MonoBehaviour
 	private bool _uploadComplete = false;
 	private MainMenuController _mainMenu;
 	private LevelManager _levelManager;
+	private string _playerConfig = null;
+	private int _currentLevel = 0;
 
 	public int SessionID
 	{
@@ -225,7 +227,7 @@ public class GameMaster : MonoBehaviour
 		_deathScreenController.setScore(  _levelManager.Player.GetScore().ToString());;
 		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
 		_deathScreenController.SetHealthRating( _levelManager.Player.GetRemainingHitPoints(), _levelManager.Player.GetStartingHealth() );
-		_deathScreenController.SetTimeRating( GetTimeRemaining(), _levelManager.FireSystem.TotalTime() );
+		_deathScreenController.SetTimeRating( GetTimeRemaining(), _levelManager.TotalTime() );
 		_deathScreenController.show();
 	}
 
@@ -269,29 +271,9 @@ public class GameMaster : MonoBehaviour
 		NextLevel( customLevel );
 	}
 
-	public void SaveToConfig( string level, MonoBehaviour gameObject )
-	{
-		string json = JsonUtility.ToJson( gameObject, true );
-		
-		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
-
-		byte[] jsonAsBytes = Encoding.ASCII.GetBytes( json );
-		File.WriteAllBytes( path, jsonAsBytes  );
-	}
-
-	public void LoadFromConfig( string level, MonoBehaviour gameObject )
-	{
-		string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
-		DataCollector.LoadConfig( path, data =>
-		{
-			Debug.Log( "Attempting to load " + data + " into " + gameObject.name );
-			JsonUtility.FromJsonOverwrite( data, gameObject );
-		} );
-	}
-
 	public double GetTimeRemaining()
 	{
-		return Math.Round( _levelManager.FireSystem.GetTimeLeft() );
+		return Math.Round( _levelManager.GetTimeLeft() );
 	}
 
 	public int GetActiveFlames()
@@ -302,5 +284,30 @@ public class GameMaster : MonoBehaviour
 	public string GetHpBarType()
 	{
 		return _hpbarlabel.text;
+	}
+
+	public void LoadFireSystem( FireSystemController fireSystem )
+	{
+		DataCollector.GetConfig( "level" + _currentLevel, data =>
+		{
+			JsonUtility.FromJsonOverwrite( data, fireSystem );
+		} );
+	}
+
+	public void LoadPlayer( PlayerController player )
+	{
+		if ( _playerConfig == null )
+		{
+			DataCollector.GetConfig( "player", data =>
+			{
+				_playerConfig = data;
+				JsonUtility.FromJsonOverwrite( _playerConfig, player );
+			} );
+		}
+		else
+		{
+			JsonUtility.FromJsonOverwrite( _playerConfig, player );
+		}
+		
 	}
 }

@@ -19,7 +19,6 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
     [SerializeField] private int _spreadLimit = Int32.MaxValue;
-    [SerializeField] private Boolean _loadFromFile = true;
     [SerializeField] private double _spreadChance = 0.3;
     [SerializeField] private double _growthFactor;
     [SerializeField] private double _maxFlameIntensity = 3d;
@@ -27,7 +26,6 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private int _prewarm = 0;
     [SerializeField] private double _spreadIntensity = 3;
     [SerializeField] private string _configFileName = "";
-    [SerializeField] private int _levelTime = 60;
     [SerializeField] private int _payloadDepth;
     [SerializeField] private LevelManager _levelManager;
     
@@ -38,7 +36,6 @@ public class FireSystemController : MonoBehaviour
     private GridController _fireGrid;
     private float _tick = -1;
     private FlameController _flamePrefab;
-    private float _timeLeft = Int32.MaxValue;
     private bool initialized = false;
 
     private void OnEnable()
@@ -53,15 +50,6 @@ public class FireSystemController : MonoBehaviour
         _activeFlames = new List< GridItem >();
      
         if ( _configFileName == "" ) _configFileName = arg0.name;
-                
-        if ( _loadFromFile )
-        {
-            _levelManager.GameMaster.LoadFromConfig( _configFileName, this );
-        }
-        else
-        {
-            _levelManager.GameMaster.SaveToConfig( _configFileName, this );
-        }
         
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         Vector3 floorSize = gameObject.transform.localScale;
@@ -164,9 +152,6 @@ public class FireSystemController : MonoBehaviour
         
         _spreadChance = orgSpreadChange;
         
-        //start the timer
-        _timeLeft = _levelTime;
-
         _levelManager.GameMaster.ResetUi();
         
         initialized = true;
@@ -179,13 +164,7 @@ public class FireSystemController : MonoBehaviour
     {
         if ( !initialized ) return; //don't start until initialization is done
         if( _levelManager.GameMaster == null || _levelManager.GameMaster.Paused ) return;
-
-        if ( _timeLeft <= 0 )
-        {
-            _levelManager.GameMaster.OnTimeout();
-            enabled = false;
-        }
-        
+    
         if ( _showGrid )
         {
             _fireGrid.DrawGrid();
@@ -207,9 +186,6 @@ public class FireSystemController : MonoBehaviour
         
         
         if ( _showGrid ) _fireGrid.DrawGrid();
-
-        _timeLeft -= Time.deltaTime;
-
     }
 
     private void Grow()
@@ -365,11 +341,6 @@ public class FireSystemController : MonoBehaviour
         SceneManager.sceneLoaded -= Initialize;
     }
 
-    public float GetTimeLeft()
-    {
-        return _timeLeft;
-    }
-
     public int GetActiveFlames()
     {
         return _activeFlames.Count;
@@ -378,10 +349,5 @@ public class FireSystemController : MonoBehaviour
     public int GetTotalFlames()
     {
         return _flamePool.Count();
-    }
-
-    public float TotalTime()
-    {
-        return _levelTime;
     }
 }

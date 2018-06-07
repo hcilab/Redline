@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -25,7 +26,12 @@ public class DataCollectionController : MonoBehaviour
 
     private void Awake()
     {
-        FindObjectOfType<GameMaster>().LoadFromConfig( "data_service", this );
+        string path = Path.Combine( Application.streamingAssetsPath, "data_service.json" );
+        GetConfig( path, data =>
+        {
+            Debug.Log( "Attempting to load " + data + " into " + gameObject.name );
+            JsonUtility.FromJsonOverwrite( data, this );
+        } );
         Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
         _uploadBacklog = new Queue<UnityWebRequest>();
     }
@@ -48,13 +54,6 @@ public class DataCollectionController : MonoBehaviour
     public void GetBarType( WebCallback cb )
     {
         String path = GetServerPath() + "/bar";
-        var req = UnityWebRequest.Get( path );
-        StartCoroutine( Download( req, cb ) );
-    }
-
-    public void LoadConfig( string level, WebCallback cb )
-    {
-        string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
         var req = UnityWebRequest.Get( path );
         StartCoroutine( Download( req, cb ) );
     }
@@ -184,5 +183,22 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "active", activeFlames.ToString() );
         dataObj.AddField( "fps", fps.ToString() );
         Submit( dataObj, type );
+    }
+    
+    public void SaveToConfig( string level, MonoBehaviour gameObject )
+    {
+        string json = JsonUtility.ToJson( gameObject, true );
+		
+        string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
+
+        byte[] jsonAsBytes = Encoding.ASCII.GetBytes( json );
+        File.WriteAllBytes( path, jsonAsBytes  );
+    }
+
+    public void GetConfig( string resource, WebCallback action )
+    {
+        var path = Path.Combine( Application.streamingAssetsPath, resource + ".json" );
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, action ) );
     }
 }
