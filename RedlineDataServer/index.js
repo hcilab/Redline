@@ -1,5 +1,6 @@
 const server = require('server');
 const mongoose = require('mongoose');
+const compression = require('compression');
 const { get, post, put, error } = server.router;
 const { render, json, status, header } = server.reply;
 
@@ -40,6 +41,8 @@ const corsExpress = require('cors')({
 
 const cors = server.utils.modern(corsExpress);
 
+const comp = server.utils.modern(compression);
+
 server(
   {
     security: {
@@ -47,6 +50,7 @@ server(
     }
   },
   cors,
+  comp,
   [
     get( '/', ctx => {
       return render("index.html");
@@ -117,7 +121,8 @@ server(
     return status(500).send(ctx.error.message);
   })
   , ctx => status(404)
-]);
+]).then(ctx => {
+  console.log(`Server launched on http://localhost:${ctx.options.port}/`)});
 
 function generateID( counter ) {
   return new Promise( (resolve, reject) => {
