@@ -26,7 +26,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private NumberController _damageNumberController;
 
 	[SerializeField] private NumberController _scoreNumberController;
-	[SerializeField] private Canvas _gameInterface;
+	[SerializeField] private UIController _gameInterface;
 
 	[SerializeField] public DataCollectionController DataCollector;
 	[SerializeField] private GameObject _uploadModal;
@@ -37,6 +37,9 @@ public class GameMaster : MonoBehaviour
 	private LevelManager _levelManager;
 	private string _playerConfig = null;
 	private int _currentLevel = 0;
+	private int _levelCount = -1;
+	private bool _fireLoaded;
+	private bool _playerLoaded;
 
 	public int SessionID
 	{
@@ -50,21 +53,18 @@ public class GameMaster : MonoBehaviour
 		Death
 	}
 	
-	private class IdObject
+	private class DataObject
 	{
 		public string id = "NONE";
-	}
-
-	private class BarObject
-	{
 		public string bar = "NONE";
+		public string count = "NONE";
 	}
 
 	[UsedImplicitly]
 	private class Levels
 	{ 
 		public const string MainMenu = "mainMenu";
-		public const string Level1 = "level1";
+		public const string Level = "levelScene";
 	}
 
 	// Use this for initialization
@@ -81,23 +81,31 @@ public class GameMaster : MonoBehaviour
 
 	private void Start()
 	{
+		_gameInterface.Awake();
+		
 		DataCollector.GetBarType( data =>
 		{
 			ChangeHpBar( Int32.Parse(
-				JsonUtility.FromJson< BarObject >( data ).bar ) );
+				JsonUtility.FromJson< DataObject >( data ).bar ) );
 		} );
 		
 		DataCollector.GetNewID( data =>
 		{
 			_sessionId = Int32.Parse(
-				JsonUtility.FromJson< IdObject >( data ).id );
+				JsonUtility.FromJson< DataObject >( data ).id );
 			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
+		} );
+
+		DataCollector.GetNumberOfLevels( data =>
+		{
+			_levelCount = Int32.Parse(
+				JsonUtility.FromJson< DataObject >( data ).count );
 		} );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
 	{
-		Debug.Log( "Registering new level"  );
+		Debug.Log( "Registering new level " + _currentLevel );
 		_levelManager = levelManager;
 	}
 
@@ -130,47 +138,43 @@ public class GameMaster : MonoBehaviour
 		}
 
 		if ( _uploadComplete ) _uploadModal.SetActive( false );
+		
+		Paused = !(_playerLoaded && _fireLoaded);
 	}
 
 	public void GoToMenu()
 	{
+		_gameInterface.gameObject.SetActive( false );
 		ResetUi();
 		SceneManager.LoadScene( Levels.MainMenu );
-		_gameInterface.gameObject.SetActive( false );
 		_gameOver = false;
 	}
 
 	public void NextLevel( [CanBeNull] string customLevel = null )
 	{
+		if ( _levelCount == -1 ) return;
+		
 		ResetUi();
-		int nextLvl;
-		string currentLvl = SceneManager.GetActiveScene().name.Substring( 5 );
-
+		if ( !string.IsNullOrEmpty( customLevel ) )
+		{
+			_currentLevel = Int32.Parse( customLevel );
+		}
+		
 		if ( customLevel == "restart" )
 		{
-			nextLvl = Int32.Parse( currentLvl );
+			_currentLevel--;
 		}
-		else if ( !string.IsNullOrEmpty( customLevel ) )
-		{
-			nextLvl = Int32.Parse( customLevel );
-		}
-		else
-		{
-			nextLvl = Int32.Parse( currentLvl ) + 1;
-		}
-	
-		Debug.Log( currentLvl );
 
-		if ( nextLvl > 3 )
-		{
-			_gameInterface.gameObject.SetActive( false );
-			SceneManager.LoadScene( Levels.MainMenu );
-		}
-		else
+		_currentLevel++;
+
+		if ( _currentLevel <= _levelCount )
 		{
 			_gameInterface.gameObject.SetActive( true );
-			SceneManager.LoadScene( "level" + nextLvl );
+			_playerLoaded = false;
+			_fireLoaded = false;
+			SceneManager.LoadScene( Levels.Level );
 		}
+		else GoToMenu();
 	}
 
 	private void ScrollHpBar( int direction )
@@ -266,9 +270,9 @@ public class GameMaster : MonoBehaviour
 		_gameOver = false;
 	}
 
-	public void StartGame( string customLevel )
+	public void StartGame( )
 	{
-		NextLevel( customLevel );
+		NextLevel( "0" );
 	}
 
 	public double GetTimeRemaining()
@@ -288,9 +292,11 @@ public class GameMaster : MonoBehaviour
 
 	public void LoadFireSystem( FireSystemController fireSystem )
 	{
-		DataCollector.GetConfig( "level" + _currentLevel, data =>
+		DataCollector.GetConfig( _currentLevel.ToString(), data =>
 		{
+			Debug.Log("Attempting to load fire config");
 			JsonUtility.FromJsonOverwrite( data, fireSystem );
+			_fireLoaded = true;
 		} );
 	}
 
@@ -302,12 +308,18 @@ public class GameMaster : MonoBehaviour
 			{
 				_playerConfig = data;
 				JsonUtility.FromJsonOverwrite( _playerConfig, player );
+				_playerLoaded = true;
 			} );
 		}
 		else
 		{
 			JsonUtility.FromJsonOverwrite( _playerConfig, player );
+			_playerLoaded = true;
 		}
-		
+	}
+
+	public string GetCurrentLevel()
+	{
+		return _currentLevel.ToString();
 	}
 }

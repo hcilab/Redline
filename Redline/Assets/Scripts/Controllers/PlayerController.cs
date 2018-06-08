@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
-			, SceneManager.GetActiveScene().name
+			, _levelManager.GameMaster.GetCurrentLevel()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _logDamage
@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
-			, SceneManager.GetActiveScene().name
+			, _levelManager.GameMaster.GetCurrentLevel()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _totalDamageTaken

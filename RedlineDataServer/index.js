@@ -1,6 +1,9 @@
 const server = require('server');
 const mongoose = require('mongoose');
 const compression = require('compression');
+const fs = require('fs');
+const levelConfigs = require('public/levels.json');
+const playerConfig = require('public/player.json');
 const { get, post, put, error } = server.router;
 const { render, json, status, header } = server.reply;
 
@@ -50,7 +53,6 @@ server(
     }
   },
   cors,
-  comp,
   [
     get( '/', ctx => {
       return render("index.html");
@@ -81,6 +83,25 @@ server(
     });
 
     return status(200).send( { "bar": bar } );
+  })
+  , get('/config/:resource', async ctx => {
+    ctx.log.debug( "Processing request for " + ctx.params.resource );
+
+    if( ctx.params.resource == "player" ) {
+      return status(200).send( playerConfig );
+    } else if ( ctx.params.resource == "levelCount" ) {
+      if( levelConfigs != null ) return status(200).send(
+        {
+          "count": levelConfigs.length
+        });
+    } else {
+      var levelNumber = parseInt( ctx.params.resource ) - 1;
+      if( !isNaN(levelNumber)
+          && levelNumber < levelConfigs.length
+          && levelNumber >= 0
+        ) return status(200).send( levelConfigs[ levelNumber ] );
+    }
+    return status(400).send("Invalid resource request.");
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );

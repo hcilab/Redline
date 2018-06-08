@@ -40,7 +40,7 @@ public class LevelManager : MonoBehaviour
 
 	private void InitializeLevel( Scene arg0, LoadSceneMode arg1 )
 	{
-		Debug.Log("initializing level"  );
+		Debug.Log("initializing level" );
 		_gameMaster = FindObjectOfType< GameMaster >();
 		
 		_gameMaster.RegisterLevel( this );
@@ -55,6 +55,7 @@ public class LevelManager : MonoBehaviour
 
 	private void Update()
 	{
+		if ( _gameMaster.Paused ) return;
 		if ( _timeLeft <= 0 )
 		{
 			GameMaster.OnTimeout();

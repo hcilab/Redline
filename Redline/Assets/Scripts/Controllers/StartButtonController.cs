@@ -22,7 +22,7 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 		if ( eventData.button == PointerEventData.InputButton.Left )
 		{
 			_customLevel = _levelSelectionField.GetComponent<InputField>().text;
-			FindObjectOfType< GameMaster >().StartGame( _customLevel );
+			FindObjectOfType< GameMaster >().StartGame( );
 		} else if ( eventData.button == PointerEventData.InputButton.Right )
 		{
 			Debug.Log( _levelSelectionField  );

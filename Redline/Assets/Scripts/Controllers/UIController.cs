@@ -5,7 +5,7 @@ public class UIController : MonoBehaviour
 {
 	public static UIController Instance = null;
 	
-	private void Awake()
+	public void Awake()
 	{
 		if ( Instance == null )
 			Instance = this;

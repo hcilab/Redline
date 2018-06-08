@@ -16,22 +16,19 @@ public class DataCollectionController : MonoBehaviour
 
     public delegate void ProgressUpdate( float progress );
     
-    [SerializeField] private string _serverAddress;
-    [SerializeField] private int _serverPort;
-    [SerializeField] private String _atomicEndpoint;
-    [SerializeField] private String _finalEndpoint;
-    [SerializeField] private bool _sendRemote;
+    [SerializeField] private string _serverAddress = "localhost";
+    [SerializeField] private int _serverPort = 9500;
+    [SerializeField] private bool _sendRemote = true;
+    [SerializeField] private string _idEndpoint = "/id";
+    [SerializeField] private string _atomicEndpoint = "/";
+    [SerializeField] private string _finalEndpoint = "/final/";
+    [SerializeField] private string _barEndpoint = "/bar";
+    [SerializeField] private string _configEndpoint = "/config/";
     private string _dataFile;
     private Queue<UnityWebRequest> _uploadBacklog;
 
     private void Awake()
     {
-        string path = Path.Combine( Application.streamingAssetsPath, "data_service.json" );
-        GetConfig( path, data =>
-        {
-            Debug.Log( "Attempting to load " + data + " into " + gameObject.name );
-            JsonUtility.FromJsonOverwrite( data, this );
-        } );
         Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
         _uploadBacklog = new Queue<UnityWebRequest>();
     }
@@ -46,26 +43,39 @@ public class DataCollectionController : MonoBehaviour
 
     public void GetNewID( WebCallback cb ) 
     {
-        String path = GetServerPath() + "/id";
+        String path = GetServerPath() + _idEndpoint;
         var req = UnityWebRequest.Get( path );
         StartCoroutine( Download( req, cb ) );
     }
     
     public void GetBarType( WebCallback cb )
     {
-        String path = GetServerPath() + "/bar";
+        String path = GetServerPath() + _barEndpoint;
         var req = UnityWebRequest.Get( path );
         StartCoroutine( Download( req, cb ) );
+    }
+
+    public void GetConfig( string resource, WebCallback action )
+    {
+        var path = GetServerPath() + _configEndpoint + resource;
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, action ) );
+    }
+    
+    public void GetNumberOfLevels( WebCallback action )
+    {
+        GetConfig( "levelCount", action );
     }
         
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
+        Debug.Log("GET " + req.url  );
         req.Send();
         yield return new WaitUntil( () => req.isDone && req.downloadHandler.isDone );
         if ( req.isError ) LogNetworkError( req );
         else if ( req.isDone )
         {
-            Debug.Log( "New ID recieved: " + req.downloadHandler.text );
+            Debug.Log( "New data downloaded: " + req.downloadHandler.text );
             cb( req.downloadHandler.text );
         }
     }
@@ -76,10 +86,10 @@ public class DataCollectionController : MonoBehaviour
         switch ( dataType )
         {
                 case DataType.Atomic:
-                    path += "/";
+                    path += _atomicEndpoint;
                     break;
                 case DataType.Final:
-                    path += "/final/";
+                    path += _finalEndpoint;
                     break;
         }
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
@@ -193,12 +203,5 @@ public class DataCollectionController : MonoBehaviour
 
         byte[] jsonAsBytes = Encoding.ASCII.GetBytes( json );
         File.WriteAllBytes( path, jsonAsBytes  );
-    }
-
-    public void GetConfig( string resource, WebCallback action )
-    {
-        var path = Path.Combine( Application.streamingAssetsPath, resource + ".json" );
-        var req = UnityWebRequest.Get( path );
-        StartCoroutine( Download( req, action ) );
     }
 }
