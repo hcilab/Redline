@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
+using Debug = UnityEngine.Debug;
 
 public class DataCollectionController : MonoBehaviour
 {
-    public enum DataType { Atomic, Final }
-
+    public enum DataType { Atomic, Death, Timeout, Victory }
+    
     public delegate void WebCallback( string data );
 
     public delegate void ProgressUpdate( float progress );
@@ -24,6 +26,8 @@ public class DataCollectionController : MonoBehaviour
     [SerializeField] private string _finalEndpoint = "/final/";
     [SerializeField] private string _barEndpoint = "/bar";
     [SerializeField] private string _configEndpoint = "/config/";
+    [SerializeField] private string _validationEndpoint = "/invalidate/";
+    [SerializeField] private string _trialEndpoint = "/trial/";
     private string _dataFile;
     private Queue<UnityWebRequest> _uploadBacklog;
 
@@ -33,17 +37,16 @@ public class DataCollectionController : MonoBehaviour
         _uploadBacklog = new Queue<UnityWebRequest>();
     }
     
-    public void Submit( WWWForm dataObj, DataType dataType )
-    {
-        if ( _sendRemote )
-        {
-            StartCoroutine( Upload( dataObj, dataType ) );
-        }
-    }
-
     public void GetNewID( WebCallback cb ) 
     {
         String path = GetServerPath() + _idEndpoint;
+        var req = UnityWebRequest.Get( path );
+        StartCoroutine( Download( req, cb ) );
+    }
+
+    public void GetTrial( int id, WebCallback cb )
+    {
+        string path = GetServerPath() + _trialEndpoint + id;
         var req = UnityWebRequest.Get( path );
         StartCoroutine( Download( req, cb ) );
     }
@@ -66,6 +69,15 @@ public class DataCollectionController : MonoBehaviour
     {
         GetConfig( "levelCount", action );
     }
+
+    public void InvalidateTrial( int session, int trial )
+    {
+        var path = GetServerPath() + _validationEndpoint;
+        WWWForm dataObj = new WWWForm();
+        dataObj.AddField( "id", session.ToString() );
+        dataObj.AddField( "trial", trial.ToString() );
+        StartCoroutine( Upload( dataObj, path ) );
+    }
         
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
@@ -80,18 +92,8 @@ public class DataCollectionController : MonoBehaviour
         }
     }
 
-    IEnumerator Upload( WWWForm dataObj, DataType dataType )
+    IEnumerator Upload( WWWForm dataObj, string path )
     {
-        var path = GetServerPath();
-        switch ( dataType )
-        {
-                case DataType.Atomic:
-                    path += _atomicEndpoint;
-                    break;
-                case DataType.Final:
-                    path += _finalEndpoint;
-                    break;
-        }
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         yield return req.Send();
 
@@ -139,7 +141,7 @@ public class DataCollectionController : MonoBehaviour
     private void InitDatafile( string fileName = "redline_data.csv" )
     {
         var headerString = Encoding.ASCII.GetBytes( 
-            "time, counter, id, level, hp, bar_type, damage, score, proximity, active, fps\n" );
+            "time, counter, id, level, hp, bar_type, damage, score, proximity, active, fps, type\n" );
         _dataFile = Path.Combine( Application.streamingAssetsPath, Path.Combine( "data", fileName ) );
         if ( !File.Exists( _dataFile ) )
         {
@@ -156,6 +158,7 @@ public class DataCollectionController : MonoBehaviour
         float time
         , string counter
         , int sessionId
+        , int trial
         , string level
         , string bar_type
         , double hitPoints
@@ -173,9 +176,10 @@ public class DataCollectionController : MonoBehaviour
             InitDatafile();
         }
         
-        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}\n", 
+        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}\n", 
             time, counter, sessionId, level, hitPoints, bar_type, damage,
-            score, flamesNearBy, averageIntensity, activeFlames, fps );
+            score, flamesNearBy, averageIntensity, activeFlames, fps, 
+            Enum.GetName( typeof( DataType ), type ) );
         File.AppendAllText( _dataFile, dataString );
         #endif    
     
@@ -183,6 +187,7 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "time", time.ToString());
         dataObj.AddField( "counter", counter );
         dataObj.AddField( "id", sessionId );
+        dataObj.AddField( "trial", trial );
         dataObj.AddField( "level", level );
         dataObj.AddField( "hp", hitPoints.ToString() );
         dataObj.AddField( "bar", bar_type );
@@ -192,7 +197,20 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "avg_intensity_in_proximity", averageIntensity.ToString() );
         dataObj.AddField( "active", activeFlames.ToString() );
         dataObj.AddField( "fps", fps.ToString() );
-        Submit( dataObj, type );
+        dataObj.AddField( "type", Enum.GetName( typeof( DataType ), type ) );
+        var path = GetServerPath();
+        switch ( type )
+        {
+            case DataType.Atomic:
+                path += _atomicEndpoint;
+                break;
+            case DataType.Death: 
+            case DataType.Timeout: 
+            case DataType.Victory:
+                path += _finalEndpoint;
+                break;
+        }
+        StartCoroutine( Upload( dataObj, path ) );
     }
     
     public void SaveToConfig( string level, MonoBehaviour gameObject )

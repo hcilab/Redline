@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using JetBrains.Annotations;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,17 +41,18 @@ public class GameMaster : MonoBehaviour
 	private int _levelCount = -1;
 	private bool _fireLoaded;
 	private bool _playerLoaded;
+	private int _trialNumber;
+	private bool _hasTrialNumber;
+	private bool _initialized;
 
+	public int TrialNumber
+	{
+		get { return _trialNumber; }
+	}
+	
 	public int SessionID
 	{
 		get { return _sessionId; }	
-	}
-	
-	public enum GameEnd 
-	{
-		Victory,
-		Timeout,
-		Death
 	}
 	
 	private class DataObject
@@ -58,6 +60,7 @@ public class GameMaster : MonoBehaviour
 		public string id = "NONE";
 		public string bar = "NONE";
 		public string count = "NONE";
+		public string trial = "NONE";
 	}
 
 	[UsedImplicitly]
@@ -105,6 +108,19 @@ public class GameMaster : MonoBehaviour
 
 	public void RegisterLevel( LevelManager levelManager )
 	{
+		Paused = true;
+		_initialized = false;
+		_hasTrialNumber = false;
+		_fireLoaded = false;
+		_playerLoaded = false;
+		
+		DataCollector.GetTrial( _sessionId, data =>
+		{
+			_trialNumber = Int32.Parse(
+				JsonUtility.FromJson< DataObject >( data ).trial );
+			_hasTrialNumber = true;
+		} );
+		
 		Debug.Log( "Registering new level " + _currentLevel );
 		_levelManager = levelManager;
 	}
@@ -120,9 +136,13 @@ public class GameMaster : MonoBehaviour
 		{
 			RestartLevel();
 		}
-		else if ( Input.GetKeyDown( KeyCode.Escape ) && _gameOver )
+		else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
-			GoToMenu();
+			Paused = !Paused;
+		}
+		else if ( Input.GetKeyDown( KeyCode.Q ) && Paused )
+		{
+			DataCollector.InvalidateTrial( _sessionId, _trialNumber );
 		}
 		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
@@ -138,8 +158,12 @@ public class GameMaster : MonoBehaviour
 		}
 
 		if ( _uploadComplete ) _uploadModal.SetActive( false );
-		
-		Paused = !(_playerLoaded && _fireLoaded);
+
+		if ( _playerLoaded && _fireLoaded && _hasTrialNumber && !_initialized )
+		{
+			_initialized = true;
+			Paused = false;
+		}
 	}
 
 	public void GoToMenu()
@@ -194,10 +218,10 @@ public class GameMaster : MonoBehaviour
 		_hpbarlabel.text = _currentHpBar.name;
 	}
 
-	public void GameOver( [CanBeNull] GameEnd reason )
+	public void GameOver( DataCollectionController.DataType reason )
 	{
 		if( !_gameOver ) 
-			_levelManager.Player.LogCumulativeData();
+			_levelManager.Player.LogCumulativeData( reason );
 		Paused = true;
 		_gameOver = true;
 
@@ -212,13 +236,13 @@ public class GameMaster : MonoBehaviour
 		string message;
 		switch ( reason )
 		{
-				case GameEnd.Victory:
+				case DataCollectionController.DataType.Victory:
 					message = "Congratulations you did it!";
 					break;
-				case GameEnd.Death:
+				case DataCollectionController.DataType.Death:
 					message = "You're gonna hurt yourself! Get out of there!";
 					break;
-				case GameEnd.Timeout:
+				case DataCollectionController.DataType.Timeout:
 					message = "Reinforcements have arrived! Take a breather!";
 					break;
 				default:
@@ -258,7 +282,7 @@ public class GameMaster : MonoBehaviour
 
 	public void OnTimeout()
 	{
-		GameOver( GameEnd.Timeout );
+		GameOver( DataCollectionController.DataType.Timeout );
 	}
 
 	public void ResetUi()

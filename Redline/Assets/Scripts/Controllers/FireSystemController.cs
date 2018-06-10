@@ -173,7 +173,7 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _levelManager.GameMaster.GameOver( GameMaster.GameEnd.Victory );
+            _levelManager.GameMaster.GameOver( DataCollectionController.DataType.Victory );
             enabled = false;
         }
         

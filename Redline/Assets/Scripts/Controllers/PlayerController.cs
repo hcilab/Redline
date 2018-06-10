@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
 		if ( _hitPoints <= 0 )
 		{
 			_hitPoints = 100;
-			_levelManager.GameMaster.GameOver( GameMaster.GameEnd.Death );
+			_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death );
 			enabled = false;
 		}
 		else if(Time.time - _lastTick > _damageTick) 
@@ -146,6 +146,7 @@ public class PlayerController : MonoBehaviour
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
+			, _levelManager.GameMaster.TrialNumber
 			, _levelManager.GameMaster.GetCurrentLevel()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
@@ -172,12 +173,13 @@ public class PlayerController : MonoBehaviour
 		return 0;
 	}
 
-	public void LogCumulativeData()
+	public void LogCumulativeData( DataCollectionController.DataType type )
 	{
 		_levelManager.GameMaster.DataCollector.LogData( 
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
+			, _levelManager.GameMaster.TrialNumber
 			, _levelManager.GameMaster.GetCurrentLevel()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
@@ -187,7 +189,7 @@ public class PlayerController : MonoBehaviour
 			, _averageNearByIntensity
 			, _averageActiveFlames
 			, _averageFps
-			, DataCollectionController.DataType.Final
+			, type
 			);
 	}
 
