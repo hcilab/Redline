@@ -1,0 +1,10 @@
+{
+  "_viewDistance": 20,
+  "_speed": 20,
+  "_rotationSpeed": 130,
+  "_damageScaling": 15,
+  "_totalHp": 1000,
+  "_showCollider": false,
+  "_damageTick": 0,
+  "_loggingTick": 1
+}
