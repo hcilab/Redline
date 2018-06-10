@@ -1,37 +1,36 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WaterController : MonoBehaviour
 {
-	[SerializeField] private double _waterStrength = .5f;
-	private FireSystemController _fireSystemController;
+	[SerializeField] private LevelManager _levelManager;
 	private ParticleSystem water;
 	
 	// Use this for initialization
 	void Start () {
 		water = GetComponent< ParticleSystem >();
-		_fireSystemController = GetComponentInParent< PlayerController >().FireSystemController;
 	}
 
 	private void OnParticleCollision( GameObject other )
 	{
 		if ( other.GetComponent<FlameController>(  ) )
 		{
-			var events = new ParticleCollisionEvent[
-				water.GetSafeCollisionEventSize()
-			];
+			var events = new List<ParticleCollisionEvent>();
 			var waterCount = water.GetCollisionEvents( other, events );
-
-			double intensity = 0;
-			FlameController flame = _fireSystemController.LowerIntensity(
-				other.transform.position,
-				_waterStrength * waterCount,
-				out intensity
-			);
-
-			GetComponentInParent< PlayerController >().Score( flame, intensity, other.transform );
-
+			
+			try
+			{
+				double intensity = 0;
+				FlameController flame = _levelManager.FireSystem.LowerIntensity(
+					other.transform.position,
+					waterCount,
+					out intensity
+				);
+				_levelManager.Player.Score( flame, intensity, other.transform );
+			}
+			catch ( IndexOutOfRangeException ){}
 		}
 	}
 }

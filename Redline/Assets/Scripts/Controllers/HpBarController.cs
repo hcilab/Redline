@@ -11,33 +11,40 @@ public class HpBarController : MonoBehaviour
 {
 
 	[SerializeField] private Gradient _color;
-	private PlayerController _player;
+	public PlayerController Player;
 	[SerializeField] private HpBarScale _scale;
 	[SerializeField] private bool _hasTextField;
 
 	private RectTransform _bar, _bkg;
 	private Text _text;
+	public static HpBarController Instance = null;
 
 
 	// Use this for initialization
 	void Awake ()
 	{
-		Debug.Log("Initialized HP bar.");
-
-		SceneManager.sceneLoaded += Initialize;
-	}
-
-	private void Initialize( Scene arg0, LoadSceneMode arg1 )
-	{
-		_player = FindObjectOfType<PlayerController>();
+		
+		Debug.Log("Starting up HP bar.");
 		_bar = transform.Find("bar") as RectTransform;
 		_bkg = transform.Find("bkg") as RectTransform;
 
-		_text = _bkg.GetComponentInChildren<Text>();
+		_text = GetComponentInChildren<Text>();
 
 		_bar.GetComponent<Image>().color = _color.Evaluate(1);
 		
 		if( _bkg && _bar ) _bar.sizeDelta = _bkg.sizeDelta;
+
+		SceneManager.activeSceneChanged += Initialize;
+	}
+
+	private void OnEnable()
+	{
+		Player = FindObjectOfType<PlayerController>();
+	}
+
+	void Initialize( Scene newScene, Scene oldScene )
+	{
+		OnEnable();
 	}
 
 	// Update is called once per frame
@@ -45,17 +52,17 @@ public class HpBarController : MonoBehaviour
 	{
 		_text.enabled = _hasTextField;
 
-		if (_hasTextField) _text.text = Mathf.Round( (float)_player.GetHealth() * 100) + "%";
+		if ( _hasTextField ) _text.text = Mathf.Round( ( float ) Player.GetHealth() * 100 ) + "%";
 
-		_bar.GetComponent<Image>().color = _color.Evaluate((float) _player.GetHealth());
-		
-		_bar.sizeDelta = Vector2.Lerp( 
+		_bar.GetComponent< Image >().color = _color.Evaluate( ( float ) Player.GetHealth() );
+
+		_bar.sizeDelta = Vector2.Lerp(
 			_bar.sizeDelta,
 			new Vector2(
-				(float) (_bkg.sizeDelta.x * _scale.scale(_player.GetHealth())),
+				( float ) ( _bkg.sizeDelta.x * _scale.scale( Player.GetHealth() ) ),
 				_bar.sizeDelta.y
-			), 
+			),
 			3 * Time.deltaTime
-			);
+		);
 	}
 }

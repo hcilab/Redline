@@ -1,34 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-
-	[SerializeField] public FireSystemController FireSystemController;
-	
+	[SerializeField] private LevelManager _levelManager;
+	[SerializeField] private int _viewDistance = 40;
 	[SerializeField] private float _speed = 3.0f;
 	[SerializeField] private float _rotationSpeed = 130f;
-	[SerializeField] private double _damage = 0.2;
 	[SerializeField] private double _damageScaling = 10f;
 	[SerializeField] private double _totalHp = 100;
-	[SerializeField] private float _waterStrength = 3;
 	[SerializeField] private bool _showCollider = false;
+	[SerializeField] private double _damageTick = 0f;
+	[SerializeField] private double _loggingTick = 1f;
 	
 	
 	private Rigidbody _myBody;
 	private double _hitPoints;
-	private NumberController _damageNumberController;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
-	private GameMaster _gameMaster;
+	private double _lastTick;
+	private double _lastLog = 0f;
+	private double _logDamage = 0f;
+	private double _logScore = 0f;
+	private int _logFireExtinguished = 0;
+	private double _totalDamageTaken = 0f;
+	private double _averageEnemiesNearBy = 0;
+	private double _averageNearByIntensity = 0;
+	private double _averageActiveFlames = 0;
+	private int _frames;
+	private double _averageFps;
+	private bool _initalizeAverages = true;
 
 	// Use this for initialization
 	void Start ()
 	{
-		_gameMaster = FindObjectOfType< GameMaster >();
 		
+		_frames = 0;
 		_hitPoints = _totalHp;
 
 		if ( _showCollider )
@@ -56,77 +66,131 @@ public class PlayerController : MonoBehaviour
 
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
-		_damageNumberController = _gameMaster.GetDamageNumberController();
+		_lastTick = 0f;
+		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
 	}
 	
 	// Update is called once per frame
 
 	void Update ()
 	{
-		if ( _gameMaster.Paused ) return;
+		_frames++;
+		if ( _levelManager.GameMaster.Paused ) return;
 		
 		float x = Input.GetAxis("Horizontal");
 		float z = Input.GetAxis("Vertical");
 		
 		Vector3 movement = new Vector3( x, 0f, z);
 
-		gameObject.transform.position = gameObject.transform.position + movement * _speed;
+		gameObject.transform.position = gameObject.transform.position + movement * _speed * Time.deltaTime;
+		_myBody.velocity = Vector3.zero;
+		_myBody.useGravity = false;
 		
-		if ( Input.GetMouseButton( 0 ) )
+		var w = GetComponentInChildren< ParticleSystem >().emission;
+		if ( Input.GetMouseButtonDown( 0 ) )
 		{
-			var cursor = new Vector3(
-				Input.mousePosition.x,
-				Input.mousePosition.y,
-				1f
-			);
-			cursor = Camera.main.ScreenToWorldPoint( cursor );
-			cursor.y = transform.position.y;
-			double distance = Vector3.Distance( cursor, transform.position );
-//			ApplyWater( distance );
-
-			//update the distance of the water stream
-			var water = GetComponentInChildren< ParticleSystem >().main;
-			water.startSpeed = new ParticleSystem.MinMaxCurve( ( float ) distance * 30 );
-			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
-			waterEmission.enabled = true;
+			w.enabled = true;
+			GetComponentInChildren< ParticleSystem >().Play();
+//			
 		} else if ( Input.GetMouseButtonUp( 0 ) )
 		{
-			var waterEmission = GetComponentInChildren< ParticleSystem >().emission;
-			waterEmission.enabled = false;
+			w.enabled = false;
 		}
 		LookAtMouse();
-		
+		 
 		if ( _hitPoints <= 0 )
 		{
-			_gameMaster.OnDeath( _score );
+			_hitPoints = 100;
+			_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death );
+			enabled = false;
 		}
-		else
+		else if(Time.time - _lastTick > _damageTick) 
 		{
 			TakeDamage();
+			_lastTick = Time.time;
+		}
+		
+		if ( Time.time - _lastLog > _loggingTick )
+		{
+			// time, id, level, hp, damage, score, 
+			LogData( _frames / _loggingTick );
+			_frames = 0;
+			_logDamage = 0f;
+			_logScore = _logFireExtinguished;
+			_lastLog = Time.time;
 		}
 	}
 
-	private void ApplyWater( double distance )
+	public void LogData( double fps )
 	{
-		double hoseStrength = 1 - distance;
-		hoseStrength = hoseStrength < 0 ? 0 : hoseStrength;
+		
+		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
-		try
+		if ( _initalizeAverages )
 		{
-			double outIntensity = 0;
-			var flame =
-				FireSystemController.LowerIntensity( 
-					_waterStrength * hoseStrength, 
-					out outIntensity 
-					);
-			_score += hoseStrength * outIntensity * 100;
-			if ( flame != null )
-			{
-				_score += 10;
-				_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
-			}
+			_averageNearByIntensity = averageIntensity;
+			_averageEnemiesNearBy = _enemiesNearBy.Count;
+			_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
+			_averageFps = fps;
 		}
-		catch ( Exception ){}
+		else
+		{
+			if ( Math.Abs( _averageNearByIntensity ) < 0.005 ) _averageNearByIntensity = averageIntensity;
+			else _averageNearByIntensity = ( _averageNearByIntensity + averageIntensity ) / 2;
+			_averageEnemiesNearBy = ( _averageEnemiesNearBy + _enemiesNearBy.Count ) / 2;
+			_averageActiveFlames = ( _averageActiveFlames + _levelManager.GameMaster.GetActiveFlames() ) / 2;
+			_averageFps = ( _averageFps + fps ) / 2;
+		}
+		
+		_levelManager.GameMaster.DataCollector.LogData(
+			Time.time
+			, _levelManager.GameMaster.GetTimeRemaining().ToString()
+			, _levelManager.GameMaster.SessionID
+			, _levelManager.GameMaster.TrialNumber
+			, _levelManager.GameMaster.GetCurrentLevel()
+			, _levelManager.GameMaster.GetHpBarType()
+			, _hitPoints
+			, _logDamage
+			, _logFireExtinguished - _logScore
+			, _enemiesNearBy.Count
+			, averageIntensity
+			, _levelManager.GameMaster.GetActiveFlames()
+			, fps
+		);
+	}
+
+	private double AverageIntensity( List< Collider > enemiesNearBy )
+	{
+		double total = 0f;
+		foreach ( var collider in enemiesNearBy )
+		{
+			total += 
+				_levelManager.FireSystem.GetFlameIntensity( 
+					collider.GetComponentInParent< FlameController >() );
+		}
+		if( enemiesNearBy.Count > 0 )
+			return total / enemiesNearBy.Count;
+		return 0;
+	}
+
+	public void LogCumulativeData( DataCollectionController.DataType type )
+	{
+		_levelManager.GameMaster.DataCollector.LogData( 
+			Time.time
+			, _levelManager.GameMaster.GetTimeRemaining().ToString()
+			, _levelManager.GameMaster.SessionID
+			, _levelManager.GameMaster.TrialNumber
+			, _levelManager.GameMaster.GetCurrentLevel()
+			, _levelManager.GameMaster.GetHpBarType()
+			, _hitPoints
+			, _totalDamageTaken
+			, _logFireExtinguished
+			, _averageEnemiesNearBy
+			, _averageNearByIntensity
+			, _averageActiveFlames
+			, _averageFps
+			, type
+			);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -155,18 +219,22 @@ public class PlayerController : MonoBehaviour
 		foreach (Collider enemyCollider in _enemiesNearBy)
 		{
 			FlameController enemy = enemyCollider.GetComponentInParent< FlameController >();
-			totalDmg += FireSystemController.GetFlameIntensity( enemy )
+			totalDmg += _levelManager.FireSystem.GetFlameIntensity( enemy )
 			                  /
 			                  Vector3.Distance(enemy.transform.position, transform.position)
 			                  *
 			                  Time.deltaTime;
 		}
-		if ( totalDmg > 0.01 && _hitPoints >= 0) 
+		totalDmg = Math.Round( totalDmg * _damageScaling );
+		if ( totalDmg > 0.5 && _hitPoints >= 0) 
 		{
-			totalDmg = Math.Round( totalDmg * _damageScaling );
-			_damageNumberController.SpawnNumber( totalDmg, transform );
+			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
 			_hitPoints -= totalDmg;
 		}
+
+		_totalDamageTaken += totalDmg;
+		_logDamage += totalDmg;
+		
 	}
 
 	private void LookAtMouse( )
@@ -191,6 +259,11 @@ public class PlayerController : MonoBehaviour
 		return _hitPoints / _totalHp;
 	}
 
+	public double GetRemainingHitPoints()
+	{
+		return _hitPoints;
+	}
+
 	public double GetScore()
 	{
 		return _score;
@@ -199,10 +272,36 @@ public class PlayerController : MonoBehaviour
 	public void Score( FlameController flame, double intensity, Transform position )
 	{
 		_score += ( intensity + 1 )* 10;
-		_gameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position );
+		_levelManager.GameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
 		{
-			_enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() );
+			if ( _enemiesNearBy.Remove( flame.GetComponentInChildren< Collider >() ) )
+			{
+				_logFireExtinguished++;
+			}
 		}
+	}
+
+	public bool HasLineOfSight( Vector3 location )
+	{
+		var distance = Vector3.Distance( location, transform.position );
+		if ( distance < _viewDistance )
+		{
+			Ray ray = new Ray(transform.position, Vector3.Normalize(location - transform.position) * distance);
+			var hit = Physics.Raycast( ray, distance );
+			if( hit )
+				Debug.DrawRay( ray.origin, ray.direction * distance, Color.red  );
+			else
+			{
+				Debug.DrawRay( ray.origin, ray.direction * distance, Color.green );
+			}
+			return !Physics.Raycast( ray, distance );
+		}
+		return false;
+	}
+
+	public float GetStartingHealth()
+	{
+		return ( float ) _totalHp;
 	}
 }

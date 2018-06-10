@@ -16,7 +16,8 @@ public class GridController
 	public readonly float _spaceWidth, _spaceHeight, _itemWidth, _itemHeight;
 
 	private LineRenderer _lineRenderer;
-	
+	private bool _gridCanUpdate = false;
+
 	/// <summary>
 	/// Creates a new grid. This grid can hold <i>rows</i> by <i>cols</i>
 	/// cells. Each cells can have <i>payloadDepth</i> number of items associated 
@@ -50,8 +51,34 @@ public class GridController
 				new MonoBehaviour[_payloadDepth]
 				, this
 				, new Vector2(i/_rows, i%_rows)
-				, new Vector2( _itemWidth, _itemHeight )
 			);
+		}
+	}
+
+	public GridController( int rows, int cols, MonoBehaviour[] payload, GameObject space )
+	: this( rows, cols, payload.Length, space) 
+	{
+		var fogGroup = new GameObject(space.name + "Pool");
+		foreach ( GridItem item in _grid )
+		{
+			foreach ( var monoBehaviour in payload )
+			{
+				MonoBehaviour payloadItem = MonoBehaviour.Instantiate( monoBehaviour );
+				payloadItem.transform.SetParent( fogGroup.transform );
+				var pos = GetPosition( item._gridCoords );
+				payloadItem.transform.position = new Vector3(
+					pos.x,
+					1,
+					pos.y);
+				
+				payloadItem.transform.localScale = new Vector3(
+					_itemWidth,
+					_itemHeight,
+					1f
+					);
+				
+				item.SetPayload( payloadItem );
+			}
 		}
 	}
 
@@ -72,7 +99,8 @@ public class GridController
 
 	public Vector2 GetWorldCoords( Vector3 position )
 	{
-		var ray = Camera.main.ScreenPointToRay( Camera.main.WorldToScreenPoint( position ) );
+		position.y = -1;
+		var ray = new Ray( position, Vector3.up );
 		return GetRayCoords( ray );
 	}
 
@@ -227,12 +255,25 @@ public class GridController
 			item.AttachVariableEvent( name, variableEvent );
 		}
 	}
-
-	public void InitVariable< T >( string name, GridItem.VariableSetter<T> setter)
+	
+	public void InitVariable< T >( string name, GridItem.VariableSetter setter)
 	{
 		foreach ( GridItem gridItem in _grid )
 		{
 			gridItem.SetVariable( name, setter );
+			_gridCanUpdate = true;
+			gridItem.SetVariable( "canUpdate", true );
+		}
+	}
+
+	public void UpdateVariable<T>( String key )
+	{
+		if ( _gridCanUpdate )
+		{
+			foreach ( var gridItem in _grid )
+			{
+				gridItem.UpdateVariable( key );
+			}	
 		}
 	}
 

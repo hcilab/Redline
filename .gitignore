@@ -1,9 +1,8 @@
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
 /Assets/AssetStoreTools*
+/Assets/Plugins/
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -42,3 +41,11 @@ Redline/obj/
 Redline/\.idea/
 
 Redline/ProjectSettings/
+
+*/node_modules/
+
+# no more data files
+.csv
+
+Redline/Assets/Plugins/
+Redline/UnityPackageManager/

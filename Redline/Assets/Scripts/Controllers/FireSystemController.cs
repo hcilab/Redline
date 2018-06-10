@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -10,37 +11,45 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class FireSystemController : MonoBehaviour
 {
-    [SerializeField] private int _rows, _columns, _payloadDepth;
+    [SerializeField] private int _rows;
+    [SerializeField] private int _columns; 
     [SerializeField] private double _startIntensity;
     [SerializeField] private bool _showGrid;
     [SerializeField] private int _firePoolSize = 20;
     [SerializeField] private float _updateInterval = 1;
     [SerializeField] private List< Vector2 > _startingFlames;
+    [SerializeField] private int _spreadLimit = Int32.MaxValue;
+    [SerializeField] private double _spreadChance = 0.3;
+    [SerializeField] private double _growthFactor;
+    [SerializeField] private double _maxFlameIntensity = 3d;
+    [SerializeField] private double _waterStrength = 0.1f;
+    [SerializeField] private int _prewarm = 0;
+    [SerializeField] private double _spreadIntensity = 3;
+    [SerializeField] private string _configFileName = "";
+    [SerializeField] private int _payloadDepth;
+    [SerializeField] private LevelManager _levelManager;
     
-    private readonly float _verticalOffset = .2f;
+    private readonly float _verticalOffset = 0;
     private List< GridItem > _activeFlames;
     private List< GridItem > _edgeFlames;
     private ObjectPoolController _flamePool;
     private GridController _fireGrid;
-    private float _tick;
+    private float _tick = -1;
     private FlameController _flamePrefab;
-    [SerializeField] private double _spreadChance = 0.3;
-    [SerializeField] private double _growthFactor;
-    [SerializeField] private double _maxFlameIntensity = 3d;
-    private GameMaster _gameMaster;
+    private bool initialized = false;
 
-    private void Awake()
+    private void OnEnable()
     {
-        _edgeFlames = new List< GridItem >();
-        _activeFlames = new List< GridItem >();
-     
         SceneManager.sceneLoaded += Initialize;
+        
     }
 
     private void Initialize( Scene arg0, LoadSceneMode arg1 )
     {
-        if( this == null ) return;
-        _gameMaster = FindObjectOfType< GameMaster >();
+        _edgeFlames = new List< GridItem >();
+        _activeFlames = new List< GridItem >();
+     
+        if ( _configFileName == "" ) _configFileName = arg0.name;
         
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         Vector3 floorSize = gameObject.transform.localScale;
@@ -51,32 +60,61 @@ public class FireSystemController : MonoBehaviour
         _flamePrefab.transform.localScale = itemSize;
 
         
-        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab );
+        _flamePool = GameMaster.InstantiatePool( _firePoolSize, _flamePrefab, "FlamePool" );
         
         
         _fireGrid = new GridController( _rows, _columns, _payloadDepth, gameObject );
         
         _fireGrid.InitVariable( "intensity", 0d, item =>
         {
-            var color = new Color(
-                1f,
-                1f - (float)item.GetVariable<double>( "intensity" ) / 5,
-                0f
-            );
-            
-            item.GetPayload< FlameController >( 0 )
-                .GetComponent< Renderer >().material.color = color;
+            var g = new Gradient();
+            var gColor = new GradientColorKey[4];
+            gColor[ 0 ].color = Color.white;
+            gColor[ 0 ].time = 0f;
+            gColor[ 1 ].color = Color.gray;
+            gColor[ 1 ].time = 0.25f;
+            gColor[ 2 ].color = Color.yellow;
+            gColor[ 2 ].time = 0.5f;
+            gColor[ 3 ].color = Color.red;
+            gColor[ 3 ].time = 1f;
+            var gAlpha = new GradientAlphaKey[1];
+            gAlpha[ 0 ].alpha = 1f;
+            gAlpha[ 0 ].time = 0f;
+            g.SetKeys( gColor, gAlpha );
+
+            var main = item.GetPayload< FlameController >( 0 )
+                .GetComponent< ParticleSystem >().main;
+                
+            main.startColor = g.Evaluate( 
+                (float)( item.GetVariable<double>( "intensity" )/( _maxFlameIntensity ) ) 
+                );
         } );
         
-        _fireGrid.InitVariable( "flammable", item =>
+        _fireGrid.InitVariable<bool>( "flammable", item =>
         {
             Vector3 pos = _fireGrid.GetPosition( item._gridCoords );
-            pos.z = pos.y;
-            pos.y = Camera.main.transform.position.y;
-            
-            var ray = new Ray(pos, Vector3.down);
 
-            return !Physics.Raycast( ray, pos.y - 2 );
+            var posLeft = new Vector3(
+                pos.x + _fireGrid._itemWidth / 2,
+                0.2f,
+                pos.y
+                );
+            
+            var posDown = new Vector3(
+                pos.x,
+                0.2f,
+                pos.y + _fireGrid._itemHeight / 2
+                );
+            
+            var rayLeft = new Ray( posLeft, Vector3.left );
+            var rayDown = new Ray( posDown, Vector3.back );
+            
+            Debug.DrawRay( rayLeft.origin, rayLeft.direction * _fireGrid._itemWidth, Color.white, 30000 );
+            Debug.DrawRay( rayDown.origin, rayDown.direction * _fireGrid._itemHeight, Color.white, 30000 );
+
+            var flammable = !( Physics.Raycast( rayDown, _fireGrid._itemHeight )
+                               || Physics.Raycast( rayLeft, _fireGrid._itemWidth ) );
+            return flammable;
         } );
         
         _fireGrid.InitVariable( "onfire", false );
@@ -98,17 +136,35 @@ public class FireSystemController : MonoBehaviour
             cell.SetVariable( "onfire", true );
             _activeFlames.Add( cell );
             _edgeFlames.Add( cell  );
+            _fireGrid.UpdateGridItem( cell._gridCoords, cell );
         }
         
         _tick = Time.time;
+
+        var orgSpreadChange = _spreadChance;
+        _spreadChance = 1f;
+        
+        for ( int i = 0; i < _prewarm; i++ )
+        {
+            Spread();
+            Grow();
+        }
+        
+        _spreadChance = orgSpreadChange;
+        
+        _levelManager.GameMaster.ResetUi();
+        
+        initialized = true;
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if( _gameMaster == null || _gameMaster.Paused ) return;
-        
+        if ( !initialized ) return; //don't start until initialization is done
+        if( _levelManager.GameMaster == null || _levelManager.GameMaster.Paused ) return;
+    
         if ( _showGrid )
         {
             _fireGrid.DrawGrid();
@@ -117,7 +173,8 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
-            _gameMaster.OnVictory();
+            _levelManager.GameMaster.GameOver( DataCollectionController.DataType.Victory );
+            enabled = false;
         }
         
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
@@ -129,7 +186,6 @@ public class FireSystemController : MonoBehaviour
         
         
         if ( _showGrid ) _fireGrid.DrawGrid();
-
     }
 
     private void Grow()
@@ -149,6 +205,8 @@ public class FireSystemController : MonoBehaviour
     /// </summary>
     private void Spread()
     {
+        int spreadCount = 0;
+        
         _edgeFlames = new List< GridItem >();
         foreach ( var item in _activeFlames )
         {
@@ -163,9 +221,19 @@ public class FireSystemController : MonoBehaviour
             if( add ) _edgeFlames.Add( item );
         }
         
+        int next = _edgeFlames.Count;
+        while ( next > 1 )
+        {
+            next--;
+            int k = Random.Range( 0, next + 1 );
+            GridItem f = _edgeFlames[ k ];
+            _edgeFlames[ k ] = _edgeFlames[ next ];
+            _edgeFlames[ next ] = f;
+        }
+        _edgeFlames.Reverse();
         foreach ( GridItem edgeItem in _edgeFlames )
         {
-            if( edgeItem.GetVariable<double>( "intensity" ) < 3 ) continue;
+            if( edgeItem.GetVariable<double>( "intensity" ) < _spreadIntensity ) continue;
             List< GridItem > emptyNeighbours = new List< GridItem >();
             
             foreach( GridItem n in edgeItem.GetNeighbours() )
@@ -178,9 +246,16 @@ public class FireSystemController : MonoBehaviour
 
             foreach ( GridItem neighbour in emptyNeighbours )
             {
-                if( Random.value < ( 1 - _spreadChance ) ) continue;
+                if( Random.value <  1 - _spreadChance ) continue;
+                if ( spreadCount >= _spreadLimit ) break;
                 FlameController newFlame = _flamePool.Spawn() as FlameController;
-                if ( !newFlame ) return; 
+                if ( !newFlame )
+                {
+//                    _levelManager.GameMaster.OnDeath( );
+                    return;
+                }; 
+                spreadCount++;
+                newFlame.GetComponent< Collider >().enabled = false;
                 var center = _fireGrid.GetPosition( neighbour._gridCoords );
                 var position = new Vector3(
                     center.x,
@@ -190,20 +265,17 @@ public class FireSystemController : MonoBehaviour
 //                Debug.Log("Setting new flame to " + neighbour._gridCoords);
 //                Debug.Log("To position" +   position);
                 newFlame.transform.position = position;
+                newFlame.GetComponent< Collider >().enabled = true;
+                
                 neighbour.SetPayload( newFlame, 0 );
                 neighbour.SetVariable( "intensity", 1d );
                 neighbour.SetVariable( "onfire", true );
                 neighbour.SetVariable( "verticalOffset", _verticalOffset );
+                _fireGrid.UpdateGridItem( neighbour._gridCoords, neighbour );
                 //TODO check if neighbour is actually an edge flame
                 _activeFlames.Add(neighbour);
             }
         }
-    }
-
-    public void SpreadWater( Vector3 position )
-    {
-        //TODO lower intensity terrain
-        //the terrain will spread negative height outwards until it reaches 0
     }
 
     public double GetFlameIntensity( FlameController flame )
@@ -221,9 +293,10 @@ public class FireSystemController : MonoBehaviour
 
     }
 
-    public FlameController LowerIntensity( Vector3 worldCoords, double waterStrength, out double outIntensity )
+    public FlameController LowerIntensity( Vector3 worldCoords, double particleCount, out double outIntensity )
     {
-        return LowerIntensity( _fireGrid.GetWorldCoords( worldCoords ), waterStrength, out outIntensity );
+        return LowerIntensity( _fireGrid.GetWorldCoords( worldCoords ), 
+            particleCount * _waterStrength, out outIntensity );
     }
 
     public FlameController LowerIntensity( Vector2 coords, double waterStrength, out double outIntensity )
@@ -251,17 +324,30 @@ public class FireSystemController : MonoBehaviour
                 cell.SetVariable( "onfire", false );
 //                Debug.Log( cell.GetVariable<int>( "intensity" )  );
                 cell.RemovePayload( 0 );
-                return flame;
-            }
-
-            cell.SetPayload( flame, 0 );
+            } else cell.SetPayload( flame, 0 );
             _fireGrid.UpdateGridItem( coords, cell);
         }
-        return null;
+        return flame;
     }
 
-     private void OnDestroy()
+    private void OnDisable()
+    {
+        initialized = false;
+    }
+
+    private void OnDestroy()
     {
         _fireGrid.Dispose();
+        SceneManager.sceneLoaded -= Initialize;
+    }
+
+    public int GetActiveFlames()
+    {
+        return _activeFlames.Count;
+    }
+
+    public int GetTotalFlames()
+    {
+        return _flamePool.Count();
     }
 }

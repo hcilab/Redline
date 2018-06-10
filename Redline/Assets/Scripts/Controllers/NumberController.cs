@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class NumberController : MonoBehaviour
@@ -8,10 +9,15 @@ public class NumberController : MonoBehaviour
 	[SerializeField] private float _spawnDelay = 0.3f;
 	[SerializeField] private int _numberPoolSize = 10;
 	[SerializeField] private ObjectPoolItem _numberPrefab;
-	private Canvas _canvas;
+	[SerializeField] private Canvas _canvas;
+
+	[SerializeField]
+	public int PoolCount { get; private set; }
+
 	private double _accumulator;
 	private ObjectPoolController _poolController;
 	private float _lastSpawn;
+	[SerializeField] private string _poolName;
 
 	void Awake()
 	{
@@ -20,40 +26,44 @@ public class NumberController : MonoBehaviour
 
 	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
-		_canvas = FindObjectOfType<Canvas>();
-		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab);
+		_poolController = GameMaster.InstantiatePool(_numberPoolSize, _numberPrefab, _poolName);
 		_lastSpawn = Time.time;
+		PoolCount = _poolController.ObjectCount();
 	}
 
-	public void SpawnNumber(double damage, Transform location)
+	public void SpawnNumber(double content, Vector3 location)
 	{
-		_accumulator += damage;
+		_accumulator += content;
 		
 		if (!_poolController.ObjectsAvailable() 
-		    || !(Time.time - _lastSpawn > _spawnDelay)) return;
+		    || !(Time.time - _lastSpawn > _spawnDelay)
+		    || _accumulator < 11 ) return;
 		
-		var instance = _poolController.Spawn();
+		var instance = _poolController.Spawn() as FloatingNumber;
 			
-		if(!instance) throw new NullReferenceException();
+		if( !instance ) throw new NullReferenceException();
 				
 		Vector2 screenPosition = Camera.main.WorldToScreenPoint(
 			new Vector3(
-				location.position.x + Random.Range(-.2f, .2f),
+				location.x + Random.Range(-.2f, .2f),
 				0f,
-				location.position.z + Random.Range(-.2f, .2f)
+				location.z + Random.Range(-.2f, .2f)
 			));
 			
 		instance.transform.SetParent( _canvas.transform, false );
 		instance.transform.position = screenPosition;
-		(instance as FloatingNumber).SetNumber(_accumulator);
-		(instance as FloatingNumber).StartPlayback();
+		instance.transform.localScale = new Vector3(1,1,1);
+		instance.SetNumber(_accumulator);
+		instance.StartPlayback();
 		_accumulator = 0;
 		_lastSpawn = Time.time;
+		PoolCount = _poolController.ObjectCount();
 	}
 
 	public void RemoveNumber(ObjectPoolItem sender)
 	{
 		_poolController.Remove(sender);
+		PoolCount = _poolController.ObjectCount();
 	}
 
 	private void OnDestroy()
@@ -69,8 +79,46 @@ public class NumberController : MonoBehaviour
 	}
 }
 
-internal interface FloatingNumber
+public abstract class FloatingNumber : ObjectPoolItem
 {
-	void SetNumber(double number);
-	void StartPlayback();
+	protected Animator Animator;
+
+	protected Text TextField;
+
+	void Awake()
+	{
+		Animator = GetComponent< Animator >();
+		TextField = Animator.GetComponentInChildren< Text >();
+	}
+
+	public void SetNumber( double number )
+	{
+		TextField.text = number.ToString();	
+	}
+
+	public void StartPlayback()
+	{
+		Animator.enabled = true;
+		Animator.Play( 0 );
+	}
+
+	public abstract void AnimationComplete();
+	
+	public void OnDestroy()
+	{
+		Destroy( Animator );
+	}
+
+	public override void Disable()
+	{
+		transform.position = new Vector3( -200, -200, -200 );
+		Animator.enabled = false;
+		base.Disable();
+	}
+
+	public override void Enable()
+	{
+		Animator.enabled = true;
+		base.Enable();
+	}
 }
