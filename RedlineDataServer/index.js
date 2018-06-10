@@ -107,9 +107,9 @@ server(
   , get('/trial/:id', async ctx => {
     let trialNumber = -1;
     await final_model.count( { 'id': ctx.params.id } ).then( count => {
-      trialNumber = count;
+      trialNumber = count + 1;
     });
-    if( trialNumber != -1 ) return status(200).send({ trial: trialNumber });
+    if( trialNumber != -1 ) return status(200).send( { trial: trialNumber } );
     return status( 500 ).send("cannot determine trial number");
   })
   , post('/', async ctx => {
