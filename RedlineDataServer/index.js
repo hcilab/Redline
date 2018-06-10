@@ -114,9 +114,14 @@ server(
   })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
+
+    await final_model.count( { 'id': ctx.data.id } ).then( count => {
+      if( count + 1 != ctx.data.trial )
+        return status(403).send("Trial number mismatch");
+    });
+
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
-
     await entry.save();
     ctx.log.info('ATOMIC ENTRY ' + ctx.data.id
     + ' TRIAL '
@@ -128,6 +133,12 @@ server(
   })
   , post('/final/', async ctx => {
     ctx.log.debug( ctx.data );
+
+    await final_model.count( { 'id': ctx.data.id } ).then( count => {
+      if( count + 1 != ctx.data.trial )
+        return status(403).send("Trial number mismatch");
+    });
+
     tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
     await entry.save();
