@@ -21,6 +21,7 @@ var redline_entry_schema =  mongoose.Schema({
   , proximity: Number
   , avg_intensity_in_proximity: Number
   , active: Number
+  , type: String
   , fps: Number
 });
 
@@ -103,14 +104,18 @@ server(
     }
     return status(400).send("Invalid resource request.");
   })
+  , get('/trial/:id', async ctx => {
+    let trialNumber = -1;
+    await final_model.count( { 'id': ctx.params.id } ).then( count => {
+      trialNumber = count;
+    });
+    if( trialNumber != -1 ) return status(200).send({ trial: trialNumber });
+    return status( 500 ).send("cannot determine trial number");
+  })
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
-
-    await final_model.count( { 'id': entry.id } ).then( count => {
-      entry.trial = count;
-    });
 
     await entry.save();
     ctx.log.info('ATOMIC ENTRY ' + ctx.data.id
@@ -125,17 +130,29 @@ server(
     ctx.log.debug( ctx.data );
     tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
-    await final_model.count( { 'id': entry.id } ).then( count => {
-      entry.trial = count;
-    });
     await entry.save();
     ctx.log.info(
       'FINAL ENTRY ' + ctx.data.id
     + ' TRIAL ' + entry.trial
     + ' BAR ' + ctx.data.bar
-    + ' ' + ctx.data.level );
+    + ' LEVEL ' + ctx.data.level
+    + ' ' + ctx.data.type );
     ctx.log.debug( ctx.data );
     return status(200).send("data successfully logged");
+  })
+  , post('/invalidate/', async ctx => {
+    ctx.log.info(
+      "Invalidating " + ctx.data.id + " trial " + ctx.data.trial );
+    const query = {
+      id: ctx.data.id,
+      trial: ctx.data.trial
+    };
+    const update = { $set: { type: "INVALID" } };
+
+    await final_model.count( query ).then( count => {
+      if( count == 0 ) entry_model.updateMany( query, update ).exec();
+    }, err => { return status(500).send(err) } );
+    return status(200);
   })
   , error( ctx => {
     ctx.log.error( ctx.error.message );
