@@ -184,7 +184,7 @@ public class GameMaster : MonoBehaviour
 
 		_currentLevel++;
 
-		if ( _currentLevel < _levelCount )
+		if ( _currentLevel <= _levelCount )
 		{
 			_gameInterface.gameObject.SetActive( true );
 			_playerLoaded = false;
