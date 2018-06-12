@@ -55,10 +55,7 @@ server(
   },
   cors,
   [
-    get( '/', ctx => {
-      return render("index.html");
-    })
-  , get('/id', async ctx => {
+  get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
       gid => id = gid
