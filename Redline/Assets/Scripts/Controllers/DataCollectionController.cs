@@ -111,16 +111,13 @@ public class DataCollectionController : MonoBehaviour
     {
         var totalBacklog = _uploadBacklog.Count;
         if ( totalBacklog == 0 ) progressUpdate( 1 );
-        while ( _uploadBacklog.Count != 0 )
+        for ( int i = 0; i < _uploadBacklog.Count; i++ )
         {
-            var webRequest = _uploadBacklog.Dequeue();
+            var webRequest = _uploadBacklog.Peek();
             yield return webRequest.Send();
-            if ( webRequest.isError )
-            {
-                throw new Exception( "Litterally can't even upload..." );
-            }
             if ( webRequest.isDone )
             {
+                _uploadBacklog.Dequeue();
                 progressUpdate( 1f - _uploadBacklog.Count / totalBacklog );
             }
         }
@@ -210,6 +207,14 @@ public class DataCollectionController : MonoBehaviour
                 path += _finalEndpoint;
                 break;
         }
+
+        if ( type == DataType.Atomic )
+        {
+            var r = UnityWebRequest.Post( path, dataObj );
+            _uploadBacklog.Enqueue( r );
+            return;
+        }
+        
         StartCoroutine( Upload( dataObj, path ) );
     }
     
