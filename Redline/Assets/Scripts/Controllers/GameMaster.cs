@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,9 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
+	[DllImport( "__Internal" )]
+	private static extern void RemoveLoader();
+	
 	private bool _gameOver;
 	public bool Paused;
 	private int _currentHpBarindex;
@@ -97,6 +101,8 @@ public class GameMaster : MonoBehaviour
 			_levelCount = Int32.Parse(
 				JsonUtility.FromJson< DataObject >( data ).count );
 		} );
+		
+		RemoveLoader();
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
