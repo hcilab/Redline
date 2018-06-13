@@ -46,4 +46,5 @@ Redline/ProjectSettings/
 # no more data files
 .csv
 
+Redline/Assets/Plugins/Editor
 Redline/UnityPackageManager/
