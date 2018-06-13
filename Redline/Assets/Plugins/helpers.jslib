@@ -1,5 +1,6 @@
 mergeInto( LibraryManager.library, {
   RemoveLoader: function() {
-    window.alert("Loading finished!");
+    console.log("Loading finished!");
+    document.getElementById('loader').remove();
   }
 });
