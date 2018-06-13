@@ -13,15 +13,13 @@
 .webgl-content .footer .title {margin-right: 10px; float: right;}
 .webgl-content .footer .fullscreen {background-image: url('fullscreen.png'); width: 38px; float: right;}
 
-.loaded {
+div.loaded {
   background-color: white !important;
   outline: 1px black solid;
 }
 
 .spinner {
-  margin-top: 30vh;
-  position: absolute;
-  margin: 100px auto;
+  margin: 30vh auto;
   width: 50%;
   height: 100px;
   text-align: center;
