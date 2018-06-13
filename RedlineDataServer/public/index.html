@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Redline</title>
+    <link rel="stylesheet" href="style.css">
     <script src="UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
     <script>
@@ -13,19 +14,20 @@
   <body>
 
     <div id="loader" class="spinner">
-      <div class="rect1 loaded"></div>
-      <div class="rect2 loaded"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
-      <div class="rect6"></div>
-      <div class="rect7"></div>
-      <div class="rect8"></div>
-      <div class="rect9"></div>
+      <div class="rect rect1"></div>
+      <div class="rect rect2"></div>
+      <div class="rect rect3"></div>
+      <div class="rect rect4"></div>
+      <div class="rect rect5"></div>
+      <div class="rect rect6"></div>
+      <div class="rect rect7"></div>
+      <div class="rect rect8"></div>
+      <div class="rect rect9"></div>
     </div>
 
     <div class="webgl-content">
-      <div id="gameContainer" style="width: 960px; height: 600px"></div>
+      <div id="gameContainer"
+      style="width: 960px; height: 600px; margin: auto;"></div>
       <div class="footer">
         <div class="webgl-logo"></div>
         <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
