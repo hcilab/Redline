@@ -2,6 +2,8 @@ const server = require('server');
 const mongoose = require('mongoose');
 const compression = require('compression');
 const fs = require('fs');
+const schedule = require('node-schedule');
+const _ = require('lodash');
 const levelConfigs = require('public/levels.json');
 const playerConfig = require('public/player.json');
 const { get, post, put, error } = server.router;
@@ -33,6 +35,8 @@ var db = mongoose.connection;
 const entry_model = db.model( 'atomic_entries', redline_entry_schema );
 const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
+// var trialValidation = schedule.scheduleJob('0 * * *', validateTrials );
+
 let tableData = {
   atomic_entries: [],
   cumulative_entries: []
@@ -55,7 +59,10 @@ server(
   },
   cors,
   [
-  get('/id', async ctx => {
+    get( '/', ctx => {
+      return render("index.html");
+    })
+  , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
       gid => id = gid
@@ -112,10 +119,10 @@ server(
   , post('/', async ctx => {
     ctx.log.debug( ctx.data );
 
-    await final_model.count( { 'id': ctx.data.id } ).then( count => {
-      if( count + 1 != ctx.data.trial )
-        return status(403).send("Trial number mismatch");
-    });
+    await validateTrialNumber(ctx.data.id, ctx.data.trial).then(
+      () => {},
+      (err) => { return status(403).send(err); }
+    )
 
     tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
@@ -126,6 +133,28 @@ server(
     + ' '
     + ctx.data.level );
     ctx.log.debug(ctx.data);
+
+    return status(200).send("data successfully logged");
+  })
+  , post('/bulk/', async ctx => {
+    ctx.log.debug( ctx.data.length );
+
+    await validateTrialNumber( ctx.data[0].id, ctx.data[0].trial ).then(
+      () => {},
+      ( err ) => { return status(403).send(err); }
+    );
+
+    for( let i = 0; i < ctx.data.length; i++ ) {
+      tableData.atomic_entries.push( ctx.data[i] );
+      const entry = new entry_model( ctx.data[i] );
+      await entry.save();
+      ctx.log.info('ATOMIC ENTRY ' + ctx.data[i].id
+      + ' TRIAL '
+      + entry.trial
+      + ' '
+      + ctx.data.level );
+    }
+
     return status(200).send("data successfully logged");
   })
   , post('/final/', async ctx => {
@@ -157,10 +186,11 @@ server(
     };
     const update = { $set: { type: "INVALID" } };
 
-    await final_model.count( query ).then( count => {
-      if( count == 0 ) entry_model.updateMany( query, update ).exec();
-    }, err => { return status(500).send(err) } );
-    return status(200);
+    await validate( query ).then( () => {
+      return status(200);
+    }, err => {
+      return status(500).send(err);
+    });
   })
   , error( ctx => {
     ctx.log.error( ctx.error.message );
@@ -168,7 +198,19 @@ server(
   })
   , ctx => status(404)
 ]).then(ctx => {
-  console.log(`Server launched on http://localhost:${ctx.options.port}/`)});
+  ctx.log.info(`Server launched on http://localhost:${ctx.options.port}/`);
+  trialValidation();
+});
+
+function validateTrialNumber( id, trial ) {
+  return new Promise( (resolve, reject) => {
+    final_model.count( { 'id': ctx.data.id } ).then( count => {
+      if( count + 1 != ctx.data.trial )
+        reject("Trial number mismatch");
+      resolve();
+    });
+  });
+}
 
 function generateID( counter ) {
   return new Promise( (resolve, reject) => {
@@ -180,5 +222,58 @@ function generateID( counter ) {
         if( count != 0 ) generateID( ++counter );
         else resolve( randomID );
     });
+  });
+}
+
+function trialValidation() {
+  var thresholdDate = new Date();
+  thresholdDate.setDate( thresholdDate.getDate() - 1 );
+  console.log( thresholdDate );
+  entry_model.find(
+    {
+      date: { $lt: thresholdDate }
+      , type: { $ne: "INVALID" }
+    } ).then( ( docs, err ) => {
+      if( _.isNil(docs) ) {
+        console.log( "No entries found that qualify for validation." );
+        return;
+      }
+      console.log( "Reducing " + docs.length + " documents for validation." );
+      var result = [];
+      _.reduce( docs, ( result, item ) => {
+        var entry = _.find( result, n => {
+          if( !_.isNil(item) && !_.isNil(n) &&  ) return n;
+        });
+
+        if( _.isNil( entry ) ) {
+          entry = {
+            id: item.id,
+            trial: item.trial
+          };
+
+          _.concat( result, entry );
+        }
+      });
+
+      console.log( "Validating " + result.length + " trials." );
+      _.forEach( result, item => {
+        const q = {
+          id: item.id,
+          trial: item.trial
+        };
+
+        validate( q );
+      });
+    });
+}
+
+function validate( query ) {
+  const action = { $set: { type: "INVALID" } };
+  return new Promise( (resolve, reject ) => {
+    final_model.count( query ).then( count => {
+      if( count == 0 )
+        entry_model.updateMany( query, action ).exec();
+      resolve();
+    }, reject );
   });
 }
