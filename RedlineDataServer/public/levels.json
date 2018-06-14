@@ -1,43 +1,21 @@
-[
-  {
-      "_startIntensity": 2.0,
-      "_updateInterval": 0.25,
-      "_startingFlames": [
-          {
-            "x": 10.0,
-            "y": 13.0
-          }
-      ],
-      "_spreadLimit": 4,
-      "_spreadChance": 0.25,
-      "_growthFactor": 0.2,
-      "_maxFlameIntensity": 5.0,
-      "_waterStrength": 0.05,
-      "_prewarm": 10,
-      "_spreadIntensity": 2.5,
+[{
+    "_updateInterval": 0.3,
+    "_startingFlames": [{
+      "x": 10.0,
+      "y": 13.0
+    }, {
+      "x": 13,
+      "y": 10
+    }],
+    "_prewarm": 13
   },
+
   {
-      "_startIntensity": 2.0,
-      "_showGrid": false,
-      "_firePoolSize": 100,
-      "_updateInterval": 0.3,
-      "_startingFlames": [
-          {
-            "x": 10.0,
-            "y": 13.0
-          },
-          {
-            "x": 13,
-            "y": 10
-          }
-      ],
-      "_spreadLimit": 4,
-      "_spreadChance": 0.25,
-      "_growthFactor": 0.2,
-      "_maxFlameIntensity": 5.0,
-      "_waterStrength": 0.05,
-      "_prewarm": 13,
-      "_spreadIntensity": 2.5,
-      "_levelTime": 60
+    "_updateInterval": 0.25,
+    "_startingFlames": [{
+      "x": 10.0,
+      "y": 13.0
+    }],
+    "_prewarm": 10
   }
 ]

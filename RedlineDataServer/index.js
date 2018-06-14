@@ -88,7 +88,7 @@ server(
     return status(200).send( { "bar": bar } );
   })
   , get('/config/:resource', async ctx => {
-    ctx.log.debug( "Processing request for " + ctx.params.resource );
+    ctx.log.debug( "Processing resource request for " + ctx.params.resource );
 
     if( ctx.params.resource == "player" ) {
       return status(200).send( playerConfig );
@@ -108,7 +108,7 @@ server(
           && levelNumber < levelConfigs.length
           && levelNumber >= 0
         ) {
-          let levelConfig = _.defaultsDeep( levelConfigs[ levelNumber ], defaultLevel );
+          let levelConfig = _.defaultsDeep( levelConfigs[ levelNumber ], defaultConfig );
           return status(200).send( levelConfigs[ levelNumber ] );
         }
     }
@@ -204,8 +204,8 @@ server(
   })
   , ctx => status(404)
 ]).then(ctx => {
+  ctx.log.debug('DEBUG ENABLED')
   ctx.log.info(`Server launched on http://localhost:${ctx.options.port}/`);
-  trialValidation();
 });
 
 function validateTrialNumber( id, trial ) {
