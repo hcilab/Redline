@@ -2,7 +2,6 @@ const server = require('server');
 const mongoose = require('mongoose');
 const compression = require('compression');
 const fs = require('fs');
-const schedule = require('node-schedule');
 const _ = require('lodash');
 const levelConfigs = require('public/levels.json');
 const playerConfig = require('public/player.json');
@@ -34,8 +33,6 @@ mongoose.connect(uri);
 var db = mongoose.connection;
 const entry_model = db.model( 'atomic_entries', redline_entry_schema );
 const final_model = db.model( 'cumulative_entries', redline_entry_schema );
-
-// var trialValidation = schedule.scheduleJob('0 * * *', validateTrials );
 
 let tableData = {
   atomic_entries: [],
@@ -242,7 +239,7 @@ function trialValidation() {
       var result = [];
       _.reduce( docs, ( result, item ) => {
         var entry = _.find( result, n => {
-          if( !_.isNil(item) && !_.isNil(n) &&  ) return n;
+          if( !_.isNil(item) && !_.isNil(n) ) return n;
         });
 
         if( _.isNil( entry ) ) {
