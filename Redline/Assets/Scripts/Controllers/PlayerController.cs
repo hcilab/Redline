@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
 	public void Initialize()
 	{
 		_enemiesNearBy = new List<Collider>();
+		_hitPoints = _totalHp;
 		_lastTick = 0f;
 		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
 	}
@@ -106,7 +107,6 @@ public class PlayerController : MonoBehaviour
 		 
 		if ( _hitPoints <= 0 )
 		{
-			_hitPoints = 100;
 			_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death );
 			enabled = false;
 		}
