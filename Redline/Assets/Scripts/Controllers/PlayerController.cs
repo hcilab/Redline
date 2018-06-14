@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
 	private bool _initalizeAverages = true;
 
 	// Use this for initialization
+
 	void Start ()
 	{
 		
@@ -63,13 +64,18 @@ public class PlayerController : MonoBehaviour
 				theta += deltaTheta;
 			}
 		}
-
+		
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
+	}
+
+	public void Initialize()
+	{
+		_enemiesNearBy = new List<Collider>();
 		_lastTick = 0f;
 		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
 	}
-	
+
 	// Update is called once per frame
 
 	void Update ()
@@ -147,7 +153,7 @@ public class PlayerController : MonoBehaviour
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
 			, _levelManager.GameMaster.TrialNumber
-			, _levelManager.GameMaster.GetCurrentLevel()
+			, _levelManager.GameMaster.CurrentLevel.ToString()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _logDamage
@@ -180,7 +186,7 @@ public class PlayerController : MonoBehaviour
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
 			, _levelManager.GameMaster.SessionID
 			, _levelManager.GameMaster.TrialNumber
-			, _levelManager.GameMaster.GetCurrentLevel()
+			, _levelManager.GameMaster.CurrentLevel.ToString()
 			, _levelManager.GameMaster.GetHpBarType()
 			, _hitPoints
 			, _totalDamageTaken

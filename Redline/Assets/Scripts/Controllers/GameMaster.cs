@@ -43,6 +43,16 @@ public class GameMaster : MonoBehaviour
 	private bool _hasTrialNumber;
 	private bool _initialized;
 
+	public int LevelCount
+	{
+		get { return _levelCount; }
+	}
+	
+	public int CurrentLevel
+	{
+		get { return _currentLevel; }
+	}
+
 	public int TrialNumber
 	{
 		get { return _trialNumber; }
@@ -103,7 +113,9 @@ public class GameMaster : MonoBehaviour
 				JsonUtility.FromJson< DataObject >( data ).count );
 		} );
 		
-		RemoveLoader();
+		#if UNITY_WEBGL && !UNITY_EDITOR
+			RemoveLoader();
+		#endif
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
@@ -350,10 +362,5 @@ public class GameMaster : MonoBehaviour
 			JsonUtility.FromJsonOverwrite( _playerConfig, player );
 			_playerLoaded = true;
 		}
-	}
-
-	public string GetCurrentLevel()
-	{
-		return _currentLevel.ToString();
 	}
 }
