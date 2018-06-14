@@ -94,24 +94,7 @@ public class GameMaster : MonoBehaviour
 	{
 		_gameInterface.Awake();
 		
-		DataCollector.GetBarType( data =>
-		{
-			ChangeHpBar( Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).bar ) );
-		} );
-		
-		DataCollector.GetNewID( data =>
-		{
-			_sessionId = Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).id );
-			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
-		} );
-
-		DataCollector.GetNumberOfLevels( data =>
-		{
-			_levelCount = Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).count );
-		} );
+		ReloadConfigs();
 		
 		#if UNITY_WEBGL && !UNITY_EDITOR
 			RemoveLoader();
@@ -355,5 +338,27 @@ public class GameMaster : MonoBehaviour
 			JsonUtility.FromJsonOverwrite( _playerConfig, player );
 			_playerLoaded = true;
 		}
+	}
+
+	public void ReloadConfigs()
+	{
+		DataCollector.GetBarType( data =>
+		{
+			ChangeHpBar( Int32.Parse(
+				JsonUtility.FromJson< DataObject >( data ).bar ) );
+		} );
+		
+		DataCollector.GetNewID( data =>
+		{
+			_sessionId = Int32.Parse(
+				JsonUtility.FromJson< DataObject >( data ).id );
+			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
+		} );
+
+		DataCollector.GetNumberOfLevels( data =>
+		{
+			_levelCount = Int32.Parse(
+				JsonUtility.FromJson< DataObject >( data ).count );
+		} );
 	}
 }

@@ -45,7 +45,17 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 	public void ValidateInput()
 	{
 		var lvlCount = _gameMaster.LevelCount;
-		var inputLvl = Int32.Parse( _levelSelectionField.GetComponent< InputField >().text );
+		int inputLvl;
+		try
+		{
+			inputLvl = Int32.Parse( _levelSelectionField.GetComponent< InputField >().text );
+		}
+		catch
+		{
+			if ( _levelSelectionField.GetComponent< InputField >().text == "reload" )
+				_gameMaster.ReloadConfigs();
+			return;
+		}
 		if ( inputLvl > 0 && inputLvl <= lvlCount )
 		{
 			_startButton.interactable = true;
