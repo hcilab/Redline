@@ -198,17 +198,15 @@ public class GameMaster : MonoBehaviour
 		if ( _levelCount == -1 ) return;
 		
 		ResetUi();
-	
+
 		if ( customLevel == "restart" )
 		{
 			_currentLevel--;
+		} else if ( !string.IsNullOrEmpty( customLevel ) ) 
+		{
+			_currentLevel = Int32.Parse( customLevel ) - 1;
 		}
 		
-		if ( !string.IsNullOrEmpty( customLevel ) )
-		{
-			_currentLevel = Int32.Parse( customLevel );
-		}
-	
 		_currentLevel++;
 
 		if ( _currentLevel <= _levelCount )
