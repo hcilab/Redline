@@ -142,6 +142,7 @@ public class GameMaster : MonoBehaviour
 		else if ( Input.GetKeyDown( KeyCode.Q ) && Paused )
 		{
 			DataCollector.InvalidateTrial( _sessionId, _trialNumber );
+			GoToMenu();
 		}
 		else if ( Input.GetKeyDown( KeyCode.N ) && _gameOver )
 		{
