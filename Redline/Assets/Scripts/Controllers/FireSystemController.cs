@@ -44,19 +44,11 @@ public class FireSystemController : MonoBehaviour
         get { return _levelTime; }
     }
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += Initialize;
-        
-    }
-
-    private void Initialize( Scene arg0, LoadSceneMode arg1 )
+    public void Initialize()
     {
         _edgeFlames = new List< GridItem >();
         _activeFlames = new List< GridItem >();
-     
-        if ( _configFileName == "" ) _configFileName = arg0.name;
-        
+             
         _flamePrefab = Resources.Load< FlameController >( "Prefabs/Flame" );
         Vector3 floorSize = gameObject.transform.localScale;
         float height = floorSize.z;
@@ -344,7 +336,6 @@ public class FireSystemController : MonoBehaviour
     private void OnDestroy()
     {
         _fireGrid.Dispose();
-        SceneManager.sceneLoaded -= Initialize;
     }
 
     public int GetActiveFlames()
