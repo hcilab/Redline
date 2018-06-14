@@ -315,17 +315,18 @@ public class GameMaster : MonoBehaviour
 		return _hpbarlabel.text;
 	}
 
-	public void LoadFireSystem( FireSystemController fireSystem )
+	public void LoadFireSystem( FireSystemController fireSystem, [CanBeNull] Action cb )
 	{
 		DataCollector.GetConfig( _currentLevel.ToString(), data =>
 		{
 			Debug.Log("Attempting to load fire config");
 			JsonUtility.FromJsonOverwrite( data, fireSystem );
 			_fireLoaded = true;
+			if ( cb != null ) cb();
 		} );
 	}
 
-	public void LoadPlayer( PlayerController player )
+	public void LoadPlayer( PlayerController player, Action cb )
 	{
 		if ( _playerConfig == null )
 		{
@@ -333,6 +334,7 @@ public class GameMaster : MonoBehaviour
 			{
 				_playerConfig = data;
 				JsonUtility.FromJsonOverwrite( _playerConfig, player );
+				if ( cb != null ) cb();
 				_playerLoaded = true;
 			} );
 		}

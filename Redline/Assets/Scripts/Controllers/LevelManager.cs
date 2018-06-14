@@ -44,13 +44,20 @@ public class LevelManager : MonoBehaviour
 		_gameMaster = FindObjectOfType< GameMaster >();
 		
 		_gameMaster.RegisterLevel( this );
+				
+		GameMaster.LoadFireSystem( FireSystem, () =>
+		{
+			_timeLeft = FireSystem.LevelTime;
+			_startTime = Time.time;
+			FireSystem.Initialize();
+		} );
 		
-		GameMaster.LoadFireSystem( FireSystem );
-		GameMaster.LoadPlayer( Player );
 		
-		_startTime = Time.time;
+		GameMaster.LoadPlayer( Player, () =>
+		{
+			Player.Initialize();
+		} );
 		//start the timer
-		_timeLeft = FireSystem.LevelTime;
 	}
 
 	private void Update()
@@ -75,4 +82,11 @@ public class LevelManager : MonoBehaviour
 		return _timeLeft;
 	}
 
+	private void OnDestroy()
+	{
+		SceneManager.sceneLoaded -= InitializeLevel;
+		Destroy( FireSystem );
+		Destroy( Player );
+		Destroy( this );
+	}
 }
