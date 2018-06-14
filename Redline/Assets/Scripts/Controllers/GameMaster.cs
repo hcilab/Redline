@@ -312,11 +312,6 @@ public class GameMaster : MonoBehaviour
 		_gameOver = false;
 	}
 
-	public void StartGame( )
-	{
-		NextLevel( "1" );
-	}
-
 	public double GetTimeRemaining()
 	{
 		return Math.Round( _levelManager.GetTimeLeft() );

@@ -10,13 +10,19 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 {
 	private Button _startButton;
 	private string _customLevel;
+	private GameMaster _gameMaster;
 	[SerializeField] private GameObject _levelSelectionField;
-	[SerializeField] private GameMaster _gameMaster;
 
-	private void Start()
+	private void Awake()
+	{
+		SceneManager.sceneLoaded += Initialize;
+	}
+
+	private void Initialize( Scene arg0, LoadSceneMode arg1 )
 	{
 		_startButton = GetComponent< Button >();
 		_levelSelectionField.SetActive( false );
+		_gameMaster = FindObjectOfType< GameMaster >();
 	}
 
 	public void OnPointerClick( PointerEventData eventData )
@@ -40,10 +46,15 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 	{
 		var lvlCount = _gameMaster.LevelCount;
 		var inputLvl = Int32.Parse( _levelSelectionField.GetComponent< InputField >().text );
-		if ( inputLvl <= 0 || inputLvl > lvlCount )
+		if ( inputLvl > 0 && inputLvl <= lvlCount )
 		{
-			_startButton.interactable = false;
+			_startButton.interactable = true;
 		}
-		else _startButton.interactable = true;
+		else _startButton.interactable = false;
+	}
+
+	private void OnDestroy()
+	{
+		SceneManager.sceneLoaded -= Initialize;
 	}
 }
