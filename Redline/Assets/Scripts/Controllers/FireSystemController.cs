@@ -27,6 +27,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private double _spreadIntensity = 3;
     [SerializeField] private string _configFileName = "";
     [SerializeField] private int _payloadDepth;
+    [SerializeField] private int _levelTime;
     [SerializeField] private LevelManager _levelManager;
     
     private readonly float _verticalOffset = 0;
@@ -37,6 +38,11 @@ public class FireSystemController : MonoBehaviour
     private float _tick = -1;
     private FlameController _flamePrefab;
     private bool initialized = false;
+
+    public int LevelTime
+    {
+        get { return _levelTime; }
+    }
 
     private void OnEnable()
     {

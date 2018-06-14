@@ -50,7 +50,7 @@ public class LevelManager : MonoBehaviour
 		
 		_startTime = Time.time;
 		//start the timer
-		_timeLeft = _levelTime;
+		_timeLeft = FireSystem.LevelTime;
 	}
 
 	private void Update()
