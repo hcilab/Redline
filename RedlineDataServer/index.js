@@ -5,6 +5,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const levelConfigs = require('public/levels.json');
 const playerConfig = require('public/player.json');
+const defaultConfig = require('public/defaultLevel.json');
 const { get, post, put, error } = server.router;
 const { render, json, status, header } = server.reply;
 
@@ -106,7 +107,10 @@ server(
       if( !isNaN(levelNumber)
           && levelNumber < levelConfigs.length
           && levelNumber >= 0
-        ) return status(200).send( levelConfigs[ levelNumber ] );
+        ) {
+          let levelConfig = _.defaultsDeep( levelConfigs[ levelNumber ], defaultLevel );
+          return status(200).send( levelConfigs[ levelNumber ] );
+        }
     }
     return status(400).send("Invalid resource request.");
   })
