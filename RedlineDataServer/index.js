@@ -97,7 +97,12 @@ server(
           "count": levelConfigs.length
         });
     } else {
-      var levelNumber = parseInt( ctx.params.resource ) - 1;
+      var levelNumber;
+      try {
+        levelNumber = parseInt( ctx.params.resource ) - 1;
+      } catch (err) {
+        return status(400).send( "Invalid resource request.<br>" + err);
+      }
       if( !isNaN(levelNumber)
           && levelNumber < levelConfigs.length
           && levelNumber >= 0
