@@ -28,6 +28,7 @@ public class GameMaster : MonoBehaviour
 
 	[SerializeField] public DataCollectionController DataCollector;
 	[SerializeField] private GameObject _uploadModal;
+	[SerializeField] private GameObject _pauseScreen;
 	
 	private int _sessionId;
 	private bool _uploadComplete = false;
@@ -131,13 +132,13 @@ public class GameMaster : MonoBehaviour
 
 	private void Update()
 	{
-		if ( Input.GetKeyDown( KeyCode.R ) && _gameOver )
+		if ( Input.GetKeyDown( KeyCode.R ) && Paused )
 		{
 			RestartLevel();
 		}
 		else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
-			Paused = !Paused;
+			TogglePause( !Paused );
 		}
 		else if ( Input.GetKeyDown( KeyCode.Q ) && Paused )
 		{
@@ -162,8 +163,14 @@ public class GameMaster : MonoBehaviour
 		if ( _playerLoaded && _fireLoaded && _hasTrialNumber && !_initialized )
 		{
 			_initialized = true;
-			Paused = false;
+			TogglePause( false );
 		}
+	}
+
+	private void TogglePause( bool pause )
+	{
+		Paused = pause;
+		_pauseScreen.SetActive( Paused );
 	}
 
 	public void GoToMenu()
@@ -291,13 +298,13 @@ public class GameMaster : MonoBehaviour
 		_victoryScreenController.hide();
 		_deathScreenController.hide();
 		_hpbarlabel.text = _currentHpBar.name;
-		Paused = false;
+		TogglePause( false );
 		_gameOver = false;
 	}
 
 	public void StartGame( )
 	{
-		NextLevel( "0" );
+		NextLevel( "1" );
 	}
 
 	public double GetTimeRemaining()
