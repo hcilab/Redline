@@ -34,7 +34,7 @@ public class GameMaster : MonoBehaviour
 	private MainMenuController _mainMenu;
 	private LevelManager _levelManager;
 	private string _playerConfig = null;
-	private int _currentLevel = 0;
+	private int _currentLevel = 1;
 	private int _levelCount = -1;
 	private bool _fireLoaded;
 	private bool _playerLoaded;
