@@ -17,7 +17,9 @@ public class DeathScreenController : MonoBehaviour
 	[SerializeField] private RectTransform _timeRatingBar;
 	[SerializeField] private Text _sessionId;
 	[SerializeField] private Button _nextLevelButton;
-	[SerializeField] private Text _infoMessage;	
+	[SerializeField] private Text _infoMessage;
+
+	[SerializeField] private int _cutOff;
 //	[SerializeField] private Animator _animator;
 
 	void Awake()
@@ -75,18 +77,24 @@ public class DeathScreenController : MonoBehaviour
 
 	private void UpdateRatings()
 	{
-		if ( _flameRating >= 5
-		     && _timeRating >= 5
-		     && _hpRating >= 5 )
+		if ( _flameRating >= _cutOff
+		     && _timeRating >= _cutOff )
 		{
 			_nextLevelButton.interactable = true;
 			_infoMessage.enabled = false;
+		}
+		else if ( _hpRating >= 0 )
+		{
+			_nextLevelButton.interactable = false;
+			_infoMessage.enabled = true;
+			_infoMessage.text = "In order to proceed you must reach at least "
+			                    + _cutOff / 2f + " stars in the time and firefighting categories.";
 		}
 		else
 		{
 			_nextLevelButton.interactable = false;
 			_infoMessage.enabled = true;
-			_infoMessage.text = "In order to proceed you must reach at least 2.5 stars in each category.";
+			_infoMessage.text = "Slow down there! Before continuing you'll have to show us you can handle this one.";
 		}
 		
 		_flameRatingBar.sizeDelta = new Vector2( _flameRating * _starWidth / 2, 60 );
