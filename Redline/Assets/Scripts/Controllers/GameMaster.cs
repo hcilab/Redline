@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -185,9 +186,16 @@ public class GameMaster : MonoBehaviour
 		if ( customLevel == "restart" )
 		{
 			_currentLevel--;
-		} else if ( !string.IsNullOrEmpty( customLevel ) ) 
+		} else if ( !string.IsNullOrEmpty( customLevel ) )
 		{
-			_currentLevel = Int32.Parse( customLevel ) - 1;
+			try
+			{
+				_currentLevel = Int32.Parse( customLevel ) - 1;
+			}
+			catch
+			{
+				return;
+			}
 		}
 		
 		_currentLevel++;
