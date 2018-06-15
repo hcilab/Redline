@@ -77,8 +77,8 @@ server(
       totalCount = count;
     });
 
-    await final_model.count( {'bar': 'Offset HP Bar' } ).then( count => {
-      ctx.log.debug( "There are currently " + count + " Offset entries");
+    await final_model.count( {'bar': 'Linear HP Bar' } ).then( count => {
+      ctx.log.debug( "There are currently " + count + " Linear entries");
       if( count > totalCount/2 ) bar = 0;
       else bar = count % 2;
     }).catch( () => {
