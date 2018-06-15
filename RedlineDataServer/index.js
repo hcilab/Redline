@@ -50,7 +50,7 @@ const cors = server.utils.modern(corsExpress);
 const comp = server.utils.modern(compression);
 
 server(
-  {
+  { log: 'debug', 
     security: {
       csrf: false
     }
@@ -78,12 +78,12 @@ server(
     });
 
     await final_model.count( {'bar': 'Linear HP Bar' } ).then( count => {
-      ctx.log.debug( "There are currently " + count + " Linear entries");
-      if( count > totalCount/2 ) bar = 0;
-      else bar = count % 2;
+      ctx.log.debug( count + " out of " + totalCount + " entries use the Linear bar");
+      bar = count % 2;
     }).catch( () => {
       return status(500).send("An error occured allocating a bar type.");
     });
+    ctx.log.debug("sending bar: " + bar );
 
     return status(200).send( { "bar": bar } );
   })
