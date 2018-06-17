@@ -10,8 +10,9 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 {
 	private Button _startButton;
 	private string _customLevel;
-	private GameMaster _gameMaster;
 	[SerializeField] private GameObject _levelSelectionField;
+
+	private GameMaster _gameMaster;
 
 	private void Awake()
 	{
@@ -30,7 +31,7 @@ public class StartButtonController : MonoBehaviour, IPointerClickHandler
 		if ( _startButton.interactable && eventData.button == PointerEventData.InputButton.Left )
 		{
 			_customLevel = _levelSelectionField.GetComponent<InputField>().text;
-			_gameMaster.NextLevel( _customLevel );
+			gameObject.GetComponentInParent<MainMenuController>().ShowNarrative( _customLevel );
 		} else if ( eventData.button == PointerEventData.InputButton.Right )
 		{
 			Debug.Log( _levelSelectionField  );

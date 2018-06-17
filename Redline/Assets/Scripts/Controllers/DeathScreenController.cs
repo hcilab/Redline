@@ -44,25 +44,32 @@ public class DeathScreenController : MonoBehaviour
 //		scoreText.GetComponent< Text >().text = "Final Score: " + score;
 	}
 
-	public void SetHealthRating( double hpRemaining, float totalHp )
+	public int SetHealthRating( double hpRemaining, float totalHp )
 	{
 		float hpPercentage = ( float ) ( hpRemaining / totalHp );
-		if ( Math.Abs( hpRemaining ) > 0.0001f ) hpPercentage += 0.15f; //give 10% hp mercy
-		_hpRating = ( int ) ( RoundStarRating(
-			Mathf.Clamp( hpPercentage, 0f, 1f )  
-			* 5) * 2 );
+		if ( Math.Abs( hpRemaining ) > 0.000001f ) {
+			hpPercentage += 0.15f; //give 10% hp mercy
+			_hpRating = ( int ) ( RoundStarRating(
+				                      Mathf.Clamp( hpPercentage, 0f, 1f )  
+				                      * 5) * 2 );
+		}
+		else _hpRating = 0;
+
+		return _hpRating;
 	}
 
-	public void SetFlameRating( int activeFlames, int totalFlames, float averageIntensity, float maxIntensity )
+	public int SetFlameRating( int activeFlames, int totalFlames, float averageIntensity, float maxIntensity )
 	{
 		_flameRating = ( int ) (RoundStarRating( ( 1 - activeFlames / totalFlames ) * 5 ) * 2);
+		return _flameRating;
 	}
 
-	public void SetTimeRating( double timeRemaining, float totalTime )
+	public int SetTimeRating( double timeRemaining, float totalTime )
 	{
 		_timeRating = (int) ( RoundStarRating( 
 			              Mathf.Clamp( (float) timeRemaining / ( totalTime - 20 ), 0f, 1f ) //give 20 second mercy
 		                                       * 5) * 2);
+		return _timeRating;
 	}
 
 	private float RoundStarRating( float rating )
