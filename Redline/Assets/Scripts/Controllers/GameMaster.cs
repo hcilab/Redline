@@ -221,6 +221,7 @@ public class GameMaster : MonoBehaviour
 	{
 		Debug.Log( "change HP bar" );
 		_currentHpBar.gameObject.SetActive( false );
+		_currentHpBarindex = index;
 		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
 
 		_currentHpBar.gameObject.SetActive( true );
