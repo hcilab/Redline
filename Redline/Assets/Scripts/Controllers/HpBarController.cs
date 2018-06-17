@@ -50,16 +50,17 @@ public class HpBarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		var newWidth = ( float ) _scale.scale( Player.GetHealth() );
 		_text.enabled = _hasTextField;
 
 		if ( _hasTextField ) _text.text = Mathf.Round( ( float ) Player.GetHealth() * 100 ) + "%";
 
-		_bar.GetComponent< Image >().color = _color.Evaluate( ( float ) Player.GetHealth() );
+		_bar.GetComponent< Image >().color = _color.Evaluate( newWidth );
 
 		_bar.sizeDelta = Vector2.Lerp(
 			_bar.sizeDelta,
 			new Vector2(
-				( float ) ( _bkg.sizeDelta.x * _scale.scale( Player.GetHealth() ) ),
+				_bkg.sizeDelta.x * newWidth,
 				_bar.sizeDelta.y
 			),
 			3 * Time.deltaTime
