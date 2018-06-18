@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,7 @@ public class FireSystemController : MonoBehaviour
     [SerializeField] private List< Vector2 > _startingFlames;
     [SerializeField] private int _spreadLimit = Int32.MaxValue;
     [SerializeField] private double _spreadChance = 0.3;
+    [SerializeField] private int _spreadDistance;
     [SerializeField] private double _growthFactor;
     [SerializeField] private double _maxFlameIntensity = 3d;
     [SerializeField] private double _waterStrength = 0.1f;
@@ -209,7 +211,7 @@ public class FireSystemController : MonoBehaviour
         foreach ( var item in _activeFlames )
         {
             bool add = false;
-            foreach ( var neighbour in item.GetNeighbours() )
+            foreach ( var neighbour in item.GetNeighbours( _spreadDistance ) )
             {
                 if ( !neighbour.GetVariable<bool>( "onfire" ) )
                 {
@@ -217,8 +219,11 @@ public class FireSystemController : MonoBehaviour
                 }
             }
             if( add ) _edgeFlames.Add( item );
+            //limiting the number of flames we're even gonna look at for speed sake
+            if ( _edgeFlames.Count >= _spreadLimit * 2 ) break; 
         }
         
+        //shuffle those suckers
         int next = _edgeFlames.Count;
         while ( next > 1 )
         {
@@ -229,12 +234,13 @@ public class FireSystemController : MonoBehaviour
             _edgeFlames[ next ] = f;
         }
         _edgeFlames.Reverse();
+        
         foreach ( GridItem edgeItem in _edgeFlames )
         {
             if( edgeItem.GetVariable<double>( "intensity" ) < _spreadIntensity ) continue;
             List< GridItem > emptyNeighbours = new List< GridItem >();
             
-            foreach( GridItem n in edgeItem.GetNeighbours() )
+            foreach( GridItem n in edgeItem.GetNeighbours( _spreadDistance ) )
             {
                 if ( !n.GetVariable<bool>( "onfire" ) && n.GetVariable<bool>( "flammable" ) )
                 {
@@ -340,6 +346,7 @@ public class FireSystemController : MonoBehaviour
 
     public int GetActiveFlames()
     {
+        if ( _activeFlames == null ) return 0;
         return _activeFlames.Count;
     }
 

@@ -191,28 +191,31 @@ public class GridItem
         return SetVariable( key, _variableSetters[key](this) );
     }
 
-    public GridItem[] GetNeighbours()
+    public GridItem[] GetNeighbours( int distance )
     {
         List<GridItem> neighbours = new List<GridItem>();
         float x = _gridCoords.x;
         float y = _gridCoords.y;
-        
-        //Check left
-        if (_gridCoords.y > 0)
-            neighbours.Add( _parentGrid.GetGridItem( x, y - 1 ) );
-        
-        //check up
-        if (_gridCoords.x > 0)
-            neighbours.Add( _parentGrid.GetGridItem( x - 1, y ) );
-        
-        //check right
-        if (_gridCoords.y < _parentGrid._cols - 1) 
-            neighbours.Add( _parentGrid.GetGridItem( x, y + 1 ) );
-        
-        //check down
-        if( _gridCoords.x < _parentGrid._rows - 1)
-            neighbours.Add( _parentGrid.GetGridItem( x + 1,y ) );
 
+        for ( var i = 1; i <= distance; i++ )
+        {
+            //Check left
+            if (_gridCoords.y >= i )
+                neighbours.Add( _parentGrid.GetGridItem( x, y - i ) );
+        
+            //check up
+            if (_gridCoords.x >= i )
+                neighbours.Add( _parentGrid.GetGridItem( x - i, y ) );
+        
+            //check right
+            if (_gridCoords.y < _parentGrid._cols - 1 - i) 
+                neighbours.Add( _parentGrid.GetGridItem( x, y + i ) );
+        
+            //check down
+            if( _gridCoords.x < _parentGrid._rows - 1 - i)
+                neighbours.Add( _parentGrid.GetGridItem( x + i,y ) );     
+        }
+       
         return neighbours.ToArray();
     }
 
