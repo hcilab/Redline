@@ -15,9 +15,10 @@ public class HpBarController : MonoBehaviour
 	[SerializeField] private HpBarScale _scale;
 	[SerializeField] private bool _hasTextField;
 
-	private RectTransform _bar, _bkg;
+	[SerializeField] private GameObject _barContainer;
 	private Text _text;
 	public static HpBarController Instance = null;
+	private RectTransform _bkg, _bar;
 
 
 	// Use this for initialization
@@ -25,14 +26,14 @@ public class HpBarController : MonoBehaviour
 	{
 		
 		Debug.Log("Starting up HP bar.");
-		_bar = transform.Find("bar") as RectTransform;
-		_bkg = transform.Find("bkg") as RectTransform;
+		_bar = _barContainer.transform.Find("bar") as RectTransform;
+		_bkg = _barContainer.transform.Find("bkg") as RectTransform;
 
 		_text = GetComponentInChildren<Text>();
 
 		_bar.GetComponent<Image>().color = _color.Evaluate(1);
 		
-		if( _bkg && _bar ) _bar.sizeDelta = _bkg.sizeDelta;
+		_bar.sizeDelta = _bkg.rect.size;
 
 		SceneManager.activeSceneChanged += Initialize;
 	}
@@ -50,6 +51,12 @@ public class HpBarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		Vector3 playerPos = Player.transform.position;
+		playerPos = Camera.main.WorldToScreenPoint( playerPos );
+		playerPos.y += 100;
+
+		transform.position = playerPos;
+		
 		var newWidth = ( float ) _scale.scale( Player.GetHealth() );
 		_text.enabled = _hasTextField;
 
@@ -58,10 +65,10 @@ public class HpBarController : MonoBehaviour
 		_bar.GetComponent< Image >().color = _color.Evaluate( newWidth );
 
 		_bar.sizeDelta = Vector2.Lerp(
-			_bar.sizeDelta,
+			_bar.rect.size,
 			new Vector2(
-				_bkg.sizeDelta.x * newWidth,
-				_bar.sizeDelta.y
+				_bkg.rect.width * newWidth,
+				_bkg.rect.height
 			),
 			3 * Time.deltaTime
 		);

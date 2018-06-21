@@ -17,7 +17,7 @@ public class GameMaster : MonoBehaviour
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
 	[SerializeField] private DeathScreenController _deathScreenController;
-	[SerializeField] private DeathScreenController _victoryScreenController;
+	[SerializeField] private GameObject _endOfGameScreen;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private List< HpBarController > _hpBarControllers;
 	[SerializeField] private Text _hpbarlabel;
@@ -82,7 +82,11 @@ public class GameMaster : MonoBehaviour
 	// Use this for initialization
 	void Awake()
 	{
-
+		foreach ( HpBarController barController in _hpBarControllers )
+		{
+			barController.gameObject.SetActive( false );
+		}
+		
 		if ( Instance == null )
 			Instance = this;
 		else if ( Instance != this )
@@ -207,7 +211,13 @@ public class GameMaster : MonoBehaviour
 			_fireLoaded = false;
 			SceneManager.LoadScene( Levels.Level );
 		}
-		else GoToMenu();
+		else GameHasEnded();
+	}
+
+	private void GameHasEnded()
+	{
+		_endOfGameScreen.SetActive( true );
+		_endOfGameScreen.transform.Find( "sessionnumber" ).GetComponent< Text >().text = SessionID.ToString();
 	}
 
 	private void ScrollHpBar( int direction )
@@ -297,7 +307,6 @@ public class GameMaster : MonoBehaviour
 
 	public void ResetUi()
 	{
-		_victoryScreenController.hide();
 		_deathScreenController.hide();
 		_hpbarlabel.text = _currentHpBar.name;
 		TogglePause( false );
