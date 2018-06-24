@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
@@ -30,6 +31,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] public DataCollectionController DataCollector;
 	[SerializeField] private GameObject _uploadModal;
 	[SerializeField] private GameObject _pauseScreen;
+	[SerializeField] private GameObject _loadingScreen;
 	
 	private int _sessionId;
 	private bool _uploadComplete = false;
@@ -43,6 +45,7 @@ public class GameMaster : MonoBehaviour
 	private int _trialNumber;
 	private bool _hasTrialNumber;
 	private bool _initialized;
+	private bool _loadingLevel = false;
 
 	public int LevelCount
 	{
@@ -157,6 +160,11 @@ public class GameMaster : MonoBehaviour
 		{
 			ScrollHpBar( 1 );
 		}
+		else if ( _loadingScreen.activeSelf && Input.anyKeyDown && !_loadingLevel)
+		{
+			_loadingScreen.SetActive( false );
+			TogglePause( false );
+		}
 
 		if ( _uploadComplete ) _uploadModal.SetActive( false );
 
@@ -209,9 +217,24 @@ public class GameMaster : MonoBehaviour
 			_gameInterface.gameObject.SetActive( true );
 			_playerLoaded = false;
 			_fireLoaded = false;
-			SceneManager.LoadScene( Levels.Level );
+			StartCoroutine( LoadLevel() );
 		}
 		else GameHasEnded();
+	}
+
+	private IEnumerator LoadLevel()
+	{
+		_loadingLevel = true;
+		_gameInterface.enabled = true;
+		_loadingScreen.SetActive( true );
+		TogglePause( true );
+		AsyncOperation async = SceneManager.LoadSceneAsync( Levels.Level );
+		while ( !async.isDone )
+		{
+			Debug.Log( async.progress  );
+			yield return null;
+		}
+		_loadingLevel = false;
 	}
 
 	private void GameHasEnded()
@@ -315,7 +338,9 @@ public class GameMaster : MonoBehaviour
 
 	public double GetTimeRemaining()
 	{
-		return Math.Round( _levelManager.GetTimeLeft() );
+		if( _levelManager )
+			return Math.Round( _levelManager.GetTimeLeft() );
+		return 0;
 	}
 
 	public int GetActiveFlames()

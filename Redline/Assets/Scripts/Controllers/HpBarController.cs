@@ -51,6 +51,7 @@ public class HpBarController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if ( !Player ) return;
 		Vector3 playerPos = Player.transform.position;
 		playerPos = Camera.main.WorldToScreenPoint( playerPos );
 		playerPos.y += 100;
