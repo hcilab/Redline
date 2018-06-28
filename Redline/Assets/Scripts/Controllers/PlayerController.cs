@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
 	private double _averageFps;
 	private bool _initalizeAverages = true;
 	private double _accumulatedDamage = 0f;
+	private Action _damageAnimation;
 
 	// Use this for initialization
 
@@ -241,8 +242,10 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 
-		if ( Time.time - _lastTick > _damageTick )
+		if ( Time.time - _lastTick > _damageTick && _accumulatedDamage > 30 )
 		{
+			Debug.Log( "TAKING DAMAGE"  );
+			_damageAnimation();
 			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( _accumulatedDamage, transform.position);
 			_hitPoints -= _accumulatedDamage;
 			
@@ -321,5 +324,10 @@ public class PlayerController : MonoBehaviour
 	public float GetStartingHealth()
 	{
 		return ( float ) _totalHp;
+	}
+
+	public void SetDamageAnimation( Action action )
+	{
+		_damageAnimation = action;
 	}
 }

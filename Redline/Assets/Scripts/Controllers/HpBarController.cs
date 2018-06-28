@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using System;
+using Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +20,9 @@ public class HpBarController : MonoBehaviour
 	private Text _text;
 	public static HpBarController Instance = null;
 	private RectTransform _bkg, _bar;
+	private Animator _animator;
+	private int _shakeHash;
+	private bool _takeDamage = false;
 
 
 	// Use this for initialization
@@ -26,6 +30,9 @@ public class HpBarController : MonoBehaviour
 	{
 		
 		Debug.Log("Starting up HP bar.");
+		_animator = GetComponent< Animator >();
+		_shakeHash = Animator.StringToHash( "Shake" );
+		
 		_bar = _barContainer.transform.Find("bar") as RectTransform;
 		_bkg = _barContainer.transform.Find("bkg") as RectTransform;
 
@@ -41,6 +48,7 @@ public class HpBarController : MonoBehaviour
 	private void OnEnable()
 	{
 		Player = FindObjectOfType<PlayerController>();
+		if( Player ) Player.SetDamageAnimation( () => { _takeDamage = true; } );
 	}
 
 	void Initialize( Scene newScene, Scene oldScene )
@@ -65,13 +73,27 @@ public class HpBarController : MonoBehaviour
 
 		_bar.GetComponent< Image >().color = _color.Evaluate( newWidth );
 
-		_bar.sizeDelta = Vector2.Lerp(
-			_bar.rect.size,
+		_bar.sizeDelta = 
 			new Vector2(
 				_bkg.rect.width * newWidth,
 				_bkg.rect.height
-			),
-			3 * Time.deltaTime
-		);
+			);
+
+		if ( _takeDamage )
+		{
+			if( _animator.GetCurrentAnimatorClipInfo( 0 ).GetHashCode() != _shakeHash
+			    && !_animator.IsInTransition( 0 ))
+				_animator.SetTrigger( _shakeHash );
+			_takeDamage = false;
+		}
+
+//		_bar.sizeDelta = Vector2.Lerp(
+//			_bar.rect.size,
+//			new Vector2(
+//				_bkg.rect.width * newWidth,
+//				_bkg.rect.height
+//			),
+//			5 * Time.deltaTime
+//		);
 	}
 }
