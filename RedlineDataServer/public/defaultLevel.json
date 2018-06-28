@@ -8,6 +8,7 @@
     , "_updateInterval": 0.25
     , "_spreadLimit": 4
     , "_spreadChance": 0.25
+    , "_spreadDistance": 4
     , "_growthFactor": 0.2
     , "_maxFlameIntensity": 5.0
     , "_waterStrength": 0.05
