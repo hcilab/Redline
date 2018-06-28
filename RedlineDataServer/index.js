@@ -53,7 +53,8 @@ server(
   { log: 'debug',
     security: {
       csrf: false
-    }
+    },
+    views: 'public'
   },
   cors,
   [
