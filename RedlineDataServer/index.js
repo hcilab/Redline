@@ -59,13 +59,8 @@ server(
   cors,
   [
     get( '/', ctx => {
-      return render("index.html");
+      return header("Session", ctx.query.session).render("index.html");
     })
-  , get( '/session/:session', ctx => {
-    return header('Session', ctx.params.session)
-          .render('index.html');
-  } )
-  , get( '/session/:session/:file', ctx => redirect( '/' + ctx.params.file ) )
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
