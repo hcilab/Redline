@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 	private double _hitPoints;
 	private List<Collider> _enemiesNearBy;
 	private double _score = 0;
-	private double _lastTick;
+	private double _lastTick = 0f;
 	private double _lastLog = 0f;
 	private double _logDamage = 0f;
 	private double _logScore = 0f;
@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
 	private int _frames;
 	private double _averageFps;
 	private bool _initalizeAverages = true;
+	private double _accumulatedDamage = 0f;
 
 	// Use this for initialization
 
@@ -110,11 +111,8 @@ public class PlayerController : MonoBehaviour
 			_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death );
 			enabled = false;
 		}
-		else if(Time.time - _lastTick > _damageTick) 
-		{
-			TakeDamage();
-			_lastTick = Time.time;
-		}
+		
+		TakeDamage();
 		
 		if ( Time.time - _lastLog > _loggingTick )
 		{
@@ -232,14 +230,28 @@ public class PlayerController : MonoBehaviour
 			                  Time.deltaTime;
 		}
 		totalDmg = Math.Round( totalDmg * _damageScaling );
-		if ( totalDmg > 0.5 && _hitPoints >= 0) 
+		if ( totalDmg > 0.5 && _hitPoints >= 0 ) 
 		{
-			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( totalDmg, transform.position);
-			_hitPoints -= totalDmg;
+			if ( _accumulatedDamage < _hitPoints )
+			{
+				_accumulatedDamage += totalDmg;
+			} else if ( _accumulatedDamage >= _hitPoints )
+			{
+				_accumulatedDamage = _hitPoints;
+			}
 		}
 
-		_totalDamageTaken += totalDmg;
-		_logDamage += totalDmg;
+		if ( Time.time - _lastTick > _damageTick )
+		{
+			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( _accumulatedDamage, transform.position);
+			_hitPoints -= _accumulatedDamage;
+			
+			_totalDamageTaken += _accumulatedDamage;
+			_logDamage += _accumulatedDamage;
+
+			_accumulatedDamage = 0;
+			_lastTick = Time.time;
+		}
 		
 	}
 
