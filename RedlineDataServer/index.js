@@ -61,9 +61,10 @@ server(
       return render("index.html");
     })
   , get( '/session/:session', ctx => {
-    return header('session', ctx.params.session)
-          .render("index.html");
+    return header('Session', ctx.params.session)
+          .redirect('/');
   } )
+  , get( '/session/:session/:file', ctx => redirect( '/' + ctx.params.file ) );
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
