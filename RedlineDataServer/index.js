@@ -63,7 +63,7 @@ server(
     })
   , get( '/session/:session', ctx => {
     return header('Session', ctx.params.session)
-          .render('home.html');
+          .render('index.html');
   } )
   , get( '/session/:session/:file', ctx => redirect( '/' + ctx.params.file ) )
   , get('/id', async ctx => {
