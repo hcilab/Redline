@@ -5,6 +5,6 @@
   "_damageScaling": 50,
   "_totalHp": 1000,
   "_showCollider": false,
-  "_damageTick": 0,
+  "_damageTick": 1,
   "_loggingTick": 1
 }
