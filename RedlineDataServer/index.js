@@ -50,7 +50,7 @@ const cors = server.utils.modern(corsExpress);
 const comp = server.utils.modern(compression);
 
 server(
-  { log: 'debug', 
+  { log: 'debug',
     security: {
       csrf: false
     }
@@ -60,6 +60,10 @@ server(
     get( '/', ctx => {
       return render("index.html");
     })
+  , get( '/session/:session', ctx => {
+    return header('session', ctx.params.session)
+          .render("index.html");
+  } )
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
