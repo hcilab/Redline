@@ -2,7 +2,7 @@
   "_viewDistance": 20,
   "_speed": 25,
   "_rotationSpeed": 130,
-  "_damageScaling": 50,
+  "_damageScaling": 30,
   "_totalHp": 1000,
   "_showCollider": false,
   "_damageTick": 1,
