@@ -25,11 +25,53 @@ public class DeathScreenController : MonoBehaviour
 	void Awake()
 	{
 		_sessionId.text = _gameMaster.SessionID.ToString();
+		var emptyBarVec = _flameRatingBar.sizeDelta;
+		emptyBarVec.x = 0;
+		_flameRatingBar.sizeDelta = emptyBarVec;
+		_hpRatingBar.sizeDelta = emptyBarVec;
+		_timeRatingBar.sizeDelta = emptyBarVec;
+	}
+
+	private void Update()
+	{
+		if ( _flameRating >= _cutOff
+		     && _timeRating >= _cutOff )
+		{
+			_nextLevelButton.interactable = true;
+			_infoMessage.enabled = false;
+		}
+		else if ( _hpRating >= 0 )
+		{
+			_nextLevelButton.interactable = false;
+			_infoMessage.enabled = true;
+			_infoMessage.text = "In order to proceed you must reach at least "
+			                    + _cutOff / 2f + " stars in the time and firefighting categories.";
+		}
+		else
+		{
+			_nextLevelButton.interactable = false;
+			_infoMessage.enabled = true;
+			_infoMessage.text = "Slow down there! Before continuing you'll have to show us you can handle this one.";
+		}
+		
+		_flameRatingBar.sizeDelta = Vector2.Lerp(
+			_flameRatingBar.sizeDelta,
+			new Vector2( _flameRating * _starWidth / 2, 60 ),
+			Time.deltaTime );
+
+		_hpRatingBar.sizeDelta = Vector2.Lerp(
+			_hpRatingBar.sizeDelta,
+			new Vector2( _hpRating * _starWidth / 2, 60 ),
+			Time.deltaTime );
+
+		_timeRatingBar.sizeDelta = Vector2.Lerp(
+			_timeRatingBar.sizeDelta,
+			new Vector2( _timeRating * _starWidth / 2, 60 ),
+			Time.deltaTime );
 	}
 
 	public void show()
 	{
-		UpdateRatings();
 		gameObject.SetActive( true );
 	}
 
@@ -80,33 +122,6 @@ public class DeathScreenController : MonoBehaviour
 		if ( floor == rounded ) return ( int ) rating;
 		if ( floor < rounded ) return ( int ) rating + 0.5f;
 		throw new Exception("please the humanity");
-	}
-
-	private void UpdateRatings()
-	{
-		if ( _flameRating >= _cutOff
-		     && _timeRating >= _cutOff )
-		{
-			_nextLevelButton.interactable = true;
-			_infoMessage.enabled = false;
-		}
-		else if ( _hpRating >= 0 )
-		{
-			_nextLevelButton.interactable = false;
-			_infoMessage.enabled = true;
-			_infoMessage.text = "In order to proceed you must reach at least "
-			                    + _cutOff / 2f + " stars in the time and firefighting categories.";
-		}
-		else
-		{
-			_nextLevelButton.interactable = false;
-			_infoMessage.enabled = true;
-			_infoMessage.text = "Slow down there! Before continuing you'll have to show us you can handle this one.";
-		}
-		
-		_flameRatingBar.sizeDelta = new Vector2( _flameRating * _starWidth / 2, 60 );
-		_hpRatingBar.sizeDelta = new Vector2( _hpRating * _starWidth / 2, 60 );
-		_timeRatingBar.sizeDelta = new Vector2( _timeRating * _starWidth / 2, 60 );
 	}
 
 	public void setMessage( string message )
