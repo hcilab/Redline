@@ -6,6 +6,7 @@ const _ = require('lodash');
 const levelConfigs = require('public/levels.json');
 const playerConfig = require('public/player.json');
 const defaultConfig = require('public/defaultLevel.json');
+const setConfigs = require('public/sets.json');
 const { get, post, put, error } = server.router;
 const { render, json, status, header } = server.reply;
 
@@ -60,10 +61,6 @@ server(
     get( '/', ctx => {
       return render("index.html");
     })
-  , get( '/session/:session', ctx => {
-    return header('session', ctx.params.session)
-          .render("index.html");
-  } )
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
@@ -94,26 +91,51 @@ server(
   , get('/config/:resource', async ctx => {
     ctx.log.debug( "Processing resource request for " + ctx.params.resource );
 
+    var setNumber;
+    if( !_.isNil( ctx.query.set ) ) {
+      try {
+        setNumber = parseInt( ctx.query.set );
+      } catch( err ) {
+        return send(400).send( "Invalid set count request.<br>" + err );
+      }
+    }
+
     if( ctx.params.resource == "player" ) {
       return status(200).send( playerConfig );
     } else if ( ctx.params.resource == "levelCount" ) {
+      //if a set is supplied return the number of levels in that set
+      if( _.isNumber(setNumber) && setConfigs != null ) {
+            return status(200).send({
+              "count": setConfigs[setNumber].length
+            });
+      }
+
+      //return the total number of levels by default
       if( levelConfigs != null ) return status(200).send(
         {
           "count": levelConfigs.length
         });
     } else {
       var levelNumber;
+
       try {
         levelNumber = parseInt( ctx.params.resource ) - 1;
       } catch (err) {
         return status(400).send( "Invalid resource request.<br>" + err);
       }
+
       if( !isNaN(levelNumber)
           && levelNumber < levelConfigs.length
           && levelNumber >= 0
         ) {
-          let levelConfig = _.defaultsDeep( levelConfigs[ levelNumber ], defaultConfig );
-          return status(200).send( levelConfigs[ levelNumber ] );
+          var levelToLoad = levelNumber;
+          if( _.isNumber(setNumber) && setConfigs != null )
+            levelToLoad = setConfigs[setNumber][levelNumber];
+
+          let levelConfig = _.defaultsDeep(
+            levelConfigs[ levelToLoad ],
+            defaultConfig );
+          return status(200).send( levelConfig );
         }
     }
     return status(400).send("Invalid resource request.");

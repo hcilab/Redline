@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
 
 public class DataCollectionController : MonoBehaviour
@@ -55,6 +57,11 @@ public class DataCollectionController : MonoBehaviour
         StartCoroutine( Download( req, cb ) );
     }
 
+    public void GetConfig( string lvl, string set, WebCallback action )
+    {
+        GetConfig( lvl + "?set=" + set, action );
+    }
+
     public void GetConfig( string resource, WebCallback action )
     {
         var path = GetServerPath() + _configEndpoint + resource;
@@ -62,9 +69,11 @@ public class DataCollectionController : MonoBehaviour
         StartCoroutine( Download( req, action ) );
     }
     
-    public void GetNumberOfLevels( WebCallback action )
+    public void GetNumberOfLevels( WebCallback action, string set = null )
     {
-        GetConfig( "levelCount", action );
+        string req = "levelCount";
+        if ( set != null ) req += "?set=" + set;
+        GetConfig( req, action );
     }
 
     public void InvalidateTrial( int session, int trial )
@@ -132,22 +141,6 @@ public class DataCollectionController : MonoBehaviour
         return path;
     }
 
-    private void InitDatafile( string fileName = "redline_data.csv" )
-    {
-        var headerString = Encoding.ASCII.GetBytes( 
-            "time, counter, id, level, hp, bar_type, damage, score, proximity, active, fps, type\n" );
-        _dataFile = Path.Combine( Application.streamingAssetsPath, Path.Combine( "data", fileName ) );
-        if ( !File.Exists( _dataFile ) )
-        {
-            FileStream fs = File.Create( _dataFile );
-            if ( fs.CanWrite )
-            {
-                fs.Write( headerString, 0, headerString.Length );
-                fs.Close();
-            }
-        }
-    }
-
     public void LogData( 
         float time
         , string counter
@@ -164,18 +157,6 @@ public class DataCollectionController : MonoBehaviour
         , double fps
         , DataType type = DataType.Atomic )
     {
-        #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-        if( !File.Exists( _dataFile ) )
-        {
-            InitDatafile();
-        }
-        
-        var dataString = string.Format( "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}\n", 
-            time, counter, sessionId, level, hitPoints, bar_type, damage,
-            score, flamesNearBy, averageIntensity, activeFlames, fps, 
-            Enum.GetName( typeof( DataType ), type ) );
-        File.AppendAllText( _dataFile, dataString );
-        #endif    
     
         WWWForm dataObj = new WWWForm();
         dataObj.AddField( "time", time.ToString());
@@ -213,15 +194,5 @@ public class DataCollectionController : MonoBehaviour
         }
         
         StartCoroutine( Upload( dataObj, path ) );
-    }
-    
-    public void SaveToConfig( string level, MonoBehaviour gameObject )
-    {
-        string json = JsonUtility.ToJson( gameObject, true );
-		
-        string path = Path.Combine( Application.streamingAssetsPath, level + ".json" );
-
-        byte[] jsonAsBytes = Encoding.ASCII.GetBytes( json );
-        File.WriteAllBytes( path, jsonAsBytes  );
     }
 }
