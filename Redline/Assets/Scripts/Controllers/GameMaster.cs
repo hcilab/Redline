@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,12 @@ public class GameMaster : MonoBehaviour
 {
 	[DllImport( "__Internal" )]
 	private static extern void RemoveLoader();
+	
+	[DllImport( "__Internal" )]
+	private static extern string GetSetNumber();
+	
+	[DllImport( "__Internal" )]
+	private static extern string GetBarType();
 	
 	private bool _gameOver;
 	public bool Paused;
@@ -46,6 +53,8 @@ public class GameMaster : MonoBehaviour
 	private bool _hasTrialNumber;
 	private bool _initialized;
 	private bool _loadingLevel = false;
+	private int _turkId;
+	private int _setNumber = 0;
 
 	public int LevelCount
 	{
@@ -108,8 +117,21 @@ public class GameMaster : MonoBehaviour
 		ReloadConfigs();
 		
 		#if UNITY_WEBGL && !UNITY_EDITOR
-			RemoveLoader();
+			WebSetup();
 		#endif
+		
+	}
+
+	private void WebSetup()
+	{
+		// get set number
+		Int32.TryParse( GetSetNumber(), out _setNumber );
+		// get bar type
+		if( Int32.TryParse( GetBarType(), out _currentHpBarindex ) )
+			ChangeHpBar( _currentHpBarindex );
+		RemoveLoader();		
+		
+		Debug.Log( _setNumber  );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
@@ -357,13 +379,15 @@ public class GameMaster : MonoBehaviour
 
 	public void LoadFireSystem( FireSystemController fireSystem, [CanBeNull] Action cb )
 	{
-		DataCollector.GetConfig( _currentLevel.ToString(), data =>
-		{
-			Debug.Log("Attempting to load fire config");
-			JsonUtility.FromJsonOverwrite( data, fireSystem );
-			_fireLoaded = true;
-			if ( cb != null ) cb();
-		} );
+		DataCollector.GetConfig( 
+			_currentLevel.ToString(), 
+			_setNumber.ToString(), 
+			data => {
+				Debug.Log("Attempting to load fire config");
+				JsonUtility.FromJsonOverwrite( data, fireSystem );
+				_fireLoaded = true;
+				if ( cb != null ) cb();
+			} );
 	}
 
 	public void LoadPlayer( PlayerController player, Action cb )
@@ -400,10 +424,18 @@ public class GameMaster : MonoBehaviour
 			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
 		} );
 
-		DataCollector.GetNumberOfLevels( data =>
-		{
+		DataCollector.GetNumberOfLevels( data => {
 			_levelCount = Int32.Parse(
 				JsonUtility.FromJson< DataObject >( data ).count );
-		} );
+		}, _setNumber.ToString() );
+	}
+
+	public void SetMTurkId( string text )
+	{
+		int id = Int32.Parse( text );
+
+		_turkId = id;
+
+		_sessionId = id * 1234 + 4030201;
 	}
 }
