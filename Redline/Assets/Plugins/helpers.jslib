@@ -5,12 +5,12 @@ mergeInto( LibraryManager.library, {
   },
 
   GetSetNumber: function() {
-    let params = new URLSearchParams(location.search.slice(1));
+    var params = new URLSearchParams(location.search.slice(1));
     return params.get('set');
-  }
+  },
 
   GetBarType: function() {
-    let params = new URLSearchParams(location.search.slice(1));
+    var params = new URLSearchParams(location.search.slice(1));
     return params.get('bar');
-  }
+  },
 });

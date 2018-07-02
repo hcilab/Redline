@@ -14,8 +14,10 @@ var redline_entry_schema =  mongoose.Schema({
     date: { type: Date, default: Date.now }
   , time: String
   , counter: String
+  , mturk_id: Number
   , id: { type: Number }
   , trial: Number
+  , set: Number
   , level: String
   , hp: Number
   , bar: String
