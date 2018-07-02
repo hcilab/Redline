@@ -15,10 +15,10 @@ public class GameMaster : MonoBehaviour
 	private static extern void RemoveLoader();
 	
 	[DllImport( "__Internal" )]
-	private static extern string GetSetNumber();
+	public static extern int GetSetNumber();
 	
 	[DllImport( "__Internal" )]
-	private static extern string GetBarType();
+	private static extern int GetBarType();
 	
 	private bool _gameOver;
 	public bool Paused;
@@ -75,7 +75,17 @@ public class GameMaster : MonoBehaviour
 	{
 		get { return _sessionId; }	
 	}
-	
+
+	public int TurkId
+	{
+		get { return _turkId; }
+	}
+
+	public int SetNumber
+	{
+		get { return _setNumber; }
+	}
+
 	private class DataObject
 	{
 		public string id = "NONE";
@@ -125,13 +135,15 @@ public class GameMaster : MonoBehaviour
 	private void WebSetup()
 	{
 		// get set number
-		Int32.TryParse( GetSetNumber(), out _setNumber );
+		_setNumber = GetSetNumber();
 		// get bar type
-		if( Int32.TryParse( GetBarType(), out _currentHpBarindex ) )
+		var barIndex = GetBarType();
+		if( barIndex != -1 )
 			ChangeHpBar( _currentHpBarindex );
 		RemoveLoader();		
 		
-		Debug.Log( _setNumber  );
+		Debug.Log( "PARSED SET NUMBER" + _setNumber  );
+		Debug.Log( "PARSED BAR NUMBER" + _setNumber  );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )

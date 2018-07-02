@@ -144,34 +144,38 @@ public class DataCollectionController : MonoBehaviour
     public void LogData( 
         float time
         , string counter
-        , int sessionId
-        , int trial
+        , string mturk
+        , string sessionId
+        , string trial
         , string level
+        , string setNumber
         , string bar_type
-        , double hitPoints
-        , double damage
-        , double score
-        , double flamesNearBy
-        , double averageIntensity
-        , double activeFlames
-        , double fps
+        , string hitPoints
+        , string damage
+        , string score
+        , string flamesNearBy
+        , string averageIntensity
+        , string activeFlames
+        , string fps
         , DataType type = DataType.Atomic )
     {
     
         WWWForm dataObj = new WWWForm();
         dataObj.AddField( "time", time.ToString());
         dataObj.AddField( "counter", counter );
+        dataObj.AddField( "mturk_id", mturk );
         dataObj.AddField( "id", sessionId );
         dataObj.AddField( "trial", trial );
         dataObj.AddField( "level", level );
-        dataObj.AddField( "hp", hitPoints.ToString() );
+        dataObj.AddField( "set", setNumber );
+        dataObj.AddField( "hp", hitPoints );
         dataObj.AddField( "bar", bar_type );
-        dataObj.AddField( "damage", damage.ToString() );
-        dataObj.AddField( "score", score.ToString() );
-        dataObj.AddField( "proximity", flamesNearBy.ToString() );
-        dataObj.AddField( "avg_intensity_in_proximity", averageIntensity.ToString() );
-        dataObj.AddField( "active", activeFlames.ToString() );
-        dataObj.AddField( "fps", fps.ToString() );
+        dataObj.AddField( "damage", damage );
+        dataObj.AddField( "score", score );
+        dataObj.AddField( "proximity", flamesNearBy );
+        dataObj.AddField( "avg_intensity_in_proximity", averageIntensity );
+        dataObj.AddField( "active", activeFlames );
+        dataObj.AddField( "fps", fps );
         dataObj.AddField( "type", Enum.GetName( typeof( DataType ), type ) );
         var path = GetServerPath();
         switch ( type )

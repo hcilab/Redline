@@ -150,17 +150,19 @@ public class PlayerController : MonoBehaviour
 		_levelManager.GameMaster.DataCollector.LogData(
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
-			, _levelManager.GameMaster.SessionID
-			, _levelManager.GameMaster.TrialNumber
+			, _levelManager.GameMaster.TurkId.ToString()
+			, _levelManager.GameMaster.SessionID.ToString()
+			, _levelManager.GameMaster.TrialNumber.ToString()
 			, _levelManager.GameMaster.CurrentLevel.ToString()
+			, _levelManager.GameMaster.SetNumber.ToString()
 			, _levelManager.GameMaster.GetHpBarType()
-			, _hitPoints
-			, _logDamage
-			, _logFireExtinguished - _logScore
-			, _enemiesNearBy.Count
-			, averageIntensity
-			, _levelManager.GameMaster.GetActiveFlames()
-			, fps
+			, _hitPoints.ToString()
+			, _logDamage.ToString()
+			, (_logFireExtinguished - _logScore).ToString()
+			, _enemiesNearBy.Count.ToString()
+			, averageIntensity.ToString()
+			, _levelManager.GameMaster.GetActiveFlames().ToString()
+			, fps.ToString()
 		);
 	}
 
@@ -183,17 +185,19 @@ public class PlayerController : MonoBehaviour
 		_levelManager.GameMaster.DataCollector.LogData( 
 			Time.time
 			, _levelManager.GameMaster.GetTimeRemaining().ToString()
-			, _levelManager.GameMaster.SessionID
-			, _levelManager.GameMaster.TrialNumber
+			, _levelManager.GameMaster.TurkId.ToString()
+			, _levelManager.GameMaster.SessionID.ToString()
+			, _levelManager.GameMaster.TrialNumber.ToString()
 			, _levelManager.GameMaster.CurrentLevel.ToString()
+			, _levelManager.GameMaster.SetNumber.ToString()
 			, _levelManager.GameMaster.GetHpBarType()
-			, _hitPoints
-			, _totalDamageTaken
-			, _logFireExtinguished
-			, _averageEnemiesNearBy
-			, _averageNearByIntensity
-			, _averageActiveFlames
-			, _averageFps
+			, _hitPoints.ToString()
+			, _totalDamageTaken.ToString()
+			, _logFireExtinguished.ToString()
+			, _averageEnemiesNearBy.ToString()
+			, _averageNearByIntensity.ToString()
+			, _averageActiveFlames.ToString()
+			, _averageFps.ToString()
 			, type
 			);
 	}
