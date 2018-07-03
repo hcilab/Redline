@@ -6,7 +6,7 @@ const _ = require('lodash');
 const levelConfigs = require('public/levels.json');
 const playerConfig = require('public/player.json');
 const defaultConfig = require('public/defaultLevel.json');
-const setConfigs = require('public/sets.json');
+const setConfigs = require('public/sets.js');
 const { get, post, put, error } = server.router;
 const { render, json, status, header } = server.reply;
 
