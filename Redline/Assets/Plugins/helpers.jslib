@@ -8,14 +8,14 @@ mergeInto(LibraryManager.library, {
      * @return {number}
      */
     GetSetNumber: function () {
-        return GetParams().set;
+        return !isNaN(GetParams().set) && isFinite(GetParams().set) ? GetParams().set : 0;
     },
 
     /**
      * @return {number}
      */
     GetId: function () {
-        return GetParams().pid;
+        return !isNaN(GetParams().pid) && isFinite(GetParams().pid) ? GetParams().pid : 123456789;
     },
 
     /**

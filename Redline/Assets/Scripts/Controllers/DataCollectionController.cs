@@ -88,6 +88,7 @@ public class DataCollectionController : MonoBehaviour
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
         Debug.Log("GET " + req.url  );
+        req.chunkedTransfer = false;
         req.Send();
         yield return new WaitUntil( () => req.isDone && req.downloadHandler.isDone );
         if ( req.isError ) LogNetworkError( req );
@@ -101,6 +102,8 @@ public class DataCollectionController : MonoBehaviour
     IEnumerator Upload( WWWForm dataObj, string path )
     {
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
+        Debug.Log("POST " + req.url );
+        Debug.Log( dataObj.ToString() );
         yield return req.Send();
 
         if ( req.isError )

@@ -141,10 +141,7 @@ public class GameMaster : MonoBehaviour
 		var newId = GetId();
 
 		if ( newId != -1 )
-		{
-			_mainMenu.SetSessionId( newId.ToString() );
 			_sessionId = newId;
-		}
 		
 		// get set number
 		_setNumber = GetSetNumber();
@@ -153,7 +150,7 @@ public class GameMaster : MonoBehaviour
 		if( barIndex != -1 )
 			ChangeHpBar( _currentHpBarindex );
 		
-		Debug.Log( "PARSED SET NUMBER" + _setNumber  );
+		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
@@ -207,19 +204,16 @@ public class GameMaster : MonoBehaviour
 		{
 			ScrollHpBar( 1 );
 		}
-		else if ( _loadingScreen.activeSelf && Input.anyKeyDown && !_loadingLevel)
+		else if ( _playerLoaded && _fireLoaded && _hasTrialNumber && 
+		          _loadingScreen.activeSelf && Input.anyKeyDown && !_loadingLevel)
 		{
+			_initialized = true;
 			_loadingScreen.SetActive( false );
 			TogglePause( false );
 		}
 
 		if ( _uploadComplete ) _uploadModal.SetActive( false );
 
-		if ( _playerLoaded && _fireLoaded && _hasTrialNumber && !_initialized )
-		{
-			_initialized = true;
-			TogglePause( false );
-		}
 	}
 
 	private void TogglePause( bool pause )
