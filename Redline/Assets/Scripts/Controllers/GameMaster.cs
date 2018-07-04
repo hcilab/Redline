@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +17,9 @@ public class GameMaster : MonoBehaviour
 	
 	[DllImport( "__Internal" )]
 	private static extern int GetBarType();
+
+	[DllImport( "__Internal" )]
+	private static extern int GetId();
 	
 	private bool _gameOver;
 	public bool Paused;
@@ -124,26 +125,35 @@ public class GameMaster : MonoBehaviour
 	{
 		_gameInterface.Awake();
 		
-		ReloadConfigs();
-		
 		#if UNITY_WEBGL && !UNITY_EDITOR
 			WebSetup();
+	        ReloadConfigs(true, false, true);
+			RemoveLoader();
+	    #else
+			ReloadConfigs();
 		#endif
+		
 		
 	}
 
 	private void WebSetup()
 	{
+		var newId = GetId();
+
+		if ( newId != -1 )
+		{
+			_mainMenu.SetSessionId( newId.ToString() );
+			_sessionId = newId;
+		}
+		
 		// get set number
 		_setNumber = GetSetNumber();
 		// get bar type
 		var barIndex = GetBarType();
 		if( barIndex != -1 )
 			ChangeHpBar( _currentHpBarindex );
-		RemoveLoader();		
 		
 		Debug.Log( "PARSED SET NUMBER" + _setNumber  );
-		Debug.Log( "PARSED BAR NUMBER" + _setNumber  );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
@@ -421,33 +431,26 @@ public class GameMaster : MonoBehaviour
 		}
 	}
 
-	public void ReloadConfigs()
+	public void ReloadConfigs( bool bar = true, bool id = true, bool levels = true )
 	{
-		DataCollector.GetBarType( data =>
-		{
-			ChangeHpBar( Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).bar ) );
-		} );
+		if( bar ) 
+			DataCollector.GetBarType( data =>
+			{
+				ChangeHpBar( Int32.Parse(
+					JsonUtility.FromJson< DataObject >( data ).bar ) );
+			} );
 		
-		DataCollector.GetNewID( data =>
-		{
-			_sessionId = Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).id );
-			FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
-		} );
-
-		DataCollector.GetNumberOfLevels( data => {
-			_levelCount = Int32.Parse(
-				JsonUtility.FromJson< DataObject >( data ).count );
-		}, _setNumber.ToString() );
-	}
-
-	public void SetMTurkId( string text )
-	{
-		int id = Int32.Parse( text );
-
-		_turkId = id;
-
-		_sessionId = id * 1234 + 4030201;
+		if( id )
+			DataCollector.GetNewID( data =>
+			{
+				_sessionId = Int32.Parse(
+					JsonUtility.FromJson< DataObject >( data ).id );
+				FindObjectOfType<MainMenuController>().SetSessionId( _sessionId.ToString() );
+			} );
+		if( levels )
+			DataCollector.GetNumberOfLevels( data => {
+				_levelCount = Int32.Parse(
+					JsonUtility.FromJson< DataObject >( data ).count );
+			}, _setNumber.ToString() );
 	}
 }

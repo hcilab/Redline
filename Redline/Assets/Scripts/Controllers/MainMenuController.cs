@@ -26,7 +26,7 @@ public class MainMenuController : MonoBehaviour
 	{
 		Debug.Log("init called in main menu"  );
 		_narrative.gameObject.SetActive( false );
-//		SetSessionId( FindObjectOfType<GameMaster>().SessionID.ToString() );
+		SetSessionId( FindObjectOfType<GameMaster>().SessionID.ToString() );
 	}
 
 	private void Update()
@@ -35,16 +35,11 @@ public class MainMenuController : MonoBehaviour
 			FindObjectOfType<GameMaster>().NextLevel( _levelToLoad );
 	}
 
-	public void SetMTurkId( )
-	{
-		FindObjectOfType< GameMaster >().SetMTurkId( _mTurkId.text );	
-		_startButton.interactable = true;
-	}
-
 	public void SetSessionId( string id )
 	{
 		Debug.Log( "Setting session ID" );
 		_sessionId.text = id;
+		_startButton.interactable = true;
 	}
 
 	public void ShowNarrative( string desiredLevel )
