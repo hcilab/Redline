@@ -374,7 +374,6 @@ public class FireSystemController : MonoBehaviour
         {
             Debug.DrawRay( ray.origin, ray.direction * distance, Color.green, 3000 );
         }
-        Debug.Log(ray.origin  );
         return !hit;
     }
 }
