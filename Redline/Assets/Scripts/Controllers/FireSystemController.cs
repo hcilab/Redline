@@ -242,7 +242,9 @@ public class FireSystemController : MonoBehaviour
             
             foreach( GridItem n in edgeItem.GetNeighbours( _spreadDistance ) )
             {
-                if ( !n.GetVariable<bool>( "onfire" ) && n.GetVariable<bool>( "flammable" ) )
+                if ( !n.GetVariable<bool>( "onfire" ) && 
+                     n.GetVariable<bool>( "flammable") &&
+                     HasLineOfSight( n, edgeItem ) )
                 {
                     emptyNeighbours.Add( n );
                 }
@@ -353,5 +355,26 @@ public class FireSystemController : MonoBehaviour
     public int GetTotalFlames()
     {
         return _flamePool.Count();
+    }
+    
+    public bool HasLineOfSight( GridItem referenceItem, GridItem targetItem )
+    {
+        Vector2 f1 = _fireGrid.GetPosition( referenceItem._gridCoords );
+        Vector2 f2 = _fireGrid.GetPosition( targetItem._gridCoords );
+        
+        Vector3 flame1 = new Vector3( f1.x, 1, f1.y );
+        Vector3 flame2 = new Vector3( f2.x, 1, f2.y );
+        
+        var distance = Vector3.Distance( flame1, flame2 );
+        Ray ray = new Ray(flame2, Vector3.Normalize(flame1 - flame2) * distance);
+        var hit = Physics.Raycast( ray, distance );
+        if( hit )
+            Debug.DrawRay( ray.origin, ray.direction * distance, Color.red, 10000  );
+        else
+        {
+            Debug.DrawRay( ray.origin, ray.direction * distance, Color.green, 3000 );
+        }
+        Debug.Log(ray.origin  );
+        return !hit;
     }
 }
