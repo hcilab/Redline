@@ -13,7 +13,7 @@ public class GameMaster : MonoBehaviour
 	private static extern void RemoveLoader();
 	
 	[DllImport( "__Internal" )]
-	public static extern int GetSetNumber();
+	private static extern int GetSetNumber();
 	
 	[DllImport( "__Internal" )]
 	private static extern int GetBarType();
