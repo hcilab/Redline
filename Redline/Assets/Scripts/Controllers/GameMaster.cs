@@ -25,7 +25,7 @@ public class GameMaster : MonoBehaviour
 	private static extern void RedirectOnEnd();
 	
 	private bool _gameOver;
-	public bool Paused;
+	private bool _paused;
 	private int _currentHpBarindex;
 	public static GameMaster Instance = null;
 	[SerializeField] private DeathScreenController _deathScreenController;
@@ -59,6 +59,16 @@ public class GameMaster : MonoBehaviour
 	private bool _loadingLevel = false;
 	private int _turkId;
 	private int _setNumber = 0;
+
+	public bool Paused
+	{
+		get
+		{
+			return _paused ||
+			       _loadingScreen.activeSelf ||
+			       _deathScreenController.gameObject.activeSelf; 
+		}
+	}
 
 	public int LevelCount
 	{
@@ -158,7 +168,7 @@ public class GameMaster : MonoBehaviour
 
 	public void RegisterLevel( LevelManager levelManager )
 	{
-		Paused = true;
+		_paused = true;
 		_initialized = false;
 		_hasTrialNumber = false;
 		_fireLoaded = false;
@@ -182,15 +192,15 @@ public class GameMaster : MonoBehaviour
 
 	private void Update()
 	{
-		if ( Input.GetKeyDown( KeyCode.R ) && Paused )
+		if ( Input.GetKeyDown( KeyCode.R ) && _paused )
 		{
 			RestartLevel();
 		}
 		else if ( Input.GetKeyDown( KeyCode.Escape ) )
 		{
-			TogglePause( !Paused );
+			TogglePause( !_paused );
 		}
-		else if ( Input.GetKeyDown( KeyCode.Q ) && Paused )
+		else if ( Input.GetKeyDown( KeyCode.Q ) && _paused )
 		{
 			DataCollector.InvalidateTrial( _sessionId, _trialNumber );
 			GoToMenu();
@@ -221,8 +231,8 @@ public class GameMaster : MonoBehaviour
 
 	private void TogglePause( bool pause )
 	{
-		Paused = pause;
-		_pauseScreen.SetActive( Paused );
+		_paused = pause;
+		_pauseScreen.SetActive( _paused );
 	}
 
 	public void GoToMenu()
@@ -309,7 +319,7 @@ public class GameMaster : MonoBehaviour
 	{
 		if( !_gameOver ) 
 			_levelManager.Player.LogCumulativeData( reason );
-		Paused = true;
+		_paused = true;
 		_gameOver = true;
 
 		StartCoroutine( DataCollector.ProcessUploadBacklog( progress =>
