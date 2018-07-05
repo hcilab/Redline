@@ -237,10 +237,9 @@ public class PlayerController : MonoBehaviour
 		totalDmg = Math.Round( totalDmg * _damageScaling );
 		if ( totalDmg > 0.5 && _hitPoints >= 0 ) 
 		{
-			if ( _accumulatedDamage < _hitPoints )
-			{
-				_accumulatedDamage += totalDmg;
-			} else if ( _accumulatedDamage >= _hitPoints )
+
+			_accumulatedDamage += totalDmg;
+			if ( _accumulatedDamage >= _hitPoints )
 			{
 				_accumulatedDamage = _hitPoints;
 			}
