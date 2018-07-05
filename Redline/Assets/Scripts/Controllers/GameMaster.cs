@@ -20,6 +20,9 @@ public class GameMaster : MonoBehaviour
 
 	[DllImport( "__Internal" )]
 	private static extern int GetId();
+
+	[DllImport( "__Internal" )]
+	private static extern void RedirectOnEnd();
 	
 	private bool _gameOver;
 	public bool Paused;
@@ -446,5 +449,13 @@ public class GameMaster : MonoBehaviour
 				_levelCount = Int32.Parse(
 					JsonUtility.FromJson< DataObject >( data ).count );
 			}, _setNumber.ToString() );
+	}
+
+	public void ExitGame()
+	{
+		#if UNITY_WEBGL && !UNITY_EDITOR
+			RedirectOnEnd();
+		#endif
+		Application.Quit();
 	}
 }

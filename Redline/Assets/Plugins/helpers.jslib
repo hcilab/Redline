@@ -23,5 +23,9 @@ mergeInto(LibraryManager.library, {
      */
     GetBarType: function () {
         return -1;
+    },
+    
+    RedirectOnEnd: function () {
+        window.location.href = "/redirect_next_page";
     }
 });
