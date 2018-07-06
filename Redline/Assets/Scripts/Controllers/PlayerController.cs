@@ -254,7 +254,8 @@ public class PlayerController : MonoBehaviour
 		{
 			Debug.Log( "TAKING DAMAGE"  );
 			_animation.Play( "Damage" );
-			_damageAnimation();
+			if(_damageAnimation != null )
+				_damageAnimation();
 			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( _accumulatedDamage, transform.position);
 			_hitPoints -= _accumulatedDamage;
 			
