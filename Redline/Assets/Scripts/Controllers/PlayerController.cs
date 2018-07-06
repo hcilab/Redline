@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
 	private bool _initalizeAverages = true;
 	private double _accumulatedDamage = 0f;
 	private Action _damageAnimation;
+	private Animation _animation;
 
 	// Use this for initialization
 
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
 		
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
+		_animation = GetComponentInChildren< Animation >();
 	}
 
 	public void Initialize()
@@ -91,6 +93,9 @@ public class PlayerController : MonoBehaviour
 		
 		Vector3 movement = new Vector3( x, 0f, z);
 
+		if( x != 0 || z != 0 ) _animation.CrossFade( "Run" );
+		else _animation.CrossFade( "Idle" );
+		
 		gameObject.transform.position = gameObject.transform.position + movement * _speed * Time.deltaTime;
 		_myBody.velocity = Vector3.zero;
 		_myBody.useGravity = false;
@@ -248,6 +253,7 @@ public class PlayerController : MonoBehaviour
 		if ( Time.time - _lastTick > _damageTick && _accumulatedDamage > 30 )
 		{
 			Debug.Log( "TAKING DAMAGE"  );
+			_animation.Play( "Damage" );
 			_damageAnimation();
 			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( _accumulatedDamage, transform.position);
 			_hitPoints -= _accumulatedDamage;
