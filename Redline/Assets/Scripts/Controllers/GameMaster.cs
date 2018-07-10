@@ -140,7 +140,7 @@ public class GameMaster : MonoBehaviour
 		
 		#if UNITY_WEBGL && !UNITY_EDITOR
 			WebSetup();
-	        ReloadConfigs(true, false, true);
+	        ReloadConfigs(false, false, true);
 			RemoveLoader();
 	    #else
 			ReloadConfigs();

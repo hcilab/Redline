@@ -22,9 +22,9 @@ mergeInto(LibraryManager.library, {
      * @return {number}
      */
     GetBarType: function () {
-        return -1;
+        return !isNaN(GetParams().condition && isFinite(GetParams().condition ) ? GetParams().condition : 0 );
     },
-    
+
     RedirectOnEnd: function () {
         window.location.href = "/redirect_next_page";
     }
