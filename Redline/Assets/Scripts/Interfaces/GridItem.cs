@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -193,7 +192,8 @@ public class GridItem
 
     public GridItem[] GetNeighbours( int distance )
     {
-        List<GridItem> neighbours = new List<GridItem>();
+        GridItem[] neighbours = new GridItem[ 2 * distance * distance + 2 * distance ];
+        int index = 0;
         float x = _gridCoords.x;
         float y = _gridCoords.y;
 
@@ -201,46 +201,49 @@ public class GridItem
         {
             //check up
             if (_gridCoords.x >= i )
-                neighbours.Add( _parentGrid.GetGridItem( x - i, y ) );
+                neighbours[index++] = _parentGrid.GetGridItem( x - i, y );
             
             //check down
             if( _gridCoords.x < _parentGrid._rows - 1 - i)
-                neighbours.Add( _parentGrid.GetGridItem( x + i,y ) );  
+                neighbours[index++] = _parentGrid.GetGridItem( x + i,y );  
             
             //Check left
             if ( _gridCoords.y >= i )
             {
-                neighbours.Add( _parentGrid.GetGridItem( x, y - i ) );
+                neighbours[index++] = _parentGrid.GetGridItem( x, y - i );
                 for ( var n = 1; n <= distance - i; n++ )
                 {
                     //check up
                     if (_gridCoords.x >= n )
-                        neighbours.Add( _parentGrid.GetGridItem( x - n, y - i) );
+                        neighbours[index++] = _parentGrid.GetGridItem( x - n, y - i);
             
                     //check down
                     if( _gridCoords.x < _parentGrid._rows - 1 - n)
-                        neighbours.Add( _parentGrid.GetGridItem( x + n,y - i) );    
+                        neighbours[index++] = _parentGrid.GetGridItem( x + n,y - i);    
                 }
             }
 
             //check right
             if ( _gridCoords.y < _parentGrid._cols - 1 - i )
             {
-                neighbours.Add( _parentGrid.GetGridItem( x, y + i ) );
+                neighbours[index++] = _parentGrid.GetGridItem( x, y + i );
                 for ( var n = 1; n <= distance - i; n++ )
                 {
                     //check up
                     if (_gridCoords.x >= n )
-                        neighbours.Add( _parentGrid.GetGridItem( x - n, y + i) );
+                        neighbours[index++] = _parentGrid.GetGridItem( x - n, y + i);
             
                     //check down
                     if( _gridCoords.x < _parentGrid._rows - 1 - n)
-                        neighbours.Add( _parentGrid.GetGridItem( x + n,y + i) );    
+                        neighbours[index++] = _parentGrid.GetGridItem( x + n,y + i);    
                 }
             }  
         }
-       
-        return neighbours.ToArray();
+        
+        var outputArray = new GridItem[ index ];
+        for ( int i = 0; i < index; i++ ) outputArray[ i ] = neighbours[ i ];
+
+        return outputArray;
     }
 
     public bool HasActivePayloadElements()
