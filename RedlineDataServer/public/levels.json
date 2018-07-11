@@ -1,27 +1,37 @@
 [
   {
-  
-    "_updateInterval": 0.4,
-    "_spreadIntensity": 3,
+
     "_startingFlames": [{
-      "x": 10.0,
-      "y": 13.0
+      "x": 1.0,
+      "y": 1.0
+    }],
+    "_prewarm": 5
+  }
+  , {
+
+    "_startingFlames": [{
+      "x": 1.0,
+      "y": 1.0
+    },{
+      "x": 18.0,
+      "y": 2.0
+    }],
+    "_prewarm": 7
+  }
+  , {
+    "_startingFlames": [{
+      "x": 1.0,
+      "y": 1.0
+    },{
+      "x": 18.0,
+      "y": 2.0
+    }, {
+      "x": 13,
+      "y": 5
     }],
     "_prewarm": 10
   }
   , {
-    "_updateInterval": 0.4,
-    "_startingFlames": [{
-      "x": 10.0,
-      "y": 13.0
-    }, {
-      "x": 13,
-      "y": 10
-    }],
-    "_prewarm": 13
-  }
-  , {
-    "_updateInterval": 0.4,
     "_startingFlames": [{
       "x": 1.0,
       "y": 1.0
@@ -35,7 +45,6 @@
     "_prewarm": 13
   }
   , {
-    "_updateInterval": 0.4,
     "_startingFlames": [{
       "x": 1.0,
       "y": 1.0
@@ -52,7 +61,6 @@
     "_prewarm": 10
   }
   , {
-    "_updateInterval": 0.4,
     "_startingFlames": [{
       "x": 1,
       "y": 10
@@ -69,7 +77,6 @@
     "_prewarm": 10
   }
   , {
-    "_updateInterval": 1,
     "_startingFlames": [{
       "x": 3,
       "y": 14
@@ -83,6 +90,6 @@
       "x": 8,
       "y": 16
     }],
-    "_prewarm": 20
-  } 
+    "_prewarm": 10
+  }
 ]
