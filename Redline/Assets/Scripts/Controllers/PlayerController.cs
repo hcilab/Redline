@@ -246,11 +246,11 @@ public class PlayerController : MonoBehaviour
 			_accumulatedDamage += totalDmg;
 			if ( _accumulatedDamage >= _hitPoints )
 			{
-				_accumulatedDamage = _hitPoints;
+				_hitPoints = 0;
 			}
 		}
 
-		if ( Time.time - _lastTick > _damageTick && _accumulatedDamage > 30 )
+		if ( Time.time - _lastTick > _damageTick && _accumulatedDamage > 30 && _hitPoints > 0 ) 
 		{
 			Debug.Log( "TAKING DAMAGE"  );
 			_animation.Play( "Damage" );
