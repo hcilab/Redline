@@ -156,7 +156,15 @@ public class GridController
 	/// <returns>A GridItem that is associated with the specified cell.</returns>
 	public GridItem GetGridItem(int x, int y)
 	{
-		return _grid[x * _rows + y];
+		try
+		{
+			return _grid[ x * _rows + y ];
+		}
+		catch ( Exception e )
+		{
+			Debug.Log( "X: " + x + " Y: " + y  );
+			throw e;
+		}
 	}
 	public GridItem GetGridItem(double x, double y)
 	{
