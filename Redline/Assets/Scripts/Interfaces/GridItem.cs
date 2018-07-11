@@ -199,21 +199,45 @@ public class GridItem
 
         for ( var i = 1; i <= distance; i++ )
         {
-            //Check left
-            if (_gridCoords.y >= i )
-                neighbours.Add( _parentGrid.GetGridItem( x, y - i ) );
-        
             //check up
             if (_gridCoords.x >= i )
                 neighbours.Add( _parentGrid.GetGridItem( x - i, y ) );
-        
-            //check right
-            if (_gridCoords.y < _parentGrid._cols - 1 - i) 
-                neighbours.Add( _parentGrid.GetGridItem( x, y + i ) );
-        
+            
             //check down
             if( _gridCoords.x < _parentGrid._rows - 1 - i)
-                neighbours.Add( _parentGrid.GetGridItem( x + i,y ) );     
+                neighbours.Add( _parentGrid.GetGridItem( x + i,y ) );  
+            
+            //Check left
+            if ( _gridCoords.y >= i )
+            {
+                neighbours.Add( _parentGrid.GetGridItem( x, y - i ) );
+                for ( var n = 1; n <= distance - i; n++ )
+                {
+                    //check up
+                    if (_gridCoords.x >= n )
+                        neighbours.Add( _parentGrid.GetGridItem( x - n, y - i) );
+            
+                    //check down
+                    if( _gridCoords.x < _parentGrid._rows - 1 - n)
+                        neighbours.Add( _parentGrid.GetGridItem( x + n,y - i) );    
+                }
+            }
+
+            //check right
+            if ( _gridCoords.y < _parentGrid._cols - 1 - i )
+            {
+                neighbours.Add( _parentGrid.GetGridItem( x, y + i ) );
+                for ( var n = 1; n <= distance - i; n++ )
+                {
+                    //check up
+                    if (_gridCoords.x >= n )
+                        neighbours.Add( _parentGrid.GetGridItem( x - n, y + i) );
+            
+                    //check down
+                    if( _gridCoords.x < _parentGrid._rows - 1 - n)
+                        neighbours.Add( _parentGrid.GetGridItem( x + n,y + i) );    
+                }
+            }  
         }
        
         return neighbours.ToArray();
