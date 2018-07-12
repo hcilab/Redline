@@ -5,9 +5,9 @@
     , "_startIntensity": 2.0
     , "_showGrid": false
     , "_firePoolSize": 100
-    , "_updateInterval": 0.15
-    , "_spreadLimit": 4
-    , "_spreadChance": 0.25
+    , "_updateInterval": 0.5
+    , "_spreadLimit": 3
+    , "_spreadChance": 0.15
     , "_spreadDistance": 4
     , "_growthFactor": 0.2
     , "_maxFlameIntensity": 7.0
