@@ -132,7 +132,7 @@ server(
           && levelNumber >= 0
         ) {
           var levelToLoad = levelNumber;
-          if( _.isNumber(setNumber) && setConfigs != null )
+          if( _.isNumber(setNumber) && setConfigs != null && setNumber > setConfigs.length )
             levelToLoad = setConfigs[setNumber][levelNumber];
 
           let levelConfig = _.defaultsDeep(
