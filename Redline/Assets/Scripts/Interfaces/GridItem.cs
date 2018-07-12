@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Random = System.Random;
 
 /// <summary>
 /// A single square (or whatever shape) in a grid as defined by the GridController.
@@ -190,7 +192,7 @@ public class GridItem
         return SetVariable( key, _variableSetters[key](this) );
     }
 
-    public GridItem[] GetNeighbours( int distance )
+    public GridItem[] GetNeighbours( int distance, bool shuffle = true )
     {
         GridItem[] neighbours = new GridItem[ 2 * distance * distance + 2 * distance ];
         int index = 0;
@@ -243,6 +245,12 @@ public class GridItem
         var outputArray = new GridItem[ index ];
         for ( int i = 0; i < index; i++ ) outputArray[ i ] = neighbours[ i ];
 
+        if ( shuffle )
+        {
+            Random rnd = new Random();
+            return outputArray.OrderBy( i => rnd.Next() ).ToArray();
+        }
+        
         return outputArray;
     }
 

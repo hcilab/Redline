@@ -58,7 +58,7 @@
       "x": 3,
       "y": 5
     }],
-    "_prewarm": 10
+    "_prewarm": 13
   }
   , {
     "_startingFlames": [{
@@ -74,7 +74,7 @@
       "x": 18,
       "y": 2
     }],
-    "_prewarm": 10
+    "_prewarm": 15
   }
   , {
     "_startingFlames": [{
@@ -90,6 +90,6 @@
       "x": 8,
       "y": 16
     }],
-    "_prewarm": 10
+    "_prewarm": 15
   }
 ]
