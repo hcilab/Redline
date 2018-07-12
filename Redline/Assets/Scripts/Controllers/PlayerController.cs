@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
 	private double _accumulatedDamage = 0f;
 	private Action _damageAnimation;
 	private Animation _animation;
+	private ParticleSystem.EmissionModule _water;
 
 	// Use this for initialization
 
@@ -71,6 +72,8 @@ public class PlayerController : MonoBehaviour
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_animation = GetComponentInChildren< Animation >();
+		_water = GetComponentInChildren< ParticleSystem >().emission;
+
 	}
 
 	public void Initialize()
@@ -100,15 +103,14 @@ public class PlayerController : MonoBehaviour
 		_myBody.velocity = Vector3.zero;
 		_myBody.useGravity = false;
 		
-		var w = GetComponentInChildren< ParticleSystem >().emission;
 		if ( Input.GetMouseButtonDown( 0 ) )
 		{
-			w.enabled = true;
+			_water.enabled = true;
 			GetComponentInChildren< ParticleSystem >().Play();
 //			
 		} else if ( Input.GetMouseButtonUp( 0 ) )
 		{
-			w.enabled = false;
+			_water.enabled = false;
 		}
 		LookAtMouse();
 		 
@@ -169,6 +171,12 @@ public class PlayerController : MonoBehaviour
 			, _levelManager.GameMaster.GetActiveFlames().ToString()
 			, fps.ToString()
 		);
+	}
+
+	public void Death()
+	{
+		_water.enabled = false;
+		_animation.CrossFade( "Run" );
 	}
 
 	private double AverageIntensity( List< Collider > enemiesNearBy )

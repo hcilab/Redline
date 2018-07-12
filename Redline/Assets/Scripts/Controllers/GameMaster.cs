@@ -42,7 +42,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] public DataCollectionController DataCollector;
 	[SerializeField] private GameObject _uploadModal;
 	[SerializeField] private GameObject _pauseScreen;
-	[SerializeField] private GameObject _loadingScreen;
+	[SerializeField] private LoadingScreenController _loadingScreen;
 	
 	private int _sessionId;
 	private bool _uploadComplete = false;
@@ -65,7 +65,7 @@ public class GameMaster : MonoBehaviour
 		get
 		{
 			return _paused ||
-			       _loadingScreen.activeSelf ||
+			       _loadingScreen.gameObject.activeSelf ||
 			       _deathScreenController.gameObject.activeSelf; 
 		}
 	}
@@ -218,10 +218,10 @@ public class GameMaster : MonoBehaviour
 			ScrollHpBar( 1 );
 		}
 		else if ( _playerLoaded && _fireLoaded && _hasTrialNumber && 
-		          _loadingScreen.activeSelf && Input.anyKeyDown && !_loadingLevel)
+		          _loadingScreen.gameObject.activeSelf && Input.anyKeyDown && !_loadingLevel)
 		{
 			_initialized = true;
-			_loadingScreen.SetActive( false );
+			_loadingScreen.gameObject.SetActive( false );
 			TogglePause( false );
 		}
 
@@ -279,15 +279,17 @@ public class GameMaster : MonoBehaviour
 	private IEnumerator LoadLevel()
 	{
 		_loadingLevel = true;
-		_gameInterface.enabled = true;
-		_loadingScreen.SetActive( true );
+		_loadingScreen.gameObject.SetActive( true );
 		TogglePause( true );
 		AsyncOperation async = SceneManager.LoadSceneAsync( Levels.Level );
 		while ( !async.isDone )
 		{
+			_loadingScreen.UpdateProgress( async.progress );
 			Debug.Log( async.progress  );
 			yield return null;
 		}
+		_gameInterface.enabled = true;
+		_loadingScreen.LoadingComplete();
 		_loadingLevel = false;
 	}
 
