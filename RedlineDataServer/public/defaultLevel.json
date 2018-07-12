@@ -2,14 +2,14 @@
      "_rows": 20
     , "_columns": 20
     , "_payloadDepth": 1
-    , "_startIntensity": 2.0
+    , "_startIntensity": 3.0
     , "_showGrid": false
     , "_firePoolSize": 100
-    , "_updateInterval": 0.5
+    , "_updateInterval": 1
     , "_spreadLimit": 3
     , "_spreadChance": 0.15
     , "_spreadDistance": 4
-    , "_growthFactor": 0.2
+    , "_growthFactor": 0.15
     , "_maxFlameIntensity": 7.0
     , "_waterStrength": 0.10
     , "_prewarm": 10
