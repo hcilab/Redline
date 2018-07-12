@@ -98,6 +98,7 @@ server(
     if( !_.isNil( ctx.query.set ) ) {
       try {
         setNumber = parseInt( ctx.query.set );
+        ctx.log.debug( "Recieved set number " + setNumber );
       } catch( err ) {
         return send(400).send( "Invalid set count request.<br>" + err );
       }
@@ -132,8 +133,10 @@ server(
           && levelNumber >= 0
         ) {
           var levelToLoad = levelNumber;
-          if( _.isNumber(setNumber) && setConfigs != null && setNumber > setConfigs.length )
+          if( _.isNumber(setNumber) && setConfigs != null && setNumber < setConfigs.length )
             levelToLoad = setConfigs[setNumber][levelNumber];
+
+          ctx.log.debug( "Sending level " + levelToLoad );
 
           let levelConfig = _.defaultsDeep(
             levelConfigs[ levelToLoad ],
