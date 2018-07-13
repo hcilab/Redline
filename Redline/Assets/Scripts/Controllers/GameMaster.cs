@@ -321,7 +321,7 @@ public class GameMaster : MonoBehaviour
 		Debug.Log( "change HP bar to " + _currentHpBar.name );
 	}
 
-	public void GameOver( DataCollectionController.DataType reason )
+	public IEnumerator GameOver( DataCollectionController.DataType reason )
 	{
 		if( !_gameOver ) 
 			_levelManager.Player.LogCumulativeData( reason );
@@ -336,6 +336,8 @@ public class GameMaster : MonoBehaviour
 			if ( progress >= 1 ) _uploadComplete = true;
 		} ) );
 
+		
+		yield return new WaitForSecondsRealtime( 0.5f );
 		string message;
 		switch ( reason )
 		{

@@ -116,7 +116,8 @@ public class PlayerController : MonoBehaviour
 		 
 		if ( _hitPoints <= 0 )
 		{
-			_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death );
+			StartCoroutine(
+				_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death ));
 			enabled = false;
 		}
 		
