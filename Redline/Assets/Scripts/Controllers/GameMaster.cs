@@ -312,13 +312,13 @@ public class GameMaster : MonoBehaviour
 
 	private void ChangeHpBar( int index )
 	{
-		Debug.Log( "change HP bar" );
 		_currentHpBar.gameObject.SetActive( false );
 		_currentHpBarindex = index;
 		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
 
 		_currentHpBar.gameObject.SetActive( true );
 		_hpbarlabel.text = _currentHpBar.name;
+		Debug.Log( "change HP bar to " + _currentHpBar.name );
 	}
 
 	public void GameOver( DataCollectionController.DataType reason )
