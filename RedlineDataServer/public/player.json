@@ -7,5 +7,5 @@
   "_showCollider": false,
   "_damageTick": 1,
   "_loggingTick": 1,
-  "_recoveryRate": 1,
+  "_recoveryRate": 0.5
 }
