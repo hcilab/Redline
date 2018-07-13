@@ -11,7 +11,7 @@
     , "_spreadDistance": 4
     , "_growthFactor": 0.15
     , "_maxFlameIntensity": 7.0
-    , "_waterStrength": 0.10
+    , "_waterStrength": 0.5
     , "_prewarm": 10
     , "_spreadIntensity": 5
     , "_levelTime": 60
