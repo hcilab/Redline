@@ -192,6 +192,7 @@ public class GameMaster : MonoBehaviour
 
 	private void Update()
 	{
+		#if UNITY_EDITOR
 		if ( Input.GetKeyDown( KeyCode.R ) && _paused )
 		{
 			RestartLevel();
@@ -217,7 +218,10 @@ public class GameMaster : MonoBehaviour
 		{
 			ScrollHpBar( 1 );
 		}
-		else if ( _playerLoaded && _fireLoaded && _hasTrialNumber && 
+		
+		#endif
+		
+		if ( _playerLoaded && _fireLoaded && _hasTrialNumber && 
 		          _loadingScreen.gameObject.activeSelf && Input.anyKeyDown && !_loadingLevel)
 		{
 			_initialized = true;
