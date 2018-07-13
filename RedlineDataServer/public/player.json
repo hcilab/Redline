@@ -1,7 +1,7 @@
 {
   "_viewDistance": 20,
   "_speed": 25,
-  "_rotationSpeed": 70,
+  "_rotationSpeed": 7,
   "_damageScaling": 30,
   "_totalHp": 1000,
   "_showCollider": false,
