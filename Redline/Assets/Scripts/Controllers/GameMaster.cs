@@ -158,12 +158,13 @@ public class GameMaster : MonoBehaviour
 		
 		// get set number
 		_setNumber = GetSetNumber();
+		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 		// get bar type
 		var barIndex = GetBarType();
+		Debug.Log( "PARSED BAR NUMBER" + barIndex  );
 		if( barIndex != -1 )
-			ChangeHpBar( _currentHpBarindex );
+			ChangeHpBar( barIndex );
 		
-		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
