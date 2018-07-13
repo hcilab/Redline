@@ -6,5 +6,6 @@
   "_totalHp": 1000,
   "_showCollider": false,
   "_damageTick": 1,
-  "_loggingTick": 1
+  "_loggingTick": 1,
+  "_recoveryRate": 1,
 }

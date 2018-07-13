@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
 	private Action _damageAnimation;
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
+	[SerializeField] private double _recoveryRate = 0;
 
 	// Use this for initialization
 
@@ -274,7 +275,10 @@ public class PlayerController : MonoBehaviour
 			_accumulatedDamage = 0;
 			_lastTick = Time.time;
 		}
-		
+
+		if ( _hitPoints < _totalHp - _recoveryRate && totalDmg < 10 )
+			_hitPoints += _recoveryRate;
+
 	}
 
 	private void LookAtMouse( )
