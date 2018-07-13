@@ -22,7 +22,7 @@ mergeInto(LibraryManager.library, {
      * @return {number}
      */
     GetBarType: function () {
-        return !isNaN(GetParams().condition && isFinite(GetParams().condition ) ? GetParams().condition : 0 );
+        return !isNaN(GetParams().condition) && isFinite(GetParams().condition ) ? GetParams().condition : 0;
     },
 
     RedirectOnEnd: function () {
