@@ -8,7 +8,7 @@ mergeInto(LibraryManager.library, {
      * @return {number}
      */
     GetSetNumber: function () {
-        return !isNaN(GetParams().set) && isFinite(GetParams().set) ? GetParams().set : 0;
+        return !isNaN(GetParams().set) && isFinite(GetParams().set) ? GetParams().set : 2;
     },
 
     /**
@@ -22,7 +22,7 @@ mergeInto(LibraryManager.library, {
      * @return {number}
      */
     GetBarType: function () {
-        return !isNaN(GetParams().condition) && isFinite(GetParams().condition ) ? GetParams().condition : 0;
+        return !isNaN(GetParams().condition) && isFinite( GetParams().condition ) ? GetParams().condition : -1;
     },
 
     RedirectOnEnd: function () {
