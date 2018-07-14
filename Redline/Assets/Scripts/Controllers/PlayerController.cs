@@ -37,7 +37,8 @@ public class PlayerController : MonoBehaviour
 	private Action _damageAnimation;
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
-	[SerializeField] private double _recoveryRate = 0;
+	[SerializeField] private float _recoveryRate = 0;
+	[SerializeField] private float _healthReward = 0f;
 
 	// Use this for initialization
 
@@ -117,9 +118,9 @@ public class PlayerController : MonoBehaviour
 		 
 		if ( _hitPoints <= 0 )
 		{
+			enabled = false;
 			StartCoroutine(
 				_levelManager.GameMaster.GameOver( DataCollectionController.DataType.Death ));
-			enabled = false;
 		}
 		
 		TakeDamage();
@@ -276,8 +277,7 @@ public class PlayerController : MonoBehaviour
 			_lastTick = Time.time;
 		}
 
-		if ( _hitPoints < _totalHp - _recoveryRate && totalDmg < 10 )
-			_hitPoints += _recoveryRate;
+		if ( totalDmg < 10 ) RegainHp( _recoveryRate );
 
 	}
 
@@ -315,6 +315,7 @@ public class PlayerController : MonoBehaviour
 
 	public void Score( FlameController flame, double intensity, Transform position )
 	{
+		if ( Math.Abs( intensity ) < 0.1f ) RegainHp( _healthReward ); 
 		_score += ( intensity + 1 )* 10;
 		_levelManager.GameMaster.GetScoreNumberController().SpawnNumber( (intensity + 1 ) * 10, position.position );
 		if ( flame != null )
@@ -324,6 +325,11 @@ public class PlayerController : MonoBehaviour
 				_logFireExtinguished++;
 			}
 		}
+	}
+
+	private void RegainHp( float healthReward )
+	{
+		if( _hitPoints + healthReward < _totalHp ) _hitPoints += healthReward;
 	}
 
 	public bool HasLineOfSight( Vector3 location )
