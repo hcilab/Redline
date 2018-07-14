@@ -173,9 +173,9 @@ public class FireSystemController : MonoBehaviour
 
         if ( _activeFlames.Count == 0 )
         {
+            enabled = false;
             StartCoroutine( 
                 _levelManager.GameMaster.GameOver( DataCollectionController.DataType.Victory ) );
-            enabled = false;
         }
         
         if ( Time.time - _tick > _updateInterval && _activeFlames.Count > 0 )
