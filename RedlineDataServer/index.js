@@ -53,7 +53,7 @@ const cors = server.utils.modern(corsExpress);
 const comp = server.utils.modern(compression);
 
 server(
-  { log: 'debug',
+  { 
     security: {
       csrf: false
     },
