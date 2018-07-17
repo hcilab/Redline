@@ -387,7 +387,8 @@ public class GameMaster : MonoBehaviour
 
 	public void OnTimeout()
 	{
-		GameOver( DataCollectionController.DataType.Timeout );
+		StartCoroutine(
+			GameOver( DataCollectionController.DataType.Timeout ) );
 	}
 
 	public void ResetUi()
