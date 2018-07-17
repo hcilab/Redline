@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
 	private ParticleSystem.EmissionModule _water;
 	[SerializeField] private float _recoveryRate = 0;
 	[SerializeField] private float _healthReward = 0f;
+	private LineRenderer _outline;
 
 	// Use this for initialization
 
@@ -48,28 +49,7 @@ public class PlayerController : MonoBehaviour
 		_frames = 0;
 		_hitPoints = _totalHp;
 
-		if ( _showCollider )
-		{
-			LineRenderer outline = gameObject.AddComponent<LineRenderer>();
-	
-			outline.startWidth = 0.1f;
-			outline.endWidth = 0.1f;
-			outline.positionCount = 129;
-			outline.useWorldSpace = false;
-	
-			float deltaTheta = (float) (2.0 * Mathf.PI) / 128;
-			float theta = 0f;
-	
-			for (int i = 0; i < 129; i++)
-			{
-				float x = 4.2f * Mathf.Cos(theta);
-				float z = 4.2f * Mathf.Sin(theta);
-				Vector3 pos = new Vector3(x, 1, z);
-	
-				outline.SetPosition(i, pos);
-				theta += deltaTheta;
-			}
-		}
+		_outline = gameObject.AddComponent<LineRenderer>();
 		
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
@@ -133,6 +113,27 @@ public class PlayerController : MonoBehaviour
 			_logDamage = 0f;
 			_logScore = _logFireExtinguished;
 			_lastLog = Time.time;
+		}
+	}
+
+	private void OnDrawGizmos()
+	{
+		_outline.startWidth = 0.1f;
+		_outline.endWidth = 0.1f;
+		_outline.positionCount = 129;
+		_outline.useWorldSpace = false;
+	
+		float deltaTheta = (float) (2.0 * Mathf.PI) / 128;
+		float theta = 0f;
+	
+		for (int i = 0; i < 129; i++)
+		{
+			float x = 4.2f * Mathf.Cos(theta);
+			float z = 4.2f * Mathf.Sin(theta);
+			Vector3 pos = new Vector3(x, 1, z);
+	
+			_outline.SetPosition(i, pos);
+			theta += deltaTheta;
 		}
 	}
 

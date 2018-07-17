@@ -158,6 +158,10 @@ public class FireSystemController : MonoBehaviour
 
     }
 
+    private void OnDrawGizmos()
+    {
+        _fireGrid.DrawGrid();
+    }
 
     // Update is called once per frame
     void Update()
@@ -165,12 +169,6 @@ public class FireSystemController : MonoBehaviour
         if ( !initialized ) return; //don't start until initialization is done
         if( _levelManager.GameMaster == null || _levelManager.GameMaster.Paused ) return;
     
-        if ( _showGrid )
-        {
-            _fireGrid.DrawGrid();
-            
-        }
-
         if ( _activeFlames.Count == 0 )
         {
             enabled = false;
@@ -184,9 +182,6 @@ public class FireSystemController : MonoBehaviour
             Grow();
             _tick = Time.time;
         }
-        
-        
-        if ( _showGrid ) _fireGrid.DrawGrid();
     }
 
     private void Grow()
