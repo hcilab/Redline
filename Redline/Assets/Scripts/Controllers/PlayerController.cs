@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
 			_lastTick = Time.time;
 		}
 
-		if ( totalDmg < 10 ) RegainHp( _recoveryRate );
+		if ( _hitPoints > 0 && totalDmg < 10 ) RegainHp( _recoveryRate );
 
 	}
 
