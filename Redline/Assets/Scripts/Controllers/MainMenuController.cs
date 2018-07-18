@@ -29,12 +29,6 @@ public class MainMenuController : MonoBehaviour
 		SetSessionId( FindObjectOfType<GameMaster>().SessionID.ToString() );
 	}
 
-	private void Update()
-	{
-		if( _narrative.gameObject.activeSelf && Input.anyKeyDown )
-			FindObjectOfType<GameMaster>().NextLevel( _levelToLoad );
-	}
-
 	public void SetSessionId( string id )
 	{
 		Debug.Log( "Setting session ID" );
@@ -51,5 +45,10 @@ public class MainMenuController : MonoBehaviour
 	private void OnDestroy()
 	{
 		SceneManager.sceneLoaded -= Initialize;
+	}
+
+	public void StartGame()
+	{
+		FindObjectOfType<GameMaster>().NextLevel( _levelToLoad );
 	}
 }
