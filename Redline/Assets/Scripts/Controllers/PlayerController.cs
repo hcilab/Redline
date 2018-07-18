@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
 	public void Death()
 	{
 		_water.enabled = false;
-		_animation.CrossFade( "Run" );
+		_animation.Play( "Idle" );
 	}
 
 	private double AverageIntensity( List< Collider > enemiesNearBy )

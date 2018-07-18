@@ -356,6 +356,8 @@ public class GameMaster : MonoBehaviour
 					break;
 		}
 		
+		FindObjectOfType<PlayerController>().Death();
+		
 		_deathScreenController.setMessage( message );
 		_deathScreenController.setScore(  _levelManager.Player.GetScore().ToString());;
 		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
