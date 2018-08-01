@@ -1,0 +1,49 @@
+{% extends "template.html" %}
+{% block head %}
+
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/window_parent.js') }}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        open_child_window("/hr_window", undefined, true);
+        wChild.focus();
+
+        $("#btnNext").jqxButton({ width: '100', disabled: true }).bind('click', function () {
+            $('#form').submit();
+        });
+
+        eventer(messageEvent, function(e) {
+            if (e.data == "HeartRateFound") {
+                $('#btnNext').jqxButton({ disabled: false });
+                $('#instructions').html("<b>Your heart rate was found! Click \"Continue\" to proceed.</b>");
+            }
+        }, false);
+    });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    <form id="form" method="post" action="{{ url_for('submit') }}">
+
+        <div class="question" style="">
+            <div id="instructions" class="padding">
+                <b>Trying to locate your heart rate. </b>
+                <ul>
+                    <li>Refer to the smaller window to see the current status.</li>
+                    <li>You may need to allow popups and refresh this window.</li>
+                    <li>After the heart rate has been found, the button below will be enabled.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation padding">
+            <div style="float: right">
+                <input id="btnNext" type="button" value="Continue">
+            </div>
+            <div style="clear: both"></div>
+        </div>
+
+    </form>
+
+{% endblock %}

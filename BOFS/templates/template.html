@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{{ config['TITLE'] }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.base.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.arctic.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.bootstrap.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='style.css') }}" type="text/css" />
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jquery-1.11.1.min.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jqxcore.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jqx-all.js') }}"></script>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="title-bar">
+    <div class="title-text">
+        {% if config['USE_LOGO'] %}<div style="float: right"><img src="{{ url_for('BOFS_static', filename='logo.png') }}"></div>{% endif %}
+        <div style="float: left; padding-top: 2px;">{{ config['TITLE'] }}</div>
+    </div>
+</div>
+<br>
+
+<div style="width: 967px; margin-left: auto; margin-right: auto;" class="content">
+
+    <div class="questions">
+
+        {% if crumbs and config['USE_BREADCRUMBS'] %}
+        <div>
+        {% for crumb in crumbs %}
+            {% if crumb['active'] %}
+                <b>{{ crumb['name'] }}</b>
+            {% else %}
+                {{ crumb['name'] }}
+            {% endif %}
+            {% if not loop.index == (crumbs | length) %}&#8594;{% endif %}
+        {% endfor %}
+        <br>&nbsp;
+        </div>
+        {% endif %}
+
+        {% block top %}
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+        {% block bottom %}
+        {% endblock %}
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    {% if 'currentUrl' in session and session['currentUrl'] %}
+    // Redirect user to the correct page if they are on the wrong page.
+    window.onload = function() {
+
+        if (window.location.pathname.includes("admin")) {
+            return;
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (window.location.pathname.substr(1) != this.responseText)  {
+                    window.location.href = "/" + this.responseText;
+                }
+            }
+        };
+        xhttp.open("GET", "/current_url", true);
+        xhttp.send();
+    };
+    window.onunload = function(){};
+    {% endif %}
+</script>
+
+</body>
+</html>

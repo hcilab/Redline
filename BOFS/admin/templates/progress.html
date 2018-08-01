@@ -1,0 +1,80 @@
+{% extends "template_admin.html" %}
+{% block head %}
+        <style>
+        .content {
+            width: 99% !important;
+        }
+        </style>
+        <script type="text/javascript">
+        function reload_grid() {
+            $('#jqxgrid').jqxGrid('updatebounddata');
+
+            setTimeout(reload_grid, 60000);
+        }
+
+        $(document).ready(function () {
+            data = '{{ results | safe}}';
+
+            var source =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'participantID', type: 'integer' },
+                    { name: 'condition', type: 'integer' },
+                    { name: 'mTurkID', type: 'string' },
+                    { name: 'timeStarted', type: 'string' },
+                    { name: 'timeEnded', type: 'string' },
+                    {% for q in g.questionnairesLive %}
+                        { name: '{{ q }}', type: 'integer' },
+                    {% endfor %}
+                    { name: 'duration', type: 'integer' }
+                ],
+                sortcolumn: 'participantID',
+                sortdirection: 'desc',
+                url: "{{ url_for("admin.progress_ajax") }}"
+            };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#jqxgrid").jqxGrid(
+            {
+                pagesize: 100,
+                height: 700,
+                width: "100%",
+                sortable: true,
+                source: dataAdapter,
+                showaggregates: true,
+                columnsresize: true,
+                showstatusbar: true,
+                statusbarheight: 70,
+                filterable: true,
+                showfilterrow: false,
+                columns: [
+                    { text: 'pID', datafield: 'participantID', width: 50 },
+                    { text: 'condition', datafield: 'condition', width: 60 },
+                    { text: 'mTurkID', datafield: 'mTurkID', width: 100 },
+                    { text: 'Start Time', datafield: 'timeStarted', width: 80 },
+                    {% for q in g.questionnairesLive %}
+                        { text: '{{ q }}', datafield: '{{ q }}', width: 100, cellsalign: "center", aggregates: ['avg', 'min', 'max'] },
+                    {% endfor %}
+                    { text: 'End Time', datafield: 'timeEnded', width: 80 },
+                    { text: 'Duration', datafield: 'duration', width: 100, aggregates: ['avg', 'min', 'max'] }
+                ]
+            });
+
+            $('#jqxgrid').jqxGrid('autoresizecolumns');
+
+            setTimeout(reload_grid, 60000);
+        });
+        </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="question">
+        <div class="padding" style="overflow: auto; font-size: 9pt;">
+            <div id="jqxgrid"></div>
+        </div>
+    </div>
+
+{% endblock %}

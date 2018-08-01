@@ -1,0 +1,50 @@
+{% extends "template_admin.html" %}
+{% block head %}
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename="js/surveys.js") }}"></script>
+
+    <script type="text/javascript">
+		var s = new survey();
+		s.read_file("{{ url_for('JSON_questionnaire', filename=questionnaireName + ".json") }}");
+		s.insert_questions();
+		s.initialize_widgets();
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <br>
+
+    {% if (errors | length) > 0 %}
+        <div class="error-box">
+            <b>Errors were found</b>
+            <ul>
+                {% for e in errors %}
+                <li>{{ e | safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+
+    <form id="form" method="post" action="">
+
+        <input type="hidden" name="timeStarted" value="{{ timeStarted }}">
+
+        <div id="instructions" style="font-style: italic;"></div>
+        <br>
+
+        <div id="q_s">
+        </div>
+
+        <div class="navigation padding" style="">
+            <div style="float: right">
+                <input id="btnNext" type="button" value="Validate">
+            </div>
+            <div style="clear: both"></div>
+        </div>
+
+    </form>
+
+    <br>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "template_admin.html" %}
+{% block head %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            data = {{ data | safe}};
+
+            var source =
+            {
+                datatype: "json",
+                datafields: {{ datafields | safe }},
+                localdata: data
+            };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $("#jqxgrid").jqxGrid(
+            {
+                pagesize: 50,
+                height: 700,
+                width: "100%",
+                sortable: true,
+                source: dataAdapter,
+                columnsresize: true,
+                filterable: true,
+                showfilterrow: false,
+                columns: {{ columns | safe }}
+            });
+
+            $('#jqxgrid').jqxGrid('autoresizecolumns');
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    {% if (errors | length) > 0 %}
+
+    <br>
+    <div class="error-box">
+        <b>Errors were found</b>
+        <ul>
+            {% for e in errors %}
+            <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% else %}
+
+    <div class="question">
+        <div class="padding" style="overflow: auto; font-size: 9pt;">
+            <div id="jqxgrid"></div>
+        </div>
+    </div>
+
+    {% endif %}
+
+{% endblock %}

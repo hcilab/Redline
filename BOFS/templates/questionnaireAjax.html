@@ -1,0 +1,62 @@
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.base.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.arctic.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='styles/jqx.bootstrap.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='style.css') }}" type="text/css" />
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jquery-1.11.1.min.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jqxcore.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/jqx-all.js') }}"></script>
+    <script type="text/javascript" language="javascript" src="{{ url_for('BOFS_static', filename='js/surveys.js') }}"></script>
+
+    <script type="text/javascript">
+        setTimeout(function(){
+            var s = new survey();
+            s.read_file("{{ url_for('JSON_questionnaire', filename=questionnaireName + ".json") }}");
+            s.insert_questions();
+            s.initialize_widgets();
+
+            $(document).ready(function () {
+                var submitted = false;
+
+                $("#btnNext").jqxButton({ width: '100' }).bind('click', function () {
+                    $('#form').jqxValidator('validate');
+                });
+
+                $("#form").jqxValidator().on('validationSuccess', function (event) {
+
+                    if (!submitted) {
+                        var form = $('#form');
+                        $.post(form.attr('action'), form.serialize()).done(function (data) {
+                            window.parent.iframeNext();
+                            submitted = false;
+                        });
+                    }
+                });
+
+                try {
+                    window.parent.iframeLoaded();
+                } catch (ex) { }
+            });
+        }, 250);
+
+    </script>
+
+    <form id="form" method="post" action="{{ url_for('submit') }}" style="padding: 0px 40px;">
+
+        <input type="hidden" name="timeStarted" value="{{ timeStarted }}">
+
+        <div id="instructions" style="font-style: italic;"></div>
+        <br>
+
+        <div id="q_s">
+        </div>
+
+        <div class="navigation padding">
+            <div style="float: right">
+                <input id="btnNext" type="submit" value="Continue" onclick="return false">
+            </div>
+            <div style="clear: both"></div>
+        </div>
+
+    </form>
+
+    <br>

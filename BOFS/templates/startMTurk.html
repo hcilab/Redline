@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+{% block head %}
+        <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#mTurkID").jqxInput({ height: 25, width: 200, placeHolder: ""});
+
+            $("#form").jqxValidator({
+                rules: [
+                    {
+                        input: '#mTurkID',
+                        message: 'Please enter your MTurk Worker ID. You can find this on your MTurk dashboard.',
+                        action: 'keyup, blur',
+                        rule: 'required'
+                    }
+                ]
+            }).on('validationSuccess', function (event) {
+                $("#form").submit();  // submit the form only when validation is successful.
+            });
+
+            $("#btnNext").jqxButton({ width: '100' }).bind('click', function () {
+                $('#form').jqxValidator('validate');
+            });
+        });
+        </script>
+{% endblock %}
+
+{% block content %}
+
+        <form id="form" method="post" action="{{ url_for('submit') }}">
+
+            <i>Welcome! Please fill out the following information to begin.</i><br>
+
+            <div class="question" style="">
+                <div class="padding">
+                    <b>Please enter your MTurk ID.</b>
+                    <br> &nbsp; <br>
+                    <input type="text" name="mTurkID" id="mTurkID" />
+                </div>
+            </div>
+
+            <div class="navigation padding">
+                <div style="float: right">
+                    <input id="btnNext" type="button" value="Continue">
+                </div>
+                <div style="clear: both"></div>
+            </div>
+
+        </form>
+{% endblock %}

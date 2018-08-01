@@ -1,0 +1,38 @@
+{% extends "template.html" %}
+{% block head %}
+    <script>
+        $( document ).ready(function() {
+            $("#frame").attr("src", "/spa_current");
+        });
+
+        function iframeLoaded() {
+            $("#loading").hide();
+            $('#frame').show();
+            $('#frame').height($('#frame').contents().height());
+        }
+
+        function iframeNext() {
+            window.scrollTo(0,0 );
+            $("#loading").show();
+            $("#frame").hide();
+            $("#frame").attr("src", "/spa_next");
+        }
+    </script>
+    <style>
+        .content {
+            width: 1020px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div id="loading" style="text-align: center">
+        <img src="{{ url_for('BOFS_static', filename='loading.gif') }}">
+    </div>
+
+    <iframe id="frame" src="" scrolling="no"
+            style="border-width: 0px; height: 500px; width: 1020px; overflow: hidden; display: none;">
+    </iframe>
+
+{% endblock %}

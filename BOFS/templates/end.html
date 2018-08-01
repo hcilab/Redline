@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% import "mturkMacros.html" as surveyMacros %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+        <b>Thanks for participating!</b>
+
+        {% if code and (code != '0') %}
+            {{ surveyMacros.mturkCode(code) }}
+        {% endif %}
+{% endblock %}

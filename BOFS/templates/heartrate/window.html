@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{{ config['TITLE'] }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('BOFS_static', filename='style.css') }}" type="text/css" />
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/jquery-1.11.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/window_child.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/headtrackr.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/numeric-1.2.6.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/heartrate_util.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/heartrate.js') }}"></script>
+
+    <style>
+        .question {
+            height: 200px;
+        }
+
+        .padding {
+            height: 165px;
+            line-height: 165px;
+        }
+
+        .hr-loading, .hr-ok {
+            background-repeat: no-repeat;
+            background-position: 0px 50%;
+            padding-left: 40px;
+            padding-top: 10px;
+
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+        }
+
+        .hr-loading  {
+            background-image: url('{{ url_for('BOFS_static', filename='img/spinner32.gif') }}');
+        }
+        .hr-ok {
+            background-image: url('{{ url_for('BOFS_static', filename='img/check.png') }}');
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        function submitHR() {
+            $.post("{{ url_for('default.heartrate_submit') }}", $("#hrForm").serialize());
+
+            $("#timestampUnix").val("");
+            $("#bpm").val("");
+            $("#fqQuality").val("");
+            $("#dataQuality").val("");
+
+            setTimeout(submitHR, 10000);
+        }
+
+        $(document).ready(function() {
+
+            var started = false;
+
+            var hr = new HR();
+            hr.start();
+
+            $("#url").val(get_parent_page());
+
+            eventer(messageEvent, function(event) {
+                switch (event.data) {
+                    case "CheckChildLoaded":
+                        $("#url").val(get_parent_page());
+                        break;
+                }
+            }, false);
+
+            document.addEventListener("headtrackrStatus", function(event) {
+                switch (event.status) {
+                    case 'camera found':
+                        $('#heartrate_status').text('Camera found! Trying to find your face.');
+                        break;
+                    case 'hint':
+                        $('#heartrate_status').text('The system is having trouble locating your face. Please try adjusting your lighting and web cam position.');
+                        break;
+                    case 'found':
+                        $('#heartrate_status').text('Face found! Trying to find your heart rate.');
+                        break;
+                }
+            }, true);
+
+            var lastHrTimestamp = 0;
+
+            document.addEventListener("HRdata", function( event ) {
+
+                if (!started) {
+                    $('#heartrate_status').text('Heart rate found! Please minimize (but do not close) this window.');
+                    $('#heartrate_status').removeClass('hr-loading').addClass('hr-ok');
+
+                    window.opener.postMessage("HeartRateFound", "*");
+
+                    started = true;
+
+                    setTimeout(submitHR, 10000);
+                }
+
+                if (event.HR.status != "found" || !event.HR.valid || event.HR.bpm == 0) {
+                    return;
+                }
+
+                // Only update HR at most every 100ms.
+
+                if (lastHrTimestamp == 0 || event.HR.timestamp - lastHrTimestamp >= 100.0) {
+                    var timestampUnix = $("#timestampUnix");
+                    var bpm = $("#bpm");
+                    var fqQuality = $("#fqQuality");
+                    var dataQuality = $("#dataQuality");
+
+                    timestampUnix.val(timestampUnix.val() + event.HR.timestamp + ",");
+                    bpm.val(bpm.val() + event.HR.bpm + ",");
+                    fqQuality.val(fqQuality.val() + event.HR.FqQuality + ",");
+                    dataQuality.val(dataQuality.val() + event.HR.DataQuality + ",");
+
+                    lastHrTimestamp = event.HR.timestamp;
+                }
+
+                //console.log(event.HR.bpm);
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <form id="hrForm" method="post" action="{{ url_for('default.heartrate_submit') }}">
+        <input type="hidden" id="url" name="url">
+        <input type="hidden" id="status" name="status" value="found">
+        <input type="hidden" id="timestampUnix" name="timestampUnix" value="">
+        <input type="hidden" id="bpm" name="bpm" value="">
+        <input type="hidden" id="fqQuality" name="fqQuality" value="">
+        <input type="hidden" id="dataQuality" name="dataQuality" value="">
+    </form>
+
+    <div class="question" style="margin: 10px;">
+        <div class="padding">
+            <span id="heartrate_status" class="hr-loading">
+                Please allow access to your web cam.
+                If you are not prompted to share your web cam, please ensure it is plugged in and working.
+                <p>
+                    <a href="javascript:location.reload();">Click here</a> to refresh the page and try again.
+                </p>
+            </span>
+        </div>
+    </div>
+
+</body>
+</html>

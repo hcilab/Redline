@@ -1,0 +1,133 @@
+{% extends "template.html" %}
+{% block head %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#consent").jqxRadioButton({ width: 250, height: 25});
+            $("#noConsent").jqxRadioButton({ width: 250, height: 25});
+
+            $("#form").jqxValidator({
+                rules: [
+                    {
+                        input: '#consent',
+                        message: 'You must consent to proceed.',
+                        action: 'change',
+                        rule: 'required'
+                    }
+                ]
+            }).on('validationSuccess', function (event) {
+                $("#form").submit();  // submit the form only when validation is successful.
+            });
+
+            $("#btnNext").jqxButton({ width: '100' }).bind('click', function () {
+                $('#form').jqxValidator('validate');
+            });
+
+            function dppx() {
+                // devicePixelRatio: Webkit (Chrome/Android/Safari), Opera (Presto 2.8+), FF 18+
+                return typeof window == 'undefined' ? 0 : +window.devicePixelRatio || ie() || 0
+            }
+
+            $("#screenWidth").val(window.screen.width);
+            $("#screenHeight").val(window.screen.height);
+            $("#innerWidth").val(window.innerWidth);
+            $("#innerHeight").val(window.innerHeight);
+            $("#dppx").val(dppx())
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+
+    <form id="form" method="post" action="{{ url_for('submit') }}">
+
+        <input type="hidden" id="dppx" name="dppx">
+        <input type="hidden" id="screenWidth" name="screenWidth">
+        <input type="hidden" id="screenHeight" name="screenHeight">
+        <input type="hidden" id="innerWidth" name="innerWidth">
+        <input type="hidden" id="innerHeight" name="innerHeight">
+
+        <i>Before proceeding, please read the following. You must give your consent to continue.</i>
+
+        <div class="question">
+            <div class="padding">
+                {% if config['CONSENT_TEXT'] and config['CONSENT_TEXT'] != '' %}
+                    {{ config['CONSENT_TEXT'] | safe }}
+                {% else %}
+                    <b>Title:</b> __title__
+
+                    <p><b>Researcher(s):</b> __your_name__, __your_title__, Department of Computer Science, University of Saskatchewan, 306-XXX-XXXX, <a href="mailto:__your_email__">__your_email__</a></p>
+
+                    <p><b>Purpose(s) and Objective(s) of the Research:</b> The purpose of this project is to _________.</p>
+
+                    <p>
+                        <b>Procedures:</b>
+                        <ul>
+                            <li>In this study _________.</li>
+                            <li>This study will take approximately ____ minutes to complete. </li>
+                        </ul>
+                    </p>
+
+                    <p><b>Funded by:</b> The Natural Sciences and Engineering Research Council of Canada (NSERC).</p>
+
+                    <p><b>Potential Risks and Benefits:</b> There are no known or anticipated risks to you by participating in this research.  Your participation will help us to design games which aid novices in the learning of fundamental skills.</p>
+
+                    <p>
+                        <b>Confidentiality:</b>
+                        <ul>
+                            <li>Confidentiality will be maintained throughout the study. The entire process and data will be anonymized.  Data will only be presented in the aggregate and any individual user comments will be anonymized prior to presentation in academic venues.</li>
+                            <li>Only the principal researcher and their research assistants will have access to the data to ensure that your confidentiality is protected.</li>
+                            <li>Storage of Data</br>
+                                <ul>
+                                    <li>Data (including survey and interview responses, logs of computer use, and videos of interaction) will be stored on a secure password-protected server for 7 years after data collection.</li>
+                                    <li>After 7 years, the data will be destroyed. Paper data will be shredded and digital data will be wiped from hard disks beyond any possibility for data recovery.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </p>
+
+                    <p>
+                        <b>Right to Withdraw:</b>
+                        <ul>
+                            <li>Your participation is voluntary. You may withdraw from the research project for any reason, at any time without explanation.</li>
+                            <li>Should you wish to withdraw, you may do so at any point, and we will not use your data; we will destroy all records of your data.</li>
+                            <li>Your right to withdraw data from the study will apply until the data have been aggregated (one week after study completion). After this date, it is possible that some form of research dissemination will have already occurred and it may not be possible to withdraw your data</li>
+                        </ul>
+                    </p>
+
+                    <p><b>Follow up:</b> To obtain results from the study, please contact __your_name__ (<a href="mailto:__your_email__">__your_email__</a>).</p>
+
+                    <p>
+                        <b>Questions or Concerns: </b>
+                        <ul>
+                            <li>Contact the researcher(s) using the information at the top.</li>
+                            <li>This research project has been approved on ethical grounds by the University of Saskatchewan Research Ethics Board.  Any questions regarding your rights as a participant may be addressed to that committee through the Research Ethics Office <a href="mailto:ethics.office@usask.ca">ethics.office@usask.ca</a> (306) 966-2975. Out of town participants may call toll free (888) 966-2975.</li>
+                        </ul>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="padding">
+                <b>Do you give your consent?</b>
+                <p>
+                    <div style='margin-top: 10px;' id='consent'>I consent</div>
+                    <div style='margin-top: 10px;' id='noConsent'>I do not consent</div>
+                </p>
+            </div>
+        </div>
+
+        <div class="navigation padding">
+            <div style="float: right">
+                <input id="btnNext" type="button" value="Continue">
+            </div>
+            <div style="clear: both"></div>
+        </div>
+
+        <br>
+    </form>
+
+{% endblock %}

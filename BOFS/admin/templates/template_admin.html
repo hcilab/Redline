@@ -1,0 +1,84 @@
+{% extends "template.html" %}
+{% block head %}
+{% endblock %}
+
+{% block top %}
+    <script>
+        $(document).ready(function () {
+            $("#jqxMenu").jqxMenu({
+                width: '100%',
+                height: '30px',
+                showTopLevelArrows: true,
+                clickToOpen: true
+            });
+            $("#jqxMenu").css('visibility', 'visible');
+        });
+    </script>
+    <div id='jqxMenu' style='visibility: hidden;'>
+        <ul>
+            <li><a href="{{ url_for('admin.progress') }}">Progress</a></li>
+            <li>
+                CSV Data
+                <ul>
+                    <li><a href="{{ url_for('admin.exportCSV') }}">Finished Only</a></li>
+                    <li><a href="{{ url_for('admin.exportCSV', all=True) }}">Everyone</a></li>
+                    <li><a href="{{ url_for('admin.exportItemTiming') }}">Grid Timing Log (Finished Only)</a></li>
+                </ul>
+            </li>
+            <li>
+                Preview Questionnaires
+                <ul>
+                    <li>
+                        Active
+                        <ul style="width: 200px;">
+                            {% for q in g.questionnairesLiveUntagged %}
+                            <li><a href="{{ url_for('admin.previewQuestionnaire', questionnaireName=q) }}">{{ q }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li>
+                        All
+                        <ul style="width: 200px;">
+                            {% for q in g.questionnairesSystem %}
+                            <li><a href="{{ url_for('admin.previewQuestionnaire', questionnaireName=q) }}">{{ q }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+
+            </li>
+            <li>
+                View Data
+                <ul style="width: 250px;">
+                    {% for t in g.tableNames %}
+                    <li><a href="{{ url_for('admin.viewTable', tableName=t) }}">{{ t }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                Questionnaire Results
+                <ul style="width: 200px;">
+                    {% for q in g.questionnairesLive %}
+                    <li><a href="{{ url_for('admin.analyzeQuestionnaire', questionnaireName=q) }}">{{ q }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% if g.hasInitFunctions %}
+            <li><a href="{{ url_for('admin.initialize') }}">Run Initialization</a></li>
+            {% endif %}
+            {% if g.additionalAdminPages %}
+            <li>
+                Custom Pages
+                <ul>
+                    {% for page in g.additionalAdminPages %}
+                    <li><a href="{{ url_for(page['route']) }}">{{ page['title'] }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}

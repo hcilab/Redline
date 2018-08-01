@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block head %}
+
+    <script type="text/javascript" src="{{ url_for('BOFS_static', filename='js/window_parent.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            open_child_window("/hr_window");
+            close_child_window_and_redirect();
+        });
+    </script>
+
+{% endblock %}
