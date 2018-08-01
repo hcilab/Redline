@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 def create(db):
-    class BejeweledStats(db.Model):
+    class RedlineStats(db.Model):
         __tablename__ = "redline_stats"
 
         bejeweledStatID = db.Column(db.Integer, primary_key=True, autoincrement=True)
