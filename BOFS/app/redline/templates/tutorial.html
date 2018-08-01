@@ -97,8 +97,10 @@
       });
 
       $('.tutorial').on('beforeChange', function(event, slick, currentSlide, nextSlide){
-        if( nextSlide == 4 )
-          $('.tutorial').slick('slickSetOption', 'autoplay', false, true);
+        if( nextSlide == 4 ) {
+            $('.tutorial').slick('slickSetOption', 'autoplay', false, true);
+            window.location.href = "/redirect_next_page";
+        }
       });
     });
     </script>
