@@ -31,6 +31,7 @@ var redline_entry_schema =  mongoose.Schema({
 });
 
 let uri = process.env.MONGO_URI || "localhost";
+console.log("connecting to mongo db: " + uri);
 mongoose.connect( uri );
 
 // mongoose.connect("mongodb://localhost/redline");
