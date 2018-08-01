@@ -5,7 +5,7 @@ def create(db):
     class RedlineStats(db.Model):
         __tablename__ = "redline_stats"
 
-        bejeweledStatID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+        redlineStatID = db.Column(db.Integer, primary_key=True, autoincrement=True)
         participantID = db.Column(db.Integer, db.ForeignKey('participant.participantID'))
         timeCompleted = db.Column(db.DateTime, nullable=False, default=datetime.now())
         roundNum = db.Column(db.Integer, nullable=False, default=0)
