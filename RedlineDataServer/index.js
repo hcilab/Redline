@@ -30,8 +30,8 @@ var redline_entry_schema =  mongoose.Schema({
   , fps: Number
 });
 
-var uri = "mongodb://admin:URXEBCt5jyU6@cluster0-shard-00-00-y246y.mongodb.net:27017,cluster0-shard-00-01-y246y.mongodb.net:27017,cluster0-shard-00-02-y246y.mongodb.net:27017/redline?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin";
-mongoose.connect(uri);
+let uri = process.env.MONGO_URI || "localhost";
+mongoose.connect( uri );
 
 // mongoose.connect("mongodb://localhost/redline");
 var db = mongoose.connection;
