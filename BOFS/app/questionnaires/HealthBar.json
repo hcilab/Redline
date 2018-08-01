@@ -1,0 +1,51 @@
+{
+   "title":"Health Bar",
+   "instructions":"Reflect on your experiences during the last session of playing the game and rate your agreement with the following statements.",
+   "code":"",
+   "questions":[
+      {
+         "questiontype":"radiogrid",
+         "id":"HealthBar",
+         "shuffle": "true",
+         "labels":[
+            "Strongly disagree",
+            "Disagree",
+            "Slightly disagree",
+            "Neutral",
+            "Slightly agree",
+            "Agree",
+            "Strongly agree"
+         ],
+         "q_text":[
+            {
+               "id":"q_1",
+               "text":"The health bar helped me achive my goal in the game."
+            },
+            {
+               "id":"q_2",
+               "text":"The health bar helped me be effective in playing the game."
+            },
+            {
+               "id":"q_3",
+               "text":"I was aware of my health levels while I was playing."
+            },
+            {
+               "id":"q_4",
+               "text":"I found the color of the health bar more useful than it's fullness."
+            },
+            {
+               "id":"q_5",
+               "text":"I found the health bar confusing."
+            },
+            {
+               "id":"q_6",
+               "text":"I found the health bar distracting."
+            },
+            {
+               "id":"q_7",
+               "text":"I did not notice the health bar."
+            }
+         ]
+      }
+   ]
+}

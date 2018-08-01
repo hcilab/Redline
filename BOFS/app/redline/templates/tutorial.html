@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Redline</title>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+    <style>
+     body {
+        background: gray;
+     }
+
+     .slick-arrow {
+        transform: scale( 2 );
+     }
+
+     .slick-dots {
+        transform: scale( 2.5 );
+     }    
+
+     .tutorial {
+        margin: auto;
+	width: 85vw;
+     }
+
+     .tutorial img {
+        margin: auto;
+        max-height: 80vh;
+        max-width: 80vw;
+     }
+
+     .textSlide {
+        width: 80vw;
+        height: 80vh;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+     }
+
+     .textSlide *  {
+        align-self: center;
+     }
+
+     .textSlide p {
+	color: white;
+	font-size: 20pt;
+     }
+    </style>
+  </head>
+  <body>
+
+    <div class="tutorial">
+      <div>
+         <div class="textSlide">
+	    <p>Before you begin please familiarize yourself with the controls of the game.</p>	
+        </div>
+      </div>
+      <div>
+        <img src="{{url_for('redline.static', filename='images/intro 1.png')}}" alt="Intro 1">
+      </div>
+      <div>
+        <img src="{{url_for('redline.static', filename='images/intro 2.png')}}" alt="Intro 2">
+      </div>
+      <div>
+        <img src="{{url_for('redline.static', filename='images/intro 3.png')}}" alt="Intro 3">
+      </div>
+      <div>
+        <img src="{{url_for('redline.static', filename='images/intro 4.png')}}" alt="Intro 4">
+      </div>
+      <div>
+        <div class="textSlide">
+          <a href="/redirect_next_page" class="btn btn-primary btn-lg">Proceed to game</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    $(document).ready(function(){
+      $('.tutorial').slick({
+        lazyLoad: 'ondemand',
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: true,
+        infinite: false,
+      });
+
+      $('.tutorial').on('beforeChange', function(event, slick, currentSlide, nextSlide){
+        if( nextSlide == 4 )
+          $('.tutorial').slick('slickSetOption', 'autoplay', false, true);
+      });
+    });
+    </script>
+  </body>
+</html>

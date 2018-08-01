@@ -1,0 +1,116 @@
+{
+   "title":"BISBAS",
+   "instructions":"Read each statement and indicate your agreement with that statement. There are no right or wrong answers. Do not spend too much time on any one statement. Remember, give the answer which seems to describe how you thought during the game.",
+   "code":"",
+   "questions":[
+      {
+         "questiontype":"radiogrid",
+         "id":"BISBAS",
+         "shuffle": "true",
+         "labels":[
+            "Very true for me",
+            "Somewhat true for me",
+            "Somewhat false for me",
+            "Very false for me"
+         ],
+         "q_text":[
+            {
+               "id":"q_1",
+               "text":"A person's family is the most important thing in life."
+            },
+            {
+               "id":"q_2",
+               "text":"Even if something bad is about to happen to me, I rarely experience fear or nervousness."
+            },
+            {
+               "id":"q_3",
+               "text":"I go out of my way to get things I want."
+            },
+            {
+               "id":"q_4",
+               "text":"When I am doing well at something I love to keep at it."
+            },
+            {
+               "id":"q_5",
+               "text":"I am always willing to try something new if I think it will be fun."
+            },
+            {
+               "id":"q_6",
+               "text":"How I dress is important to me."
+            },
+            {
+               "id":"q_7",
+               "text":"When I get something I want, I feel excited and energized."
+            },
+            {
+               "id":"q_8",
+               "text":"Criticism or scolding hurts me quite a bit."
+            },
+            {
+               "id":"q_9",
+               "text":"When I want something I usually go all-out to get it."
+            },
+            {
+               "id":"q_10",
+               "text":"I will often do things for no other reason than that they might be fun."
+            },
+            {
+               "id":"q_11",
+               "text":"It is hard for me to find the time to do things such as get a haircut."
+            },
+            {
+               "id":"q_12",
+               "text":"If I see a chance to get something I want I move on it right away."
+            },
+            {
+               "id":"q_13",
+               "text":"I fell pretty worried or upset when I think or know somebody is angry at me."
+            },
+            {
+               "id":"q_14",
+               "text":"When I see an opportunity for something I like I get excited right away."
+            },
+            {
+               "id":"q_15",
+               "text":"I often act on the spur of the moment."
+            },
+            {
+               "id":"q_16",
+               "text":"If I think something unpleasant is going to happen I usually get pretty worked up."
+            },
+            {
+               "id":"q_17",
+               "text":"I often wonder why people act the way they do."
+            },
+            {
+               "id":"q_18",
+               "text":"When good things happen to me, it affects me strongly."
+            },
+            {
+               "id":"q_19",
+               "text":"I feel worried when I think I have done poorly at something important."
+            },
+            {
+               "id":"q_20",
+               "text":"I crave excitement and new sensations."
+            },
+            {
+               "id":"q_21",
+               "text":"When I go after something I use a 'no holds barred' approach."
+            },
+            {
+               "id":"q_22",
+               "text":"I have very few fears compared to my friends."
+            },
+            {
+               "id":"q_23",
+               "text":"It would excite me to win a contest."
+            },
+            {
+               "id":"q_24",
+               "text":"I worry about making mistakes."
+            }
+         ]
+      }
+   ]
+}

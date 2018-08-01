@@ -1,0 +1,151 @@
+{  
+    "title":"Demographics",
+    "instructions":"Please answer the following questions.",
+    "code":"",
+    "questions":[
+        {  
+            "questiontype": "num_field",
+            "datatype": "integer",
+            "instructions": "What is your age?",
+            "id": "age",
+            "required":"true",
+            "placeholder": "18",
+            "min":"1",
+            "max":"120"
+        },
+        {  
+            "questiontype":"drop_down",
+            "instructions":"Indicate your gender:",
+            "id":"gender",
+            "dropheight":"78",
+            "required":"false",
+            "items":[  
+                    "female",
+                    "male",
+                    "other"
+                ]
+        },
+        {  
+            "questiontype":"field",
+            "instructions":"Other gender, if applicable:",
+            "id":"gender_other",
+            "required":"false"
+        },
+
+        {  
+            "questiontype":"drop_down",
+            "instructions":"If you were to create an avatar to represent yourself in digital environments, that digital representation would be:",
+            "id":"representation_sex",
+            "required":"false",
+            "dropheight":"52",
+            "items":[  
+                    "female",
+                    "male"
+                ]
+        },
+        {  
+            "questiontype":"drop_down",
+            "instructions":"What is the highest degree or level of school you have completed? If currently enrolled, mark the previous grade or highest degree received:",
+            "id":"education",
+            "dropheight":"338",
+            "dropwidth":"600",
+            "required":"true",
+            "items":[  
+                "No schooling completed",
+                "Nursery school to 8th grade",
+                "9th, 10th or 11th grade",
+                "12th grade, no diploma",
+                "High school graduate - high school diploma or the equivalent (for example: GED)",
+                "Some college credit, but less than 1 year",
+                "1 or more years of college, no degree",
+                "Associate degree",
+                "Bachelor's degree",
+                "Master's degree",
+                "Professional degree",
+                "Doctorate degree",
+                "I prefer not to answer"
+            ]
+        },        
+        {
+            "questiontype": "field",
+            "instructions": "If you are a student, please indicate your subject:",
+            "required":"false",
+            "placeholder": "N/A",
+            "id": "subject"
+        },
+        {  
+            "questiontype":"drop_down",
+            "instructions":"Please indicate your employment status:",
+            "id":"employment",
+            "dropheight":"260",                        
+            "dropwidth":"600",
+            "required":"true",
+            "items":[  
+                "Employed for wages",
+                "Self-employed",
+                "Out of work and looking for work",
+                "Out of work but not currently looking for work",
+                "A homemaker",
+                "A student",
+                "Military",
+                "Retired",
+                "Unable to work",
+                "I prefer not to answer"
+            ]
+        }, 
+        {  
+            "questiontype":"drop_down",
+            "instructions":"Please indicate your marital status:",
+            "id":"marital",
+            "dropwidth":"600",
+            "dropheight":"156",
+            "required":"true",
+            "items":[  
+                "Single, never married",
+                "Married or domestic partnership",
+                "Widowed",
+                "Divorced",
+                "Separated",
+                "I prefer not to answer"
+            ]
+        },  
+        {  
+            "questiontype":"drop_down",
+            "instructions":"Please indicate your household income:",
+            "id":"income",
+            "dropheight":"234",
+            "dropwidth":"600",            
+            "required":"true",
+            "items":[  
+                "Less than $10,000",
+                "$10,000 to $25,000",
+                "$25,001 to $45,000",
+                "$45,001 to $65,000",
+                "$65,001 to $85,000",
+                "$85,001 to $100,000",
+                "$100,001 to $150,000'",
+                "$150,000 or more",
+                "I prefer not to answer"
+            ]
+        },          
+
+        {  
+            "questiontype":"drop_down",
+            "instructions":"Please indicate your ethnicity:",
+            "id":"ethnicity",
+            "dropheight":"208",
+            "dropwidth":"600",            
+            "required":"true",            
+            "items":[  
+                "American Indian or Alaskan Native",
+                "Asian",
+                "Native Hawaiian or Other Pacific Islander",
+                "Black or African American",
+                "Hispanic/Latino",
+                "White",
+                "Two or more categories",
+                "I prefer not to answer"
+            ]
+        }         
+    ]
+}

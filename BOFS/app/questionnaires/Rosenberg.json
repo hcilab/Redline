@@ -1,0 +1,60 @@
+{
+   "title":"Rosenberg",
+   "instructions":"Below is a list of statements dealing with your general feelings about yourself. Please rate each of the following statements.",
+   "code":"",
+   "questions":[
+      {
+         "questiontype":"radiogrid",
+         "id":"Rosenberg",
+         "shuffle": "true",
+         "labels":[
+            "Strongly disagree",
+            "Disagree",
+            "Agree",
+            "Strongly agree"            
+         ],
+         "q_text":[
+            {
+               "id":"q_01",
+               "text":"On the whole, I am satisfied with myself."
+            },
+            {
+               "id":"q_02",
+               "text":"At times, I think I am no good at all."
+            },
+            {
+               "id":"q_03",
+               "text":"I feel that I have a number of good qualities."
+            },
+            {
+               "id":"q_04",
+               "text":"I am able to do things as well as most other people."
+            },
+            {
+               "id":"q_05",
+               "text":"I feel I do not have much to be proud of."
+            },
+            {
+               "id":"q_06",
+               "text":"I certainly feel useless at times."
+            },
+            {
+               "id":"q_07",
+               "text":"I feel that I'm a person of worth, at least on an equal plane with others."
+            },
+            {
+               "id":"q_08",
+               "text":"I wish I could have more respect for myself."
+            },
+            {
+               "id":"q_09",
+               "text":"All in all, I am inclined to feel that I am a failure."
+            },
+            {
+               "id":"q_10",
+               "text":"I take a positive attitude toward myself."
+            }
+         ]
+      }      
+   ]
+}

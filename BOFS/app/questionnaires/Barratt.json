@@ -1,0 +1,140 @@
+{
+   "title":"Barrat Impulsiveness Scale",
+   "instructions":"Read each statement and indicate your agreement with that statement. There are no right or wrong answers. Do not spend too much time on any one statement. Remember, give the answer which seems to describe how you thought during the game.",
+   "code":"",
+   "questions":[
+      {
+         "questiontype":"radiogrid",
+         "id":"Barratt",
+         "shuffle": "true",
+         "labels":[
+            "Never",
+            "Rarely",
+            "Almost Always",
+            "Always"
+         ],
+         "q_text":[
+            {
+               "id":"q_1",
+               "text":"I plan task carefully."
+            },
+            {
+               "id":"q_2",
+               "text":"I do thing without thinking."
+            },
+            {
+               "id":"q_3",
+               "text":"I make up my mind quickly."
+            },
+            {
+               "id":"q_4",
+               "text":"I am happy-go-lucky."
+            },
+            {
+               "id":"q_5",
+               "text":"I don't pay attention."
+            },
+            {
+               "id":"q_6",
+               "text":"I have 'racing' thoughts."
+            },
+            {
+               "id":"q_7",
+               "text":"I plan trips well ahead of time."
+            },
+            {
+               "id":"q_8",
+               "text":"I am self-controlled."
+            },
+            {
+               "id":"q_9",
+               "text":"I concentrate easily."
+            },
+            {
+               "id":"q_10",
+               "text":"I save regularly."
+            },
+            {
+               "id":"q_11",
+               "text":"I 'squirm' at plays or lectures."
+            },
+            {
+               "id":"q_12",
+               "text":"I am a careful thinker."
+            },
+            {
+               "id":"q_13",
+               "text":"I plan for job security."
+            },
+            {
+               "id":"q_14",
+               "text":"I say thoughts without thinking."
+            },
+            {
+               "id":"q_15",
+               "text":"I like to think about complex problems."
+            },
+            {
+               "id":"q_16",
+               "text":"I change jobs."
+            },
+            {
+               "id":"q_17",
+               "text":"I act on impulse."
+            },
+            {
+               "id":"q_18",
+               "text":"I get easily bored when solving thought problems."
+            },
+            {
+               "id":"q_19",
+               "text":"I act on the spur of the moment."
+            },
+            {
+               "id":"q_20",
+               "text":"I am a steady thinker."
+            },
+            {
+               "id":"q_21",
+               "text":"I change residences."
+            },
+            {
+               "id":"q_22",
+               "text":"I buy things on impulse."
+            },
+            {
+               "id":"q_23",
+               "text":"I can only think about one thing at a time."
+            },
+            {
+               "id":"q_24",
+               "text":"I change hobbies."
+            },
+            {
+               "id":"q_25",
+               "text":"I spend or charge more than I earn."
+            },
+            {
+               "id":"q_26",
+               "text":"I often have outrageous thoughts when thinking."
+            },
+            {
+               "id":"q_27",
+               "text":"I am more interested in the present than the future."
+            },
+            {
+               "id":"q_28",
+               "text":"I restless at the theatre or lectures."
+            },
+            {
+               "id":"q_29",
+               "text":"I like puzzles."
+            },
+            {
+               "id":"q_30",
+               "text":"I am future oriented."
+            }
+         ]
+      }
+   ]
+}
