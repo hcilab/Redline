@@ -20,6 +20,8 @@ class BOFSFlask(Flask):
 
         self.config = self.make_config()
         self.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        if(os.environ["DATABASE_URI"]):
+            self.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URI"]
 
         bofs_path = os.path.dirname(os.path.abspath(__file__))
         #bofs_path = bofs_path.replace("\\BOFS", "").replace("/BOFS", "")
