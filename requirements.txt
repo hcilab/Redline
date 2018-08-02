@@ -3,3 +3,4 @@ sqlalchemy
 flask-sqlalchemy
 flask-socketio
 eventlet
+psycopg2
