@@ -45,7 +45,7 @@ class JSONQuestionnaire():
                         self.fields.append(QuestionnaireField(qt['id'], 'integer', qt.get('reversed', False), q.get('labels', [])))
                 elif q['questiontype'] == "checklist":  # checklists also have multiple questions
                     for qt in q['questions']:
-                        self.fields.append(QuestionnaireField(qt['id'], 'integer'))
+                        self.fields.append(QuestionnaireField(qt['id'], 'string'))
                 elif q['questiontype'] == "radiolist":  # will always be integer types
                     self.fields.append(QuestionnaireField(q['id'], 'integer', False, q.get('labels', [])))
                 elif 'datatype' in q.keys():
