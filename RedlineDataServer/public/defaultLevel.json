@@ -5,7 +5,7 @@
     , "_startIntensity": 5
     , "_showGrid": false
     , "_firePoolSize": 100
-    , "_updateInterval": 3 
+    , "_updateInterval": 2.5 
     , "_spreadLimit": 3
     , "_spreadChance": 0.15
     , "_spreadDistance": 4

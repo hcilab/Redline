@@ -3,9 +3,10 @@
   "_speed": 25,
   "_rotationSpeed": 7,
   "_damageScaling": 30,
-  "_totalHp": 1500,
+  "_totalHp": 1200,
   "_showCollider": false,
   "_damageTick": 1,
   "_loggingTick": 1,
-  "_recoveryRate": 0.5
+  "_recoveryRate": 0.5,
+  "_recoveryThreshold": 1
 }
