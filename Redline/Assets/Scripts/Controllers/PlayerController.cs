@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private bool _showCollider = false;
 	[SerializeField] private double _damageTick = 0f;
 	[SerializeField] private double _loggingTick = 1f;
+	[SerializeField] private double _recoveryThreshold = 5f;
+	[SerializeField] private float _recoveryRate = 0;
+	[SerializeField] private float _healthReward = 0f;
 	
 	
 	private Rigidbody _myBody;
@@ -37,8 +40,6 @@ public class PlayerController : MonoBehaviour
 	private Action _damageAnimation;
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
-	[SerializeField] private float _recoveryRate = 0;
-	[SerializeField] private float _healthReward = 0f;
 	private LineRenderer _outline;
 
 	// Use this for initialization
@@ -278,7 +279,7 @@ public class PlayerController : MonoBehaviour
 			_lastTick = Time.time;
 		}
 
-		if ( _hitPoints > 0 && totalDmg < 10 ) RegainHp( _recoveryRate );
+		if ( _hitPoints > 0 && totalDmg < _recoveryThreshold ) RegainHp( _recoveryRate );
 
 	}
 
