@@ -51,3 +51,6 @@ Redline/Assets/StreamingAssets/data.meta
 Redline/Assets/Plugins/Editor
 Redline/Assets/Plugins/Editor.meta
 Redline/UnityPackageManager/
+
+*.pyc
+*.db
