@@ -343,10 +343,10 @@ public class GameMaster : MonoBehaviour
 		switch ( reason )
 		{
 				case DataCollectionController.DataType.Victory:
-					message = "Congratulations you did it!";
+					message = "You put out the fire! Not bad for a rookie";
 					break;
 				case DataCollectionController.DataType.Death:
-					message = "You're gonna hurt yourself! Get out of there!";
+					message = "Okay, we're pulling you out. You have to be more careful before you really hurt yourself!";
 					break;
 				case DataCollectionController.DataType.Timeout:
 					message = "Reinforcements have arrived! Take a breather!";
