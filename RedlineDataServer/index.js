@@ -62,9 +62,7 @@ server(
   },
   cors,
   [
-    get( '/', ctx => {
-      return header("Session", ctx.query.session).render("index.html");
-    })
+    get( '/', ctx => redirect("http://hcidev.cs.unb.ca") )
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(
