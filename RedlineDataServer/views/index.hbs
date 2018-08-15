@@ -1,0 +1,80 @@
+<!-- ./public/index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>First website</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="1; URL=http://localhost:3000">
+    <style>
+      table.minimalistBlack {
+        border: 3px solid #000000;
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+      }
+      table.minimalistBlack td, table.minimalistBlack th {
+        border: 1px solid #000000;
+        padding: 5px 4px;
+      }
+      table.minimalistBlack tbody td {
+        font-size: 13px;
+      }
+      table.minimalistBlack thead {
+        background: #CFCFCF;
+        background: -moz-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+        background: -webkit-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+        background: linear-gradient(to bottom, #dbdbdb 0%, #d3d3d3 66%, #CFCFCF 100%);
+        border-bottom: 3px solid #000000;
+      }
+      table.minimalistBlack thead th {
+        font-size: 15px;
+        font-weight: bold;
+        color: #000000;
+        text-align: left;
+      }
+      table.minimalistBlack tfoot {
+        font-size: 14px;
+        font-weight: bold;
+        color: #000000;
+        border-top: 3px solid #000000;
+      }
+      table.minimalistBlack tfoot td {
+        font-size: 14px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <table class="minimalistBlack">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>ID</th>
+            <th>Level</th>
+            <th>HP</th>
+            <th>Damage</th>
+            <th>Score</th>
+            <th>Flames in Proximity</th>
+            <th>Active Flames</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each entry}}
+          <tr>
+            <td>{{this.time}}</td>
+            <td>{{this.id}}</td>
+            <td>{{this.level}}</td>
+            <td>{{this.hp}}</td>
+            <td>{{this.damage}}</td>
+            <td>{{this.score}}</td>
+            <td>{{this.proximity}}</td>
+            <td>{{this.active}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html

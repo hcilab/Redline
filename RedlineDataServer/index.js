@@ -39,6 +39,12 @@ var db = mongoose.connection;
 const entry_model = db.model( 'atomic_entries', redline_entry_schema );
 const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
+let tableData = {
+  atomic_entries: [],
+  cumulative_entries: []
+
+};
+
 const corsExpress = require('cors')({
   origin: /\.cs\.unb\.ca$/
 });
@@ -155,6 +161,7 @@ server(
       (err) => { return status(403).send(err); }
     )
 
+    tableData.atomic_entries.push( ctx.data );
     const entry = new entry_model( ctx.data );
     await entry.save();
     ctx.log.info('ATOMIC ENTRY ' + ctx.data.id
@@ -175,6 +182,7 @@ server(
     );
 
     for( let i = 0; i < ctx.data.length; i++ ) {
+      tableData.atomic_entries.push( ctx.data[i] );
       const entry = new entry_model( ctx.data[i] );
       await entry.save();
       ctx.log.info('ATOMIC ENTRY ' + ctx.data[i].id
@@ -194,6 +202,7 @@ server(
         return status(403).send("Trial number mismatch");
     });
 
+    tableData.cumulative_entries.push( ctx.data );
     const entry = new final_model( ctx.data );
     await entry.save();
     ctx.log.info(
