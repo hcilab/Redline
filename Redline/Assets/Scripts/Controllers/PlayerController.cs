@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
 	private LineRenderer _outline;
+	private GameObject _avatar;
 
 	// Use this for initialization
 
@@ -54,7 +55,6 @@ public class PlayerController : MonoBehaviour
 		
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
-		_animation = GetComponentInChildren< Animation >();
 		_water = GetComponentInChildren< ParticleSystem >().emission;
 
 	}
@@ -65,6 +65,26 @@ public class PlayerController : MonoBehaviour
 		_hitPoints = _totalHp;
 		_lastTick = 0f;
 		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
+		string avatar;
+		switch ( _levelManager.GameMaster.AvatarGender )
+		{
+				case 0:
+					avatar = "Eliza_Prefab";
+					break;
+				case 1:
+					avatar = "Joel_Prefab";
+					break;
+				default:
+					avatar = "Eliza_Prefab";
+					break;
+		}
+		_avatar = Instantiate( Resources.Load( "Prefabs/" + avatar, typeof( GameObject ) ), transform ) as GameObject;
+		_avatar.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+		foreach ( Transform child in _avatar.GetComponentsInChildren<Transform>(  ) )
+		{
+			child.gameObject.layer = 8;
+		}
+		_animation = _avatar.GetComponent< Animation >();
 	}
 
 	// Update is called once per frame
