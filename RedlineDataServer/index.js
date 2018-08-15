@@ -46,7 +46,7 @@ let tableData = {
 };
 
 const corsExpress = require('cors')({
-  origin: ['http://hcidev.cs.unb.ca', 'https://hcidev.cs.unb.ca']
+  origin: /\.cs\.unb\.ca$/
 });
 
 const cors = server.utils.modern(corsExpress);
