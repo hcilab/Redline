@@ -94,6 +94,10 @@ def get_version_number():
     output, error = p.communicate()
     return output.strip()
 
+def getDemographicsInfo():
+    print "getDemographicsInfo IS NOT IMPLEMENTED!"
+    return None
+
 def getGender():
     participantID = session['participantID']
 
@@ -105,7 +109,7 @@ def getGender():
     avatar_sex = 'female'
     for p in participantInfo:
         demographicsInfo = getDemographicsInfo(p.participantID)
-        if getDemographicsInfo(p.participantID) != None:
+        if demographicsInfo != None:
             gender = demographicsInfo.gender
             avatar_sex = demographicsInfo.representation_sex
 
