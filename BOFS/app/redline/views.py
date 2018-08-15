@@ -94,9 +94,8 @@ def get_version_number():
     output, error = p.communicate()
     return output.strip()
 
-def getDemographicsInfo():
-    print "getDemographicsInfo IS NOT IMPLEMENTED!"
-    return None
+def getDemographicsInfo(participantID):
+    return db.session.query(questionnaires["Demographics"].dbClass).filter(questionnaires["Demographics"].dbClass.participantID == participantID).first()
 
 def getGender():
     participantID = session['participantID']
