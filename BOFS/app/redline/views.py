@@ -28,12 +28,19 @@ def tutorial():
 def game_redline_0():
     PID = session['participantID']
     CONDITION = session['condition']
-
     SET = 0
+    VERSION = get_version_number()
+    SEX=getGender()
 
-    VERSION = get_version_number();
-    return render_template("index.html", application_root=current_app.config["APPLICATION_ROOT"], PID=PID, CONDITION=CONDITION, SET=SET, VERSION=VERSION )
-
+    return render_template(
+        "index.html",
+        application_root=current_app.config["APPLICATION_ROOT"],
+        PID=PID,
+        CONDITION=CONDITION,
+        SET=SET,
+        VERSION=VERSION,
+        SEX=SEX
+    )
 
 
 @redline.route("/game_redline_1")
@@ -42,12 +49,19 @@ def game_redline_0():
 def game_redline_1():
     PID = session['participantID']
     CONDITION = session['condition']
-
     SET = 1
-
-    VERSION = get_version_number();
-    return render_template("index.html", application_root=current_app.config["APPLICATION_ROOT"], PID=PID, CONDITION=CONDITION, SET=SET, VERSION=VERSION )
-
+    VERSION = get_version_number()
+    SEX=getGender()
+    
+    return render_template(
+        "index.html",
+        application_root=current_app.config["APPLICATION_ROOT"],
+        PID=PID,
+        CONDITION=CONDITION,
+        SET=SET,
+        VERSION=VERSION,
+        SEX=SEX
+    )
 
 @redline.route("/game_redline_2")
 @verify_correct_page
@@ -59,7 +73,19 @@ def game_redline_2():
     SET = 2
 
     VERSION = get_version_number();
-    return render_template("index.html", application_root=current_app.config["APPLICATION_ROOT"], PID=PID, CONDITION=CONDITION, SET=SET, VERSION=VERSION )
+
+    SEX = getGender();
+
+    return render_template(
+        "index.html",
+        application_root=current_app.config["APPLICATION_ROOT"],
+        PID=PID,
+        CONDITION=CONDITION,
+        SET=SET,
+        VERSION=VERSION,
+        SEX=SEX
+    )
+
 
 def get_version_number():
     cmd = "git --git-dir=/home/jwuertz/Redline/.git rev-parse --short HEAD"
@@ -67,3 +93,20 @@ def get_version_number():
     p = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
     output, error = p.communicate()
     return output.strip()
+
+def getGender():
+    participantID = session['participantID']
+
+    currentParticipant = db.session.query(db.Participant).get(participantID)
+    mTurkID = currentParticipant.mTurkID
+
+    participantInfo = db.session.query(db.Participant).filter(db.Participant.mTurkID == mTurkID).all()#get participantInfo
+
+    avatar_sex = 'female'
+    for p in participantInfo:
+        demographicsInfo = getDemographicsInfo(p.participantID)
+        if getDemographicsInfo(p.participantID) != None:
+            gender = demographicsInfo.gender
+            avatar_sex = demographicsInfo.representation_sex
+
+    return avatar_sex == 'male' ? 1 : 0;
