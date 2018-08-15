@@ -13,7 +13,7 @@ const { render, json, status, header } = server.reply;
 var redline_entry_schema =  mongoose.Schema({
     date: { type: Date, default: Date.now }
   , time: String
-  , counter: String
+  , counter: Number
   , mturk_id: Number
   , id: { type: Number }
   , trial: Number
