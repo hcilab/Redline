@@ -52,7 +52,7 @@ def game_redline_1():
     SET = 1
     VERSION = get_version_number()
     SEX=getGender()
-    
+
     return render_template(
         "index.html",
         application_root=current_app.config["APPLICATION_ROOT"],
@@ -109,4 +109,4 @@ def getGender():
             gender = demographicsInfo.gender
             avatar_sex = demographicsInfo.representation_sex
 
-    return avatar_sex == 'male' ? 1 : 0;
+    return 1 if avatar_sex == 'male' else 0
