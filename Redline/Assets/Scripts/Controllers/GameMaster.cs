@@ -22,6 +22,9 @@ public class GameMaster : MonoBehaviour
 	private static extern int GetId();
 
 	[DllImport( "__Internal" )]
+	private static extern int GetGender();
+
+	[DllImport( "__Internal" )]
 	private static extern void RedirectOnEnd();
 	
 	private bool _gameOver;
@@ -59,6 +62,12 @@ public class GameMaster : MonoBehaviour
 	private bool _loadingLevel = false;
 	private int _turkId;
 	private int _setNumber = 0;
+	private int _avatarGender = 1;
+
+	public int AvatarGender
+	{
+		get { return _avatarGender; }
+	}
 
 	public bool Paused
 	{
@@ -165,6 +174,12 @@ public class GameMaster : MonoBehaviour
 		if( barIndex != -1 )
 			ChangeHpBar( barIndex );
 		
+		//get avatar gender
+		var gender = GetGender();
+		Debug.Log( "PARSED GENDER NUMBER " + gender );
+		if ( gender != -1 )
+			_avatarGender = gender;
+
 	}
 
 	public void RegisterLevel( LevelManager levelManager )
@@ -343,10 +358,10 @@ public class GameMaster : MonoBehaviour
 		switch ( reason )
 		{
 				case DataCollectionController.DataType.Victory:
-					message = "Congratulations you did it!";
+					message = "You put out the fire! Not bad for a rookie";
 					break;
 				case DataCollectionController.DataType.Death:
-					message = "You're gonna hurt yourself! Get out of there!";
+					message = "Okay, we're pulling you out. You have to be more careful before you really hurt yourself!";
 					break;
 				case DataCollectionController.DataType.Timeout:
 					message = "Reinforcements have arrived! Take a breather!";

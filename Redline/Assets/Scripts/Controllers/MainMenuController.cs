@@ -39,6 +39,11 @@ public class MainMenuController : MonoBehaviour
 	public void ShowNarrative( string desiredLevel )
 	{
 		_levelToLoad = desiredLevel;
+		if ( FindObjectOfType< GameMaster >().SetNumber > 0 )
+		{
+			StartGame();
+			return;
+		}
 		_narrative.gameObject.SetActive( true );
 	}
 

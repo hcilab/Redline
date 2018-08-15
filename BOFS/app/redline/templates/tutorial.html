@@ -24,7 +24,7 @@
 
      .slick-dots {
         transform: scale( 2.5 );
-     }    
+     }
 
      .tutorial {
         margin: auto;
@@ -63,7 +63,7 @@
     <div class="tutorial">
       <div>
          <div class="textSlide">
-	    <p>Before you begin please familiarize yourself with the controls of the game.</p>	
+	    <p>Before you begin please familiarize yourself with the controls of the game.</p>
         </div>
       </div>
       <div>
@@ -99,7 +99,6 @@
       $('.tutorial').on('beforeChange', function(event, slick, currentSlide, nextSlide){
         if( nextSlide == 4 ) {
             $('.tutorial').slick('slickSetOption', 'autoplay', false, true);
-            window.location.href = "/redirect_next_page";
         }
       });
     });

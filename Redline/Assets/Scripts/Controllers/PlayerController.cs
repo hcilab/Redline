@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private bool _showCollider = false;
 	[SerializeField] private double _damageTick = 0f;
 	[SerializeField] private double _loggingTick = 1f;
+	[SerializeField] private double _recoveryThreshold = 5f;
+	[SerializeField] private float _recoveryRate = 0;
+	[SerializeField] private float _healthReward = 0f;
 	
 	
 	private Rigidbody _myBody;
@@ -37,9 +40,8 @@ public class PlayerController : MonoBehaviour
 	private Action _damageAnimation;
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
-	[SerializeField] private float _recoveryRate = 0;
-	[SerializeField] private float _healthReward = 0f;
 	private LineRenderer _outline;
+	private GameObject _avatar;
 
 	// Use this for initialization
 
@@ -53,7 +55,6 @@ public class PlayerController : MonoBehaviour
 		
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
-		_animation = GetComponentInChildren< Animation >();
 		_water = GetComponentInChildren< ParticleSystem >().emission;
 
 	}
@@ -64,6 +65,26 @@ public class PlayerController : MonoBehaviour
 		_hitPoints = _totalHp;
 		_lastTick = 0f;
 		_averageActiveFlames = _levelManager.GameMaster.GetActiveFlames();
+		string avatar;
+		switch ( _levelManager.GameMaster.AvatarGender )
+		{
+				case 0:
+					avatar = "Eliza_Prefab";
+					break;
+				case 1:
+					avatar = "Joel_Prefab";
+					break;
+				default:
+					avatar = "Eliza_Prefab";
+					break;
+		}
+		_avatar = Instantiate( Resources.Load( "Prefabs/" + avatar, typeof( GameObject ) ), transform ) as GameObject;
+		_avatar.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+		foreach ( Transform child in _avatar.GetComponentsInChildren<Transform>(  ) )
+		{
+			child.gameObject.layer = 8;
+		}
+		_animation = _avatar.GetComponent< Animation >();
 	}
 
 	// Update is called once per frame
@@ -278,7 +299,7 @@ public class PlayerController : MonoBehaviour
 			_lastTick = Time.time;
 		}
 
-		if ( _hitPoints > 0 && totalDmg < 10 ) RegainHp( _recoveryRate );
+		if ( _hitPoints > 0 && totalDmg < _recoveryThreshold ) RegainHp( _recoveryRate );
 
 	}
 
