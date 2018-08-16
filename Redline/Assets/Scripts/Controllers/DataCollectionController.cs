@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class DataCollectionController : MonoBehaviour
 
     public delegate void ProgressUpdate( float progress );
     
-    [SerializeField] private string _serverAddress = "localhost";
+    [SerializeField] private string _serverAddress = "hcidev.cs.unb.ca";
     [SerializeField] private int _serverPort = 9500;
     [SerializeField] private bool _sendRemote = true;
     [SerializeField] private string _idEndpoint = "/id";
@@ -30,10 +31,16 @@ public class DataCollectionController : MonoBehaviour
     private string _dataFile;
     private Queue<UnityWebRequest> _uploadBacklog;
 
+    [DllImport( "__Internal" )]
+    private static extern string GetHostAddress();
+    
     private void Awake()
     {
         Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
         _uploadBacklog = new Queue<UnityWebRequest>();
+        #if UNITY_WEBGL
+        _serverAddress = GetHostAddress();
+        #endif
     }
     
     public void GetNewID( WebCallback cb ) 

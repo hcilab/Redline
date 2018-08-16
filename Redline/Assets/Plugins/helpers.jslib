@@ -33,6 +33,17 @@ mergeInto(LibraryManager.library, {
     },
 
     /**
+    * @return {string}
+    */
+    GetHostAddress: function() {
+      var host = window.location.hostname;
+      var bufferSize = lengthBytesUTF8(host) + 1;
+      var buffer = _malloc(bufferSize);
+      stringToUTF8(host, buffer, bufferSize);
+      return buffer;
+    },
+
+    /**
     * @return
     */
     RedirectOnEnd: function () {
