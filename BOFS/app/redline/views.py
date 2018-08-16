@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, render_template
 
 from BOFS.util import *
-from BOFS.globals import db
+from BOFS.globals import db, questionnaires
 
 redline = Blueprint('redline', __name__,
                       static_url_path='/redline', template_folder='templates', static_folder='public')
