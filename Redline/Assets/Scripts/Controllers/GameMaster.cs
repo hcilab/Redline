@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -346,13 +347,17 @@ public class GameMaster : MonoBehaviour
 
 		StartCoroutine( DataCollector.ProcessUploadBacklog( progress =>
 		{
+			_uploadComplete = false;
 			_uploadModal.SetActive( true );
 			_uploadModal.GetComponentInChildren< Text >().text = "Uploading data: " + progress + "%";
 			Debug.Log( "Upload progress: " + progress );
-			if ( progress >= 1 ) _uploadComplete = true;
+			if ( progress >= 1 )
+			{
+				_uploadComplete = true;
+				_deathScreenController.show();
+			}
 		} ) );
 
-		
 		yield return new WaitForSecondsRealtime( 0.5f );
 		string message;
 		switch ( reason )
@@ -378,7 +383,6 @@ public class GameMaster : MonoBehaviour
 		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
 		_deathScreenController.SetHealthRating( _levelManager.Player.GetRemainingHitPoints(), _levelManager.Player.GetStartingHealth() );
 		_deathScreenController.SetTimeRating( GetTimeRemaining(), _levelManager.TotalTime() );
-		_deathScreenController.show();
 	}
 
 	public NumberController GetDamageNumberController()
@@ -452,6 +456,7 @@ public class GameMaster : MonoBehaviour
 		{
 			DataCollector.GetConfig( "player", data =>
 			{
+				Debug.Log("Attempting to load player config");
 				_playerConfig = data;
 				JsonUtility.FromJsonOverwrite( _playerConfig, player );
 				if ( cb != null ) cb();
@@ -461,6 +466,7 @@ public class GameMaster : MonoBehaviour
 		else
 		{
 			JsonUtility.FromJsonOverwrite( _playerConfig, player );
+			if ( cb != null ) cb();
 			_playerLoaded = true;
 		}
 	}

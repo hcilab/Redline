@@ -42,12 +42,12 @@ public class PlayerController : MonoBehaviour
 	private ParticleSystem.EmissionModule _water;
 	private LineRenderer _outline;
 	private GameObject _avatar;
+	private bool _initialized = false;
 
 	// Use this for initialization
 
 	void Start ()
 	{
-		
 		_frames = 0;
 		_hitPoints = _totalHp;
 
@@ -56,7 +56,6 @@ public class PlayerController : MonoBehaviour
 		_enemiesNearBy = new List<Collider>();
 		_myBody = GetComponent<Rigidbody>();
 		_water = GetComponentInChildren< ParticleSystem >().emission;
-
 	}
 
 	public void Initialize()
@@ -85,12 +84,15 @@ public class PlayerController : MonoBehaviour
 			child.gameObject.layer = 8;
 		}
 		_animation = _avatar.GetComponent< Animation >();
+		_initialized = true;
 	}
 
 	// Update is called once per frame
 
 	void Update ()
 	{
+		if( !_initialized ) return;
+		
 		_frames++;
 		if ( _levelManager.GameMaster.Paused ) return;
 		

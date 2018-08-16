@@ -44,6 +44,10 @@ public class MainMenuController : MonoBehaviour
 			StartGame();
 			return;
 		}
+		#if UNITY_EDITOR
+		StartGame();
+		return;
+		#endif
 		_narrative.gameObject.SetActive( true );
 	}
 
