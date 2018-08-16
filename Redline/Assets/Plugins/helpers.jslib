@@ -25,10 +25,16 @@ mergeInto(LibraryManager.library, {
         return !isNaN(GetParams().condition) && isFinite( GetParams().condition ) ? GetParams().condition : -1;
     },
 
+    /**
+    * @return {number}
+    */
     GetGender: function() {
       return !isNaN(GetParams().gender) && isFinite( GetParams().gender ) ? GetParams().gender : -1;
-    }
+    },
 
+    /**
+    * @return
+    */
     RedirectOnEnd: function () {
         window.location.href = "/redirect_next_page";
     }
