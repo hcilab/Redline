@@ -340,25 +340,29 @@ public class GameMaster : MonoBehaviour
 
 	public IEnumerator GameOver( DataCollectionController.DataType reason )
 	{
+		yield return new WaitForSecondsRealtime( 0.5f );
 		if( !_gameOver ) 
 			_levelManager.Player.LogCumulativeData( reason );
 		_paused = true;
 		_gameOver = true;
+		
+		_uploadComplete = false;
+		_uploadModal.GetComponentInChildren< Text >().text = "Uploading Data....";
+		_uploadModal.SetActive( true );
 
 		StartCoroutine( DataCollector.ProcessUploadBacklog( progress =>
 		{
-			_uploadComplete = false;
-			_uploadModal.SetActive( true );
-			_uploadModal.GetComponentInChildren< Text >().text = "Uploading data: " + progress + "%";
+			_uploadModal.GetComponentInChildren< Text >().text = 
+				"Uploading data: " + 
+				Mathf.RoundToInt(progress * 100) + "%";
 			Debug.Log( "Upload progress: " + progress );
-			if ( progress >= 1 )
+			if ( progress >= 1f && !_uploadComplete)
 			{
-				_uploadComplete = true;
 				_deathScreenController.show();
+				_uploadComplete = true;
 			}
 		} ) );
 
-		yield return new WaitForSecondsRealtime( 0.5f );
 		string message;
 		switch ( reason )
 		{
@@ -414,6 +418,8 @@ public class GameMaster : MonoBehaviour
 
 	public void ResetUi()
 	{
+		_uploadComplete = false;
+		_uploadModal.SetActive( false );
 		_deathScreenController.hide();
 		_hpbarlabel.text = _currentHpBar.name;
 		TogglePause( false );

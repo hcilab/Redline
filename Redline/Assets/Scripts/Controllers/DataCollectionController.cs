@@ -18,7 +18,7 @@ public class DataCollectionController : MonoBehaviour
 
     public delegate void ProgressUpdate( float progress );
     
-    [SerializeField] private string _serverAddress = "hcidev.cs.unb.ca";
+    [SerializeField] private string _serverAddress = "localhost";
     [SerializeField] private int _serverPort = 9500;
     [SerializeField] private bool _sendRemote = true;
     [SerializeField] private string _idEndpoint = "/id";
@@ -38,8 +38,8 @@ public class DataCollectionController : MonoBehaviour
     {
         Debug.Log( "Using " + _serverAddress + ":" + _serverPort  );
         _uploadBacklog = new Queue<UnityWebRequest>();
-        #if UNITY_WEBGL
-        _serverAddress = GetHostAddress();
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            _serverAddress = GetHostAddress();
         #endif
     }
     
@@ -125,9 +125,10 @@ public class DataCollectionController : MonoBehaviour
 
     public IEnumerator ProcessUploadBacklog( ProgressUpdate progressUpdate )
     {
-        var totalBacklog = _uploadBacklog.Count;
-        if ( totalBacklog == 0 ) progressUpdate( 1 );
-        for ( int i = 0; i < _uploadBacklog.Count; i++ )
+        float totalBacklog = _uploadBacklog.Count;
+        Debug.Log("We have " + totalBacklog + " items to upload"  );
+        if ( Math.Abs( totalBacklog ) < 1f ) progressUpdate( 1 );
+        for ( int i = 0; i < totalBacklog; i++ )
         {
             var webRequest = _uploadBacklog.Peek();
             yield return webRequest.Send();
