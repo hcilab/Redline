@@ -40,7 +40,7 @@ const entry_model = db.model( 'atomic_entries', redline_entry_schema );
 const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
 const corsExpress = require('cors')({
-  origin: /\.cs\.unb\.ca$/
+  origin: /.*\.cs\.unb\.ca$/
 });
 
 const cors = server.utils.modern(corsExpress);
