@@ -30,7 +30,7 @@ var redline_entry_schema =  mongoose.Schema({
   , fps: Number
 });
 
-let uri = process.env.MONGO_URI || "localhost";
+let uri = process.env.MONGO_URI || "mongodb://localhost:27017";
 console.log("connecting to mongo db: " + uri);
 mongoose.connect( uri );
 
