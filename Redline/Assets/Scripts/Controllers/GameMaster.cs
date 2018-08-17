@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameMaster : MonoBehaviour
 {
@@ -64,6 +64,9 @@ public class GameMaster : MonoBehaviour
 	private int _turkId;
 	private int _setNumber = 0;
 	private int _avatarGender = 1;
+	[SerializeField] private string[] _victoryPhrases = new string[0];
+	[SerializeField] private string[] _timeoutPhrases = new string[0];
+	[SerializeField] private string[] _deathPhrases = new string[0];
 
 	public int AvatarGender
 	{
@@ -358,8 +361,8 @@ public class GameMaster : MonoBehaviour
 			Debug.Log( "Upload progress: " + progress );
 			if ( progress >= 1f && !_uploadComplete)
 			{
-				_deathScreenController.show();
 				_uploadComplete = true;
+				_uploadModal.SetActive( false );
 			}
 		} ) );
 
@@ -367,13 +370,13 @@ public class GameMaster : MonoBehaviour
 		switch ( reason )
 		{
 				case DataCollectionController.DataType.Victory:
-					message = "You put out the fire! Not bad for a rookie";
+					message = "You put out the fire! " + RandomPhrase( _victoryPhrases );
 					break;
 				case DataCollectionController.DataType.Death:
-					message = "Okay, we're pulling you out. You have to be more careful before you really hurt yourself!";
+					message = "You're going to hurt yourself! " + RandomPhrase( _deathPhrases );
 					break;
 				case DataCollectionController.DataType.Timeout:
-					message = "Reinforcements have arrived! Take a breather!";
+					message = "Time's up! " + RandomPhrase( _timeoutPhrases );
 					break;
 				default:
 					message = "Game Over!";
@@ -387,6 +390,12 @@ public class GameMaster : MonoBehaviour
 		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
 		_deathScreenController.SetHealthRating( _levelManager.Player.GetRemainingHitPoints(), _levelManager.Player.GetStartingHealth() );
 		_deathScreenController.SetTimeRating( GetTimeRemaining(), _levelManager.TotalTime() );
+		_deathScreenController.show();
+	}
+
+	private static string RandomPhrase( string[] phraseSet )
+	{
+		return phraseSet[ Random.Range( 0, phraseSet.Length ) ];
 	}
 
 	public NumberController GetDamageNumberController()
