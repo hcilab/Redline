@@ -153,3 +153,13 @@ body {
     -webkit-transform: scaleY(1.0);
   }
 }
+
+#setHeader {
+  text-align: center;
+}
+
+#setHeader > p {
+  color: white;
+  font-size: 30px;
+  display: inline-block;
+}
