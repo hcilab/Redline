@@ -62,7 +62,7 @@ public class GameMaster : MonoBehaviour
 	private bool _initialized;
 	private bool _loadingLevel = false;
 	private int _turkId;
-	private int _setNumber = 0;
+	private int _setNumber = 1;
 	private int _avatarGender = 1;
 	[SerializeField] private string[] _victoryPhrases = new string[0];
 	[SerializeField] private string[] _timeoutPhrases = new string[0];

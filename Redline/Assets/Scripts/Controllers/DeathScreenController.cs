@@ -32,47 +32,52 @@ public class DeathScreenController : MonoBehaviour
 		_timeRatingBar.sizeDelta = emptyBarVec;
 	}
 
-	private void Update()
-	{
-		if ( _flameRating >= _cutOff
-		     && _timeRating >= _cutOff )
-		{
-			_nextLevelButton.interactable = true;
-			_infoMessage.enabled = false;
-		}
-		else if ( _hpRating >= 0 )
-		{
-			_nextLevelButton.interactable = false;
-			_infoMessage.enabled = true;
-			_infoMessage.text = "In order to proceed you must reach at least "
-			                    + _cutOff / 2f + " stars in the time and firefighting categories.";
-		}
-		else
-		{
-			_nextLevelButton.interactable = false;
-			_infoMessage.enabled = true;
-			_infoMessage.text = "Slow down there! Before continuing you'll have to show us you can handle this one.";
-		}
-		
-		_flameRatingBar.sizeDelta = Vector2.Lerp(
-			_flameRatingBar.sizeDelta,
-			new Vector2( _flameRating * _starWidth / 2, 60 ),
-			Time.deltaTime );
-
-		_hpRatingBar.sizeDelta = Vector2.Lerp(
-			_hpRatingBar.sizeDelta,
-			new Vector2( _hpRating * _starWidth / 2, 60 ),
-			Time.deltaTime );
-
-		_timeRatingBar.sizeDelta = Vector2.Lerp(
-			_timeRatingBar.sizeDelta,
-			new Vector2( _timeRating * _starWidth / 2, 60 ),
-			Time.deltaTime );
-	}
+//	private void Update()
+//	{
+//		if ( _flameRating >= _cutOff
+//		     && _timeRating >= _cutOff )
+//		{
+//			_nextLevelButton.interactable = true;
+//			_infoMessage.enabled = false;
+//		}
+//		else if ( _hpRating >= 0 )
+//		{
+//			_nextLevelButton.interactable = false;
+//			_infoMessage.enabled = true;
+//			_infoMessage.text = "In order to proceed you must reach at least "
+//			                    + _cutOff / 2f + " stars in the time and firefighting categories.";
+//		}
+//		else
+//		{
+//			_nextLevelButton.interactable = false;
+//			_infoMessage.enabled = true;
+//			_infoMessage.text = "Slow down there! Before continuing you'll have to show us you can handle this one.";
+//		}
+//		
+//		_flameRatingBar.sizeDelta = Vector2.Lerp(
+//			_flameRatingBar.sizeDelta,
+//			new Vector2( _flameRating * _starWidth / 2, 60 ),
+//			Time.deltaTime );
+//
+//		_hpRatingBar.sizeDelta = Vector2.Lerp(
+//			_hpRatingBar.sizeDelta,
+//			new Vector2( _hpRating * _starWidth / 2, 60 ),
+//			Time.deltaTime );
+//
+//		_timeRatingBar.sizeDelta = Vector2.Lerp(
+//			_timeRatingBar.sizeDelta,
+//			new Vector2( _timeRating * _starWidth / 2, 60 ),
+//			Time.deltaTime );
+//	}
 
 	public void show()
 	{
 		gameObject.SetActive( true );
+		_infoMessage.enabled = true;
+		_infoMessage.text = "Finished round " + _gameMaster.CurrentLevel + " out of " 
+		                                      + _gameMaster.LevelCount;
+		if ( _gameMaster.CurrentLevel == _gameMaster.LevelCount )
+			_nextLevelButton.GetComponentInChildren< Text >().text = "Finish";
 	}
 
 	public void hide()
