@@ -54,3 +54,5 @@ Redline/UnityPackageManager/
 
 *.pyc
 *.db
+
+*.BAK*
