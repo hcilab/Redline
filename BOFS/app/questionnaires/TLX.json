@@ -1,6 +1,6 @@
 {  
     "title":"NASA-TLX",
-    "instructions":"Please evaluate the game by selecting the value on the scale from 0 to 100 at the point which matches your experience. NOTE: In case the instructions are not entierly clear, please ask your experimenter for explanation.",
+    "instructions":"Please evaluate the game by selecting the value on the scale from 0 to 100 at the point which matches your experience.",
     "code":"",
     "questions":[
         {  
@@ -42,8 +42,8 @@
             "datatype": "integer",
             "instructions": "How successful do you think you were in accomplishing the goals of the game? How satisfied were you with your performance in accomplishing these goals?",
             "id": "performanceDemand",
-            "left": "low",
-            "right": "high",
+            "left": "Failure",
+            "right": "Perfect",
             "required":"true",
             "tick_count":100,  
             "width": 920

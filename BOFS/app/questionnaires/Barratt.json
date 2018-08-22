@@ -1,6 +1,6 @@
 {
    "title":"Barrat Impulsiveness Scale",
-   "instructions":"Read each statement and indicate your agreement with that statement. There are no right or wrong answers. Do not spend too much time on any one statement. Remember, give the answer which seems to describe how you thought during the game.",
+   "instructions":"Read each statement and indicate your agreement with that statement. There are no right or wrong answers. Do not spend too much time on any one statement.",
    "code":"",
    "questions":[
       {
@@ -124,7 +124,7 @@
             },
             {
                "id":"q_28",
-               "text":"I restless at the theatre or lectures."
+               "text":"I feel restless at the theatre or in lectures."
             },
             {
                "id":"q_29",

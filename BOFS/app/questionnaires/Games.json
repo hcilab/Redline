@@ -5,7 +5,7 @@
     "questions":[  
         {  
         "questiontype":"drop_down",
-        "instructions":"Please indicate how often (on average) you play games:",
+        "instructions":"Please indicate how often (on average) you play video games:",
         "id":"gamer_rate",
         "items":[  
             "Every day",
@@ -20,7 +20,7 @@
         },
         {  
         "questiontype":"drop_down",
-        "instructions":"If you have played games in the past, please indicate how often you have played at peak times:",
+        "instructions":"If you have played video games in the past, please indicate how often you have played at peak times (times when you play most frequently):",
         "id":"former_gamer_rate",
         "items":[  
             "Every day",
@@ -53,7 +53,7 @@
         },
         {  
             "questiontype":"checklist",
-            "instructions":"Please indicate the genres that you enjoy playing:",
+            "instructions":"Please indicate the video game genres that you enjoy playing:",
             "id":"genre",            
             "shuffle":false,
             "questions": [
@@ -119,12 +119,12 @@
             },
             {
                 "id":"gen-none",
-                "text":"Different genre(s)"
+                "text":"Other genre(s)"
             }]
         },  
         {  
             "questiontype":"checklist",
-            "instructions":"Please indicate on which devices you play:",
+            "instructions":"Please indicate on which devices you play video games:",
             "id":"system",
             "shuffle":false,            
             "questions": [
@@ -142,7 +142,7 @@
             },
             {
                 "id":"sys-none",
-                "text":"Different device(s)"
+                "text":"Other device(s)"
             }]
         }
     ]
