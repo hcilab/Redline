@@ -287,7 +287,6 @@ public class PlayerController : MonoBehaviour
 
 		if ( Time.time - _lastTick > _damageTick && _accumulatedDamage > 30 && _hitPoints > 0 ) 
 		{
-			Debug.Log( "TAKING DAMAGE"  );
 			_animation.Play( "Damage" );
 			if(_damageAnimation != null )
 				_damageAnimation();

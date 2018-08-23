@@ -40,6 +40,8 @@ public class FireSystemController : MonoBehaviour
     private float _tick = -1;
     private FlameController _flamePrefab;
     private bool initialized = false;
+    [SerializeField] private float _growthFeedback = 50;
+    [SerializeField] private double _spreadFeedback = 0.2f;
 
     public int LevelTime
     {
@@ -317,8 +319,11 @@ public class FireSystemController : MonoBehaviour
             );
             if ( cell.GetVariable<double>( "intensity" ) <= 0 )
             {
-//                Debug.Log( "Removing flame" );
-                
+                Debug.Log( _levelManager.Player.GetRemainingHitPoints() / _growthFeedback );
+                if ( _activeFlames.Count < _levelManager.Player.GetRemainingHitPoints() / _growthFeedback )
+                    Grow();
+                if( Random.Range( 0f, 1f ) > _spreadFeedback )
+                    Spread();
                 _activeFlames.Remove( cell );
                 _flamePool.Remove( flame );
                 
