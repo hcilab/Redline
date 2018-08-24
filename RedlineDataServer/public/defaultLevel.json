@@ -10,10 +10,10 @@
     , "_spreadDistance": 4
     , "_growthFactor": 0.3
     , "_maxFlameIntensity": 10
-    , "_waterStrength": 0.05
+    , "_waterStrength": 0.04
     , "_prewarm": 10
     , "_spreadIntensity": 7
-    , "_levelTime": 60
-    , "_growthFeedback": 60
-    , "_spreadFeedback": 0.2
+    , "_levelTime": 120
+    , "_growthFeedback": 55
+    , "_spreadFeedback": 2
 }

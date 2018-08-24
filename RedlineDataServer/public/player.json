@@ -6,6 +6,6 @@
   "_totalHp": 1000,
   "_damageTick": 1,
   "_loggingTick": 1,
-  "_recoveryRate": 0.3,
+  "_recoveryRate": 0.8,
   "_recoveryThreshold": 1
 }
