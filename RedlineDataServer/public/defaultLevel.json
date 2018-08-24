@@ -3,7 +3,6 @@
     , "_columns": 20
     , "_payloadDepth": 1
     , "_startIntensity": 5
-    , "_showGrid": false
     , "_firePoolSize": 100
     , "_updateInterval": 2.5 
     , "_spreadLimit": 3
@@ -15,4 +14,6 @@
     , "_prewarm": 10
     , "_spreadIntensity": 7
     , "_levelTime": 60
+    , "_growthFeedback": 60
+    , "_spreadFeedback": 0.2
 }
