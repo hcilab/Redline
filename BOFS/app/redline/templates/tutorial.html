@@ -79,6 +79,9 @@
         <img src="{{url_for('redline.static', filename='images/intro 4.png')}}" alt="Intro 4">
       </div>
       <div>
+        <img src="{{url_for('redline.static', filename='images/intro 5.png')}}" alt="Intro 5">
+      </div>
+      <div>
         <div class="textSlide">
           <a href="/redirect_next_page" class="btn btn-primary btn-lg">Proceed to game</a>
         </div>
@@ -97,7 +100,7 @@
       });
 
       $('.tutorial').on('beforeChange', function(event, slick, currentSlide, nextSlide){
-        if( nextSlide == 4 ) {
+        if( nextSlide == 5 ) {
             $('.tutorial').slick('slickSetOption', 'autoplay', false, true);
         }
       });
