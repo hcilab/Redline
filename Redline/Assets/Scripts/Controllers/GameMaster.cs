@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -79,7 +79,7 @@ public class GameMaster : MonoBehaviour
 		{
 			return _paused ||
 			       _loadingScreen.gameObject.activeSelf ||
-			       _deathScreenController.gameObject.activeSelf; 
+			       _deathScreenController.gameObject.activeSelf;
 		}
 	}
 
@@ -135,7 +135,7 @@ public class GameMaster : MonoBehaviour
 		{
 			barController.gameObject.SetActive( false );
 		}
-		
+
 		if ( Instance == null )
 			Instance = this;
 		else if ( Instance != this )
@@ -150,7 +150,7 @@ public class GameMaster : MonoBehaviour
 	private void Start()
 	{
 		_gameInterface.Awake();
-		
+
 		#if UNITY_WEBGL && !UNITY_EDITOR
 			WebSetup();
 	        ReloadConfigs(false, false, true);
@@ -158,8 +158,8 @@ public class GameMaster : MonoBehaviour
 	    #else
 			ReloadConfigs();
 		#endif
-		
-		
+
+
 	}
 
 	private void WebSetup()
@@ -168,7 +168,7 @@ public class GameMaster : MonoBehaviour
 
 		if ( newId != -1 )
 			_sessionId = newId;
-		
+
 		// get set number
 		_setNumber = GetSetNumber();
 		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
@@ -177,7 +177,7 @@ public class GameMaster : MonoBehaviour
 		Debug.Log( "PARSED BAR NUMBER" + barIndex  );
 		if( barIndex != -1 )
 			ChangeHpBar( barIndex );
-		
+
 		//get avatar gender
 		var gender = GetGender();
 		Debug.Log( "PARSED GENDER NUMBER " + gender );
@@ -193,14 +193,14 @@ public class GameMaster : MonoBehaviour
 		_hasTrialNumber = false;
 		_fireLoaded = false;
 		_playerLoaded = false;
-		
+
 		DataCollector.GetTrial( _sessionId, data =>
 		{
 			_trialNumber = Int32.Parse(
 				JsonUtility.FromJson< DataObject >( data ).trial );
 			_hasTrialNumber = true;
 		} );
-		
+
 		Debug.Log( "Registering new level " + _currentLevel );
 		_levelManager = levelManager;
 	}
@@ -238,10 +238,10 @@ public class GameMaster : MonoBehaviour
 		{
 			ScrollHpBar( 1 );
 		}
-		
+
 		#endif
-		
-		if ( _playerLoaded && _fireLoaded && _hasTrialNumber && 
+
+		if ( _playerLoaded && _fireLoaded && _hasTrialNumber &&
 		          _loadingScreen.gameObject.activeSelf && Input.anyKeyDown && !_loadingLevel)
 		{
 			_initialized = true;
@@ -270,7 +270,7 @@ public class GameMaster : MonoBehaviour
 	public void NextLevel( [CanBeNull] string customLevel = null )
 	{
 		if ( _levelCount == -1 ) return;
-		
+
 		ResetUi();
 
 		if ( customLevel == "restart" )
@@ -287,11 +287,10 @@ public class GameMaster : MonoBehaviour
 				return;
 			}
 		}
-		
-		_currentLevel++;
 
-		if ( _currentLevel <= _levelCount )
+		if ( _currentLevel < _levelCount )
 		{
+			_currentLevel++;
 			_gameInterface.gameObject.SetActive( true );
 			_playerLoaded = false;
 			_fireLoaded = false;
@@ -343,20 +342,20 @@ public class GameMaster : MonoBehaviour
 
 	public IEnumerator GameOver( DataCollectionController.DataType reason )
 	{
-		yield return new WaitForSecondsRealtime( 0.5f );
-		if( !_gameOver ) 
-			_levelManager.Player.LogCumulativeData( reason );
 		_paused = true;
 		_gameOver = true;
-		
+		yield return new WaitForSecondsRealtime( 0.5f );
+		if( !_gameOver )
+			_levelManager.Player.LogCumulativeData( reason );
+
 		_uploadComplete = false;
 		_uploadModal.GetComponentInChildren< Text >().text = "Uploading Data....";
 		_uploadModal.SetActive( true );
 
 		StartCoroutine( DataCollector.ProcessUploadBacklog( progress =>
 		{
-			_uploadModal.GetComponentInChildren< Text >().text = 
-				"Uploading data: " + 
+			_uploadModal.GetComponentInChildren< Text >().text =
+				"Uploading data: " +
 				Mathf.RoundToInt(progress * 100) + "%";
 			Debug.Log( "Upload progress: " + progress );
 			if ( progress >= 1f && !_uploadComplete)
@@ -382,9 +381,9 @@ public class GameMaster : MonoBehaviour
 					message = "Game Over!";
 					break;
 		}
-		
+
 		FindObjectOfType<PlayerController>().Death();
-		
+
 		_deathScreenController.setMessage( message );
 		_deathScreenController.setScore(  _levelManager.Player.GetScore().ToString());;
 		_deathScreenController.SetFlameRating( _levelManager.FireSystem.GetActiveFlames(), _levelManager.FireSystem.GetTotalFlames(), 0f, 0f );
@@ -417,7 +416,7 @@ public class GameMaster : MonoBehaviour
 		pool.Init( poolSize, item);
 		return pool;
 	}
-	
+
 
 	public void OnTimeout()
 	{
@@ -454,9 +453,9 @@ public class GameMaster : MonoBehaviour
 
 	public void LoadFireSystem( FireSystemController fireSystem, [CanBeNull] Action cb )
 	{
-		DataCollector.GetConfig( 
-			_currentLevel.ToString(), 
-			_setNumber.ToString(), 
+		DataCollector.GetConfig(
+			_currentLevel.ToString(),
+			_setNumber.ToString(),
 			data => {
 				Debug.Log("Attempting to load fire config");
 				JsonUtility.FromJsonOverwrite( data, fireSystem );
@@ -488,13 +487,13 @@ public class GameMaster : MonoBehaviour
 
 	public void ReloadConfigs( bool bar = true, bool id = true, bool levels = true )
 	{
-		if( bar ) 
+		if( bar )
 			DataCollector.GetBarType( data =>
 			{
 				ChangeHpBar( Int32.Parse(
 					JsonUtility.FromJson< DataObject >( data ).bar ) );
 			} );
-		
+
 		if( id )
 			DataCollector.GetNewID( data =>
 			{
