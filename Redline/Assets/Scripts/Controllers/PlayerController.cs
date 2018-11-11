@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : IHPSource
 {
 	[SerializeField] private LevelManager _levelManager;
 	[SerializeField] private int _viewDistance = 40;
@@ -37,7 +35,6 @@ public class PlayerController : MonoBehaviour
 	private double _averageFps;
 	private bool _initalizeAverages = true;
 	private double _accumulatedDamage = 0f;
-	private Action _damageAnimation;
 	private Animation _animation;
 	private ParticleSystem.EmissionModule _water;
 	private LineRenderer _outline;
@@ -48,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
 	void Start ()
 	{
+		HasDamageAnimation = true;
 		_frames = 0;
 		_hitPoints = _totalHp;
 
@@ -289,8 +287,8 @@ public class PlayerController : MonoBehaviour
 		{
 			Debug.Log( "TAKING DAMAGE"  );
 			_animation.Play( "Damage" );
-			if(_damageAnimation != null )
-				_damageAnimation();
+			if(DamageAnimation != null )
+				DamageAnimation();
 			_levelManager.GameMaster.GetDamageNumberController().SpawnNumber( _accumulatedDamage, transform.position);
 			_hitPoints -= _accumulatedDamage;
 			
@@ -322,7 +320,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	public double GetHealth()
+	public override double GetHealth()
 	{
 		return _hitPoints / _totalHp;
 	}
@@ -377,10 +375,5 @@ public class PlayerController : MonoBehaviour
 	public float GetStartingHealth()
 	{
 		return ( float ) _totalHp;
-	}
-
-	public void SetDamageAnimation( Action action )
-	{
-		_damageAnimation = action;
 	}
 }
