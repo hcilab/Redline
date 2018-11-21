@@ -19,7 +19,7 @@ public class DataCollectionController : MonoBehaviour
     public delegate void ProgressUpdate( float progress );
     
     [SerializeField] private string _serverAddress = "localhost";
-    [SerializeField] private int _serverPort = 9500;
+    [SerializeField] private int _serverPort = 80;
     [SerializeField] private bool _sendRemote = true;
     [SerializeField] private string _idEndpoint = "/id";
     [SerializeField] private string _atomicEndpoint = "/";
@@ -148,7 +148,7 @@ public class DataCollectionController : MonoBehaviour
 
     private string GetServerPath()
     {
-        String path = "http://" + _serverAddress + ":" + _serverPort;
+        String path = "https://" + _serverAddress + ":" + _serverPort;
         return path;
     }
 
