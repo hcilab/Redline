@@ -4,9 +4,8 @@
   "_rotationSpeed": 7,
   "_damageScaling": 40,
   "_totalHp": 1000,
-  "_showCollider": false,
   "_damageTick": 1,
   "_loggingTick": 1,
-  "_recoveryRate": 0.25,
+  "_recoveryRate": 0.8,
   "_recoveryThreshold": 1
 }
