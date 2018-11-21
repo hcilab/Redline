@@ -148,7 +148,9 @@ public class DataCollectionController : MonoBehaviour
 
     private string GetServerPath()
     {
-        String path = "https://" + _serverAddress + ":" + _serverPort;
+//    Disabling the port for the heroku setup
+//        String path = "https://" + _serverAddress + ":" + _serverPort;
+        String path = "https://" + _serverAddress;
         return path;
     }
 
