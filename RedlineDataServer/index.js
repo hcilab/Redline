@@ -40,7 +40,8 @@ const entry_model = db.model( 'atomic_entries', redline_entry_schema );
 const final_model = db.model( 'cumulative_entries', redline_entry_schema );
 
 const corsExpress = require('cors')({
-  origin: /.*\.cs\.unb\.ca$/
+  // origin: /.*\.cs\.unb\.ca$/
+    origin: /localhost$/
 });
 
 const cors = server.utils.modern(corsExpress);
@@ -52,11 +53,12 @@ server(
     security: {
       csrf: false
     },
-    views: 'public'
+    views: '../BOFS/app/redline/templates',
+    public: '../BOFS/app/redline/public'
   },
   cors,
   [
-    get( '/', ctx => redirect("http://hcidev.cs.unb.ca") )
+    get( '/', ctx => render('index.html') )
   , get('/id', async ctx => {
     let id = -1;
     await generateID( 0 ).then(

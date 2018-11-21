@@ -56,3 +56,5 @@ Redline/UnityPackageManager/
 *.db
 
 *.BAK*
+
+node_modules/
