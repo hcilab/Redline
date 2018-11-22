@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Redline</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+          integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
     <script type="text/javascript" src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
     <script type="text/javascript" src="Build/UnityLoader.js"></script>
     <script type="text/javascript" src="UnityProgress.js"></script>
@@ -34,28 +36,27 @@
 
 
 <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+    <div class="modal__overlay" tabindex="-1">
         <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
             <header class="modal__header">
                 <h2 class="modal__title" id="modal-1-title">
-                    Micromodal
+                    Set up
                 </h2>
-                <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
             </header>
             <main class="modal__content" id="modal-1-content">
-                <form
-                    name="settingsForm">
-                    <p>Which set would you like to play?</p>
+                <form class="pure-form pure-form-stacked"
+                        name="settingsForm">
+                    <label for="set">Which set would you like to play?</label>
                     <select name="set" required>
                         <option value="0">1</option>
                         <option value="1">2</option>
                     </select>
-                    <p>Which health bar would you like to try out?</p>
+                    <label for="condition">Which health bar would you like to try out?</label>
                     <select name="condition" required>
                         <option value="1">Normal</option>
                         <option value="0">Enhanced/Manipulated</option>
                     </select>
-                    <p>Which gender would you like your avatar to have?</p>
+                    <label for="gender">Which gender would you like your avatar to have?</label>
                     <select name="gender" required>
                         <option value="0">Female</option>
                         <option value="1">Male</option>
@@ -64,10 +65,11 @@
             </main>
             <footer class="modal__footer">
                 <button onclick="submitData()"
-                        class="modal__btn"
+                        class="pure-button pure-button-primary"
                         data-micromodal-close
                         aria-label="Close this dialog window">
-                    Okay</button>
+                    Okay
+                </button>
             </footer>
         </div>
     </div>
@@ -78,6 +80,7 @@
     MicroModal.init();
     MicroModal.show('modal-1');
     var params = {};
+
     function submitData() {
         var form = document.forms["settingsForm"];
         params = {
@@ -90,7 +93,7 @@
             "gameContainer",
             "Build/public.json",
             {onProgress: UnityProgress}
-            );
+        );
     }
 
     function GetParams() {
