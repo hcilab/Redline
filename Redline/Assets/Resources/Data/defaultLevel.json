@@ -1,0 +1,19 @@
+{
+     "_rows": 20
+    , "_columns": 20
+    , "_payloadDepth": 1
+    , "_startIntensity": 5
+    , "_firePoolSize": 100
+    , "_updateInterval": 2.5 
+    , "_spreadLimit": 3
+    , "_spreadChance": 0.15
+    , "_spreadDistance": 4
+    , "_growthFactor": 0.3
+    , "_maxFlameIntensity": 10
+    , "_waterStrength": 0.04
+    , "_prewarm": 10
+    , "_spreadIntensity": 7
+    , "_levelTime": 120
+    , "_growthFeedback": 55
+    , "_spreadFeedback": 2
+}

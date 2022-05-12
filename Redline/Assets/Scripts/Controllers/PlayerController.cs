@@ -157,7 +157,7 @@ public class PlayerController : IHPSource
 			theta += deltaTheta;
 		}
 	}
-
+	//Not to be confused with the other log data (data collector)
 	public void LogData( double fps )
 	{
 		

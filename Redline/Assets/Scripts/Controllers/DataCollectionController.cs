@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,6 +30,8 @@ public class DataCollectionController : MonoBehaviour
     [SerializeField] private string _trialEndpoint = "/trial/";
     private string _dataFile;
     private Queue<UnityWebRequest> _uploadBacklog;
+    private string[] sets;
+    private int setNumber;
 
     [DllImport( "__Internal" )]
     private static extern string GetHostAddress();
@@ -73,6 +75,7 @@ public class DataCollectionController : MonoBehaviour
     {
         var path = GetServerPath() + _configEndpoint + resource;
         var req = UnityWebRequest.Get( path );
+        Debug.Log(path);
         StartCoroutine( Download( req, action ) );
     }
     
@@ -91,29 +94,96 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "trial", trial.ToString() );
         StartCoroutine( Upload( dataObj, path ) );
     }
-        
+
+    [Serializable]
+    public class StringArrayWrapper { public string items; }
+
     IEnumerator Download( UnityWebRequest req, WebCallback cb )
     {
-        Debug.Log("GET " + req.url  );
-        req.chunkedTransfer = false;
-        req.Send();
-        yield return new WaitUntil( () => req.isDone && req.downloadHandler.isDone );
-        if ( req.isError ) LogNetworkError( req );
-        else if ( req.isDone )
+        if (!_sendRemote)
         {
-            Debug.Log( "New data downloaded: " + req.downloadHandler.text );
-            cb( req.downloadHandler.text );
+            //HTTPS://
+            string parsedURL = req.url.Substring(req.url.LastIndexOf(_serverPort.ToString())).Substring(req.url.IndexOf("/"));
+            string partialURL = parsedURL;
+            if (parsedURL.IndexOf("/") > 0) {
+                partialURL = parsedURL.Substring(0, parsedURL.IndexOf("/"));
+            }
+            string body = "";
+            switch (partialURL)
+            {
+                case "id":
+                    int id = GenerateID();
+                    body = "{\"id\":0" + id.ToString() + "}";
+                    break;
+                case "bar":
+                    body = "{\"bar\":0}";
+                    break;
+                case "trial":
+                    //TODO
+                    body = "{\"trial\":0}";
+                    break;
+                case "config":
+                    var newString = parsedURL.Substring(parsedURL.IndexOf("/") + 1);
+                    if (newString == "player")
+                    {
+                        string playerData = Resources.Load<TextAsset>("Data/player").text;
+                        body = playerData;
+                        break;
+                    }
+                    else if (newString.StartsWith("levelCount"))
+                    {
+                        //Reduce set number by 1 to test on training set
+                        setNumber = int.Parse(newString.Substring(newString.IndexOf("=") + 1));
+                        string setData = Resources.Load<TextAsset>("Data/sets").text;
+                        setData = setData.Substring(setData.IndexOf("[")+1, setData.LastIndexOf("]") - setData.IndexOf("[")-1).Replace(" ","").Replace("\n", "");
+                        sets = Regex.Split(setData, @"\],.?\[");
+                        string[] separateSets = sets[setNumber].Split(',');
+                        body = "{\"count\":" + separateSets.Length.ToString() + "}";
+                        break;
+                    }
+                    else if (newString.Contains("set="))
+                    {
+                        //Reduce set number by 1 to test on training set
+                        int trialNumber = int.Parse(Regex.Match(newString, "^[0-9]*").Value)-1;
+                        int levelNumber = int.Parse(sets[setNumber].Split(',')[trialNumber]);
+                        string levelData = Resources.Load<TextAsset>("Data/levels").text;
+                        string jsonString = JsonHelper.fixJson(levelData);
+                        LevelData[] items = JsonHelper.FromJson<LevelData>(jsonString);
+                        body = ConstructLevelBody(items[levelNumber], Resources.Load<TextAsset>("Data/defaultLevel").text);
+                        Debug.Log(body);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            cb(body);
+        }
+        else {
+            Debug.Log("GET " + req.url);
+            req.chunkedTransfer = false;
+            req.Send();
+            yield return new WaitUntil(() => req.isDone && req.downloadHandler.isDone);
+            if (req.isNetworkError) LogNetworkError(req);
+            else if (req.isDone)
+            {
+                Debug.Log("New data downloaded: " + req.downloadHandler.text);
+                cb(req.downloadHandler.text);
+            }
         }
     }
 
     IEnumerator Upload( WWWForm dataObj, string path )
     {
+        if (!_sendRemote) {
+            yield break;
+        }
+
         UnityWebRequest req = UnityWebRequest.Post( path, dataObj );
         Debug.Log("POST " + req.url );
         Debug.Log( dataObj.ToString() );
         yield return req.Send();
 
-        if ( req.isError )
+        if ( req.isNetworkError )
         {
             LogNetworkError( req );
             _uploadBacklog.Enqueue( req );
@@ -127,7 +197,7 @@ public class DataCollectionController : MonoBehaviour
     {
         float totalBacklog = _uploadBacklog.Count;
         Debug.Log("We have " + totalBacklog + " items to upload"  );
-        if ( Math.Abs( totalBacklog ) < 1f ) progressUpdate( 1 );
+        if ( Math.Abs( totalBacklog ) < 1f || !_sendRemote) progressUpdate( 1 );
         for ( int i = 0; i < totalBacklog; i++ )
         {
             var webRequest = _uploadBacklog.Peek();
@@ -148,9 +218,9 @@ public class DataCollectionController : MonoBehaviour
 
     private string GetServerPath()
     {
-//    Disabling the port for the heroku setup
-//        String path = "https://" + _serverAddress + ":" + _serverPort;
-        String path = "https://" + _serverAddress;
+//      Disabling the port for the heroku setup
+        String path = "http://" + _serverAddress + ":" + _serverPort;
+//      String path = "http://" + _serverAddress;
         return path;
     }
 
@@ -212,4 +282,36 @@ public class DataCollectionController : MonoBehaviour
         
         StartCoroutine( Upload( dataObj, path ) );
     }
+
+    string ConstructLevelBody(LevelData ld, string defaultLevel)
+    {
+        string ret = "{";
+        for(int i = 0; i < ld._startingFlames.Count; i++)
+        {
+            ret += "\"_startingFlames\":[{\"x\":" + ld._startingFlames[i].x.ToString() +
+                ",\"y\":" + ld._startingFlames[i].y.ToString() + "}],";
+    }
+        defaultLevel = defaultLevel.Substring(defaultLevel.IndexOf("{") + 1, defaultLevel.LastIndexOf("}") - defaultLevel.IndexOf("{"))
+            .Replace("\n", "").Replace(" ", "");
+        defaultLevel = Regex.Replace(defaultLevel, ",\"_prewarm\":[0-9]+", "");
+        ret += "\"_prewarm\":" + ld._prewarm + "," + defaultLevel;
+        return ret;
+    }
+
+    int GenerateID()
+    {
+        return UnityEngine.Random.Range(1, 100000);
+    }
+}
+
+[Serializable]
+public class StartingFlameData {    
+    public double x;
+    public double y;
+}
+[Serializable]
+public class LevelData
+{
+    public List<StartingFlameData> _startingFlames;
+    public int _prewarm;
 }

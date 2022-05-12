@@ -62,7 +62,7 @@ public class GameMaster : MonoBehaviour
 	private bool _initialized;
 	private bool _loadingLevel = false;
 	private int _turkId;
-	private int _setNumber = 0;
+	private int _setNumber = 1;
 	private int _avatarGender = 1;
 	[SerializeField] private string[] _victoryPhrases = new string[0];
 	[SerializeField] private string[] _timeoutPhrases = new string[0];
@@ -100,7 +100,7 @@ public class GameMaster : MonoBehaviour
 	
 	public int SessionID
 	{
-		get { return _sessionId; }	
+		get { return _sessionId; }
 	}
 
 	public int TurkId
@@ -158,8 +158,6 @@ public class GameMaster : MonoBehaviour
 	    #else
 			ReloadConfigs();
 		#endif
-
-
 	}
 
 	private void WebSetup()
@@ -343,7 +341,7 @@ public class GameMaster : MonoBehaviour
 	public IEnumerator GameOver( DataCollectionController.DataType reason )
 	{
 		_paused = true;
-		_gameOver = true;
+		//_gameOver = true;
 		yield return new WaitForSecondsRealtime( 0.5f );
 		if( !_gameOver )
 			_levelManager.Player.LogCumulativeData( reason );
