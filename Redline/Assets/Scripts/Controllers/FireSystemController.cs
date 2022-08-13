@@ -162,7 +162,7 @@ public class FireSystemController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        _fireGrid.DrawGrid();
+    //    _fireGrid.DrawGrid();
     }
 
     // Update is called once per frame

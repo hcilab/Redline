@@ -31,6 +31,9 @@ public class PlayerController : IHPSource
 	private double _averageEnemiesNearBy = 0;
 	private double _averageNearByIntensity = 0;
 	private double _averageActiveFlames = 0;
+	private double _distanceTravelled = 0;
+	private Vector3 prevPosition;
+	private double _waterUsed = 0;
 	private int _frames;
 	private double _averageFps;
 	private bool _initalizeAverages = true;
@@ -48,6 +51,11 @@ public class PlayerController : IHPSource
 		HasDamageAnimation = true;
 		_frames = 0;
 		_hitPoints = _totalHp;
+
+		//distance travelled and water sprayed
+		_distanceTravelled = 0;
+		_waterUsed = 0;
+		prevPosition = transform.position;
 
 		_outline = gameObject.AddComponent<LineRenderer>();
 		
@@ -116,6 +124,7 @@ public class PlayerController : IHPSource
 			_water.enabled = false;
 		}
 		LookAtMouse();
+
 		 
 		if ( _hitPoints <= 0 )
 		{
@@ -134,6 +143,13 @@ public class PlayerController : IHPSource
 			_logDamage = 0f;
 			_logScore = _logFireExtinguished;
 			_lastLog = Time.time;
+			prevPosition = transform.position;
+			_waterUsed = 0;
+		}
+
+		//for water used
+		if(_water.enabled){
+			_waterUsed += 0.01f;
 		}
 	}
 
@@ -160,7 +176,7 @@ public class PlayerController : IHPSource
 	//Not to be confused with the other log data (data collector)
 	public void LogData( double fps )
 	{
-		
+		_distanceTravelled = Vector3.Distance(transform.position, prevPosition);
 		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
 		if ( _initalizeAverages )
@@ -194,6 +210,8 @@ public class PlayerController : IHPSource
 			, _enemiesNearBy.Count.ToString()
 			, averageIntensity.ToString()
 			, _levelManager.GameMaster.GetActiveFlames().ToString()
+			, _distanceTravelled.ToString()
+			, _waterUsed.ToString()
 			, fps.ToString()
 		);
 	}
@@ -235,6 +253,8 @@ public class PlayerController : IHPSource
 			, _averageEnemiesNearBy.ToString()
 			, _averageNearByIntensity.ToString()
 			, _averageActiveFlames.ToString()
+			, _distanceTravelled.ToString()
+			, _waterUsed.ToString()
 			, _averageFps.ToString()
 			, type
 			);

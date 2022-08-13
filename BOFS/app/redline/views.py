@@ -27,7 +27,7 @@ def tutorial():
 @verify_session_valid
 def game_redline_0():
     PID = session['participantID']
-    CONDITION = session['condition']
+    CONDITION = getCondition()
     SET = 0
     VERSION = get_version_number()
     SEX=getGender()
@@ -48,7 +48,7 @@ def game_redline_0():
 @verify_session_valid
 def game_redline_1():
     PID = session['participantID']
-    CONDITION = session['condition']
+    CONDITION = getCondition()
     SET = 1
     VERSION = get_version_number()
     SEX=getGender()
@@ -68,7 +68,7 @@ def game_redline_1():
 @verify_session_valid
 def game_redline_2():
     PID = session['participantID']
-    CONDITION = session['condition']
+    CONDITION = getCondition()
 
     SET = 2
 
@@ -113,3 +113,9 @@ def getGender():
             avatar_sex = demographicsInfo.representation_sex
 
     return 1 if avatar_sex == 'male' else 0
+
+def getCondition():
+    condition = 0
+    if(db.session.query(db.Participant).filter(db.Participant.).count() > db.session.query(db.Participant).count()/2):
+        condition = 1
+    return condition

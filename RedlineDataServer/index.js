@@ -26,6 +26,8 @@ var redline_entry_schema =  mongoose.Schema({
   , proximity: Number
   , avg_intensity_in_proximity: Number
   , active: Number
+  , distance: Number
+  , waterUsed: Number
   , type: String
   , fps: Number
 });
@@ -116,11 +118,12 @@ server(
         });
     } else {
       var levelNumber;
+      console.log("attempting to load level")
 
       try {
         levelNumber = parseInt( ctx.params.resource ) - 1;
       } catch (err) {
-        return status(400).send( "Invalid resource request.<br>" + err);
+        return status(400).send( "Invalid resource request. Cannot parse level number." + err);
       }
 
       if( !isNaN(levelNumber)
@@ -139,7 +142,7 @@ server(
           return status(200).send( levelConfig );
         }
     }
-    return status(400).send("Invalid resource request.");
+    return status(400).send("Invalid resource request. Cannot find resource.");
   })
   , get('/trial/:id', async ctx => {
     let trialNumber = -1;

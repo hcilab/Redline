@@ -53,10 +53,11 @@ public class MusicBehaviour : MonoBehaviour {
 
     }
 
-	private void ChangeSong(uint songIndex)
+	public void ChangeSong(uint songIndex)
     {
-		_audioSource.Stop();
+		if(clips[songIndex] == null) return;
+		StopMusic();
 		_audioSource.clip = clips[songIndex];
-		_audioSource.Play();
+		PlayMusic();
 	}
 }

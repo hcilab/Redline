@@ -1,5 +1,4 @@
-{
-  "items":[
+[
   {
     "_startingFlames": [{
       "x": 1.0,
@@ -157,4 +156,3 @@
     "_prewarm": 17
   }
 ]
-}

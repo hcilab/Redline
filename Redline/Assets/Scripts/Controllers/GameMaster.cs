@@ -171,10 +171,16 @@ public class GameMaster : MonoBehaviour
 		_setNumber = GetSetNumber();
 		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 		// get bar type
-		var barIndex = GetBarType();
-		Debug.Log( "PARSED BAR NUMBER" + barIndex  );
-		if( barIndex != -1 )
-			ChangeHpBar( barIndex );
+		var musicIndex = GetBarType(); //Used as music type
+		Debug.Log( "PARSED MUSIC NUMBER" + musicIndex  );
+		if( musicIndex != -1 ){
+			if(_setNumber == 2){
+				ChangeMusic(-1*musicIndex + 1);
+			}
+			else{
+				ChangeMusic(musicIndex);//ChangeHpBar( barIndex );
+			}
+		}
 
 		//get avatar gender
 		var gender = GetGender();
@@ -325,6 +331,10 @@ public class GameMaster : MonoBehaviour
 		_currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
 		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
 		ChangeHpBar( _currentHpBarindex );
+	}
+
+	private void ChangeMusic(int index){
+		GetComponent<MusicBehaviour>().ChangeSong((uint)index);
 	}
 
 	private void ChangeHpBar( int index )

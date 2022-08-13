@@ -19,6 +19,7 @@ public class DataCollectionController : MonoBehaviour
     public delegate void ProgressUpdate( float progress );
     
     [SerializeField] private string _serverAddress = "localhost";
+    [SerializeField] private string _serverEndpoint = "/redline";
     [SerializeField] private int _serverPort = 80;
     [SerializeField] private bool _sendRemote = true;
     [SerializeField] private string _idEndpoint = "/id";
@@ -43,6 +44,9 @@ public class DataCollectionController : MonoBehaviour
         #if UNITY_WEBGL && !UNITY_EDITOR
             _serverAddress = GetHostAddress();
         #endif
+        if ( _serverEndpoint != "" ) {
+            _serverAddress += _serverEndpoint;
+        }
     }
     
     public void GetNewID( WebCallback cb ) 
@@ -239,6 +243,8 @@ public class DataCollectionController : MonoBehaviour
         , string flamesNearBy
         , string averageIntensity
         , string activeFlames
+        , string distanceTravelled
+        , string waterUsed
         , string fps
         , DataType type = DataType.Atomic )
     {
@@ -258,6 +264,8 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "proximity", flamesNearBy );
         dataObj.AddField( "avg_intensity_in_proximity", averageIntensity );
         dataObj.AddField( "active", activeFlames );
+        dataObj.AddField( "distance", distanceTravelled);
+        dataObj.AddField( "waterUsed", waterUsed);
         dataObj.AddField( "fps", fps );
         dataObj.AddField( "type", Enum.GetName( typeof( DataType ), type ) );
         var path = GetServerPath();

@@ -3203,8 +3203,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _serverAddress: localhost
+  _serverEndpoint: 
   _serverPort: 3000
-  _sendRemote: 0
+  _sendRemote: 1
   _idEndpoint: /id
   _atomicEndpoint: /
   _finalEndpoint: /final/
@@ -3222,8 +3223,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 8e1acfe5525a3864f88dc7a668138588,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 198680c9f3a3d0a4d9bab5225634ab2e, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: 9d4ed8db9bf9c6c48bca42c18c105d3c, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
