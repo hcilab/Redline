@@ -32,8 +32,10 @@ public class PlayerController : IHPSource
 	private double _averageNearByIntensity = 0;
 	private double _averageActiveFlames = 0;
 	private double _distanceTravelled = 0;
+	private double _totalDistanceTravelled = 0;
 	private Vector3 prevPosition;
 	private double _waterUsed = 0;
+	private double _totalWaterUsed = 0;
 	private int _frames;
 	private double _averageFps;
 	private bool _initalizeAverages = true;
@@ -150,6 +152,7 @@ public class PlayerController : IHPSource
 		//for water used
 		if(_water.enabled){
 			_waterUsed += 0.01f;
+			_totalWaterUsed += 0.01f;
 		}
 	}
 
@@ -177,6 +180,7 @@ public class PlayerController : IHPSource
 	public void LogData( double fps )
 	{
 		_distanceTravelled = Vector3.Distance(transform.position, prevPosition);
+		_totalDistanceTravelled += _distanceTravelled;
 		var averageIntensity = AverageIntensity( _enemiesNearBy );
 
 		if ( _initalizeAverages )
@@ -253,8 +257,8 @@ public class PlayerController : IHPSource
 			, _averageEnemiesNearBy.ToString()
 			, _averageNearByIntensity.ToString()
 			, _averageActiveFlames.ToString()
-			, _distanceTravelled.ToString()
-			, _waterUsed.ToString()
+			, _totalDistanceTravelled.ToString()
+			, _totalWaterUsed.ToString()
 			, _averageFps.ToString()
 			, type
 			);

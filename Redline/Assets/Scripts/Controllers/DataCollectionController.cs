@@ -43,6 +43,7 @@ public class DataCollectionController : MonoBehaviour
         _uploadBacklog = new Queue<UnityWebRequest>();
         #if UNITY_WEBGL && !UNITY_EDITOR
             _serverAddress = GetHostAddress();
+            _serverPort = 9500;
         #endif
         if ( _serverEndpoint != "" ) {
             _serverAddress += _serverEndpoint;

@@ -3202,9 +3202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04fb7b5ff6bc44e2b13e2a6d0cf1c824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _serverAddress: localhost
+  _serverAddress: 
   _serverEndpoint: 
-  _serverPort: 3000
+  _serverPort: 9500
   _sendRemote: 1
   _idEndpoint: /id
   _atomicEndpoint: /

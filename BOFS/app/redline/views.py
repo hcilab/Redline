@@ -115,7 +115,9 @@ def getGender():
     return 1 if avatar_sex == 'male' else 0
 
 def getCondition():
-    condition = 0
-    if(db.session.query(db.Participant).filter(db.Participant.).count() > db.session.query(db.Participant).count()/2):
-        condition = 1
-    return condition
+    #get number of participants that have completed condition 1
+    condNum = db.session.query(db.Participant).filter(db.Participant.finished == 1).count()
+    totalCount = db.session.query(db.Participant).count()
+    if(condNum < totalCount/2):
+        return 1
+    return 0
