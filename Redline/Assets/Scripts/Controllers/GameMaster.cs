@@ -151,7 +151,7 @@ public class GameMaster : MonoBehaviour
 
 		#if UNITY_WEBGL && !UNITY_EDITOR
 			WebSetup();
-	        ReloadConfigs(false, false, true);
+	        ReloadConfigs(true, false, true);
 			RemoveLoader();
 	    #else
 			ReloadConfigs();
@@ -170,7 +170,7 @@ public class GameMaster : MonoBehaviour
 		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 		// get bar type
 		_musicType = GetBarType(); //Used as music type
-		Debug.Log( "PARSED MUSIC NUMBER" + _musicType  );
+		Debug.Log( "PARSED MUSIC NUMBER " + _musicType  );
 		if( _musicType != -1 ){
 			if(_setNumber == 2){
 				ChangeMusic(-1*_musicType + 1);
