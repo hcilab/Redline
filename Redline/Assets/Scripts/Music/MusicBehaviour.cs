@@ -32,10 +32,6 @@ public class MusicBehaviour : MonoBehaviour {
         {
 			ChangeSong(1);
         }
-		else if (Input.GetKeyDown(KeyCode.Alpha3))
-		{
-			ChangeSong(2);
-		}
 	}
 	// Update is called once per frame
 	public void StopMusic()

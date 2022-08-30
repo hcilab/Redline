@@ -3183,6 +3183,11 @@ Prefab:
       propertyPath: _deathPhrases.Array.data[2]
       value: No big deal. This is why we train!
       objectReference: {fileID: 0}
+    - target: {fileID: 114305783154324880, guid: e17b19d0ac18c6044893dc3bc80df798,
+        type: 2}
+      propertyPath: _hpBarController
+      value: 
+      objectReference: {fileID: 1077312279}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e17b19d0ac18c6044893dc3bc80df798, type: 2}
   m_IsPrefabParent: 0
@@ -3204,7 +3209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _serverAddress: 
   _serverEndpoint: 
-  _serverPort: 9500
+  _serverPort: 80
   _sendRemote: 1
   _idEndpoint: /id
   _atomicEndpoint: /
@@ -3981,6 +3986,10 @@ Prefab:
       propertyPath: _scale
       value: 
       objectReference: {fileID: 677879975}
+    - target: {fileID: 1166603441378622, guid: 6826635cbd187c046828b914e69b45db, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6826635cbd187c046828b914e69b45db, type: 2}
   m_IsPrefabParent: 0
@@ -6023,6 +6032,10 @@ Prefab:
       propertyPath: _scale
       value: 
       objectReference: {fileID: 2004803101}
+    - target: {fileID: 1166603441378622, guid: 6826635cbd187c046828b914e69b45db, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6826635cbd187c046828b914e69b45db, type: 2}
   m_IsPrefabParent: 0

@@ -262,6 +262,10 @@ public class PlayerController : IHPSource
 			, _averageFps.ToString()
 			, type
 			);
+
+		//Reset some telemetry
+		_totalWaterUsed = 0;
+		_totalDistanceTravelled = 0;
 	}
 
 	private void OnTriggerEnter(Collider other)

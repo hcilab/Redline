@@ -43,7 +43,7 @@ public class DataCollectionController : MonoBehaviour
         _uploadBacklog = new Queue<UnityWebRequest>();
         #if UNITY_WEBGL && !UNITY_EDITOR
             _serverAddress = GetHostAddress();
-            _serverPort = 9500;
+            _serverPort = 80;
         #endif
         if ( _serverEndpoint != "" ) {
             _serverAddress += _serverEndpoint;
@@ -121,7 +121,7 @@ public class DataCollectionController : MonoBehaviour
                     body = "{\"id\":0" + id.ToString() + "}";
                     break;
                 case "bar":
-                    body = "{\"bar\":0}";
+                    body = "{\"bar\":1}";
                     break;
                 case "trial":
                     //TODO

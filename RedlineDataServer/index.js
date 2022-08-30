@@ -78,13 +78,13 @@ server(
       totalCount = count;
     });
 
-    await final_model.count( {'bar': 'Linear HP Bar' } ).then( count => {
-      ctx.log.debug( count + " out of " + totalCount + " entries use the Linear bar");
+    await final_model.count( {'bar': 'Passive' } ).then( count => {
+      ctx.log.debug( count + " out of " + totalCount + " entries using passive music");
       bar = count % 2;
     }).catch( () => {
-      return status(500).send("An error occured allocating a bar type.");
+      return status(500).send("An error occured allocating a music type.");
     });
-    ctx.log.debug("sending bar: " + bar );
+    ctx.log.debug("sending music: " + bar );
 
     return status(200).send( { "bar": bar } );
   })

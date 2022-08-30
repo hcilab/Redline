@@ -116,8 +116,8 @@ def getGender():
 
 def getCondition():
     #get number of participants that have completed condition 1
-    condNum = db.session.query(db.Participant).filter(db.Participant.finished == 1).count()
-    totalCount = db.session.query(db.Participant).count()
+    condNum = db.session.query(db.Participant).filter(db.Participant.finished == 1, db.Participant.condition == 1).count()
+    totalCount = db.session.query(db.Participant).filter(db.Participant.finished == 1).count()
     if(condNum < totalCount/2):
         return 1
     return 0

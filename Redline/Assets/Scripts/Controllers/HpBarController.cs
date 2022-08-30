@@ -68,7 +68,7 @@ public class HpBarController : MonoBehaviour
 	private void OnEnable()
 	{
 		if( Source == null ) Source = FindObjectOfType<IHPSource>();
-		Source.SetDamageAnimation( () => { _takeDamage = true; } );
+		if( Source == null ) Source.SetDamageAnimation( () => { _takeDamage = true; } );
 	}
 
 	void Initialize( Scene newScene, Scene oldScene )

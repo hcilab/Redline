@@ -35,7 +35,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private DeathScreenController _deathScreenController;
 	[SerializeField] private GameObject _endOfGameScreen;
 	[SerializeField] private HpBarController _currentHpBar;
-	[SerializeField] private List< HpBarController > _hpBarControllers;
+	[SerializeField] private HpBarController _hpBarController;
 	[SerializeField] private Text _hpbarlabel;
 
 	[SerializeField] private NumberController _damageNumberController;
@@ -49,6 +49,7 @@ public class GameMaster : MonoBehaviour
 	[SerializeField] private LoadingScreenController _loadingScreen;
 	
 	private int _sessionId;
+	private int _musicType;
 	private bool _uploadComplete = false;
 	private MainMenuController _mainMenu;
 	private LevelManager _levelManager;
@@ -131,10 +132,7 @@ public class GameMaster : MonoBehaviour
 	// Use this for initialization
 	void Awake()
 	{
-		foreach ( HpBarController barController in _hpBarControllers )
-		{
-			barController.gameObject.SetActive( false );
-		}
+		_hpBarController.gameObject.SetActive( false );
 
 		if ( Instance == null )
 			Instance = this;
@@ -171,14 +169,14 @@ public class GameMaster : MonoBehaviour
 		_setNumber = GetSetNumber();
 		Debug.Log( "PARSED SET NUMBER " + _setNumber  );
 		// get bar type
-		var musicIndex = GetBarType(); //Used as music type
-		Debug.Log( "PARSED MUSIC NUMBER" + musicIndex  );
-		if( musicIndex != -1 ){
+		_musicType = GetBarType(); //Used as music type
+		Debug.Log( "PARSED MUSIC NUMBER" + _musicType  );
+		if( _musicType != -1 ){
 			if(_setNumber == 2){
-				ChangeMusic(-1*musicIndex + 1);
+				ChangeMusic(-1*_musicType + 1);
 			}
 			else{
-				ChangeMusic(musicIndex);//ChangeHpBar( barIndex );
+				ChangeMusic(_musicType);//ChangeHpBar( barIndex );
 			}
 		}
 
@@ -328,9 +326,9 @@ public class GameMaster : MonoBehaviour
 
 	private void ScrollHpBar( int direction )
 	{
-		_currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
-		                      + _hpBarControllers.Count) % _hpBarControllers.Count;
-		ChangeHpBar( _currentHpBarindex );
+		// _currentHpBarindex = ((_currentHpBarindex + direction) % _hpBarControllers.Count
+		//                       + _hpBarControllers.Count) % _hpBarControllers.Count;
+		//ChangeHpBar( _currentHpBarindex );
 	}
 
 	private void ChangeMusic(int index){
@@ -341,7 +339,7 @@ public class GameMaster : MonoBehaviour
 	{
 		_currentHpBar.gameObject.SetActive( false );
 		_currentHpBarindex = index;
-		_currentHpBar = _hpBarControllers[ _currentHpBarindex ];
+		_currentHpBar = _hpBarController;
 
 		_currentHpBar.gameObject.SetActive( true );
 		_hpbarlabel.text = _currentHpBar.name;
@@ -456,7 +454,7 @@ public class GameMaster : MonoBehaviour
 
 	public string GetHpBarType()
 	{
-		return _hpbarlabel.text;
+		return _musicType == 0 ? "Passive" : "Aggressive";
 	}
 
 	public void LoadFireSystem( FireSystemController fireSystem, [CanBeNull] Action cb )
@@ -496,11 +494,12 @@ public class GameMaster : MonoBehaviour
 	public void ReloadConfigs( bool bar = true, bool id = true, bool levels = true )
 	{
 		if( bar )
-			DataCollector.GetBarType( data =>
-			{
-				ChangeHpBar( Int32.Parse(
-					JsonUtility.FromJson< DataObject >( data ).bar ) );
-			} );
+			// DataCollector.GetBarType( data =>
+			// {
+			// 	ChangeHpBar( Int32.Parse(
+			// 		JsonUtility.FromJson< DataObject >( data ).bar ) );
+			// } );
+			ChangeHpBar(1);
 
 		if( id )
 			DataCollector.GetNewID( data =>
