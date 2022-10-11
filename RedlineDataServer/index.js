@@ -28,6 +28,7 @@ var redline_entry_schema =  mongoose.Schema({
   , active: Number
   , distance: Number
   , waterUsed: Number
+  , buttonPresses: Number
   , type: String
   , fps: Number
 });
@@ -78,8 +79,8 @@ server(
       totalCount = count;
     });
 
-    await final_model.count( {'bar': 'Passive' } ).then( count => {
-      ctx.log.debug( count + " out of " + totalCount + " entries using passive music");
+    await final_model.count( {'bar': 'Peaceful' } ).then( count => {
+      ctx.log.debug( count + " out of " + totalCount + " entries using peaceful music");
       bar = count % 2;
     }).catch( () => {
       return status(500).send("An error occured allocating a music type.");

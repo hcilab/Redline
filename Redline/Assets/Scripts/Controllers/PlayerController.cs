@@ -36,6 +36,7 @@ public class PlayerController : IHPSource
 	private Vector3 prevPosition;
 	private double _waterUsed = 0;
 	private double _totalWaterUsed = 0;
+	private int _buttonPresses = 0;
 	private int _frames;
 	private double _averageFps;
 	private bool _initalizeAverages = true;
@@ -125,6 +126,9 @@ public class PlayerController : IHPSource
 		{
 			_water.enabled = false;
 		}
+		else if( !Input.GetMouseButton(0)){
+			_water.enabled = false;
+		}
 		LookAtMouse();
 
 		 
@@ -153,6 +157,10 @@ public class PlayerController : IHPSource
 		if(_water.enabled){
 			_waterUsed += 0.01f;
 			_totalWaterUsed += 0.01f;
+		}
+		if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D)
+		|| Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)){
+			_buttonPresses += 1;
 		}
 	}
 
@@ -216,6 +224,7 @@ public class PlayerController : IHPSource
 			, _levelManager.GameMaster.GetActiveFlames().ToString()
 			, _distanceTravelled.ToString()
 			, _waterUsed.ToString()
+			, _buttonPresses.ToString()
 			, fps.ToString()
 		);
 	}
@@ -259,6 +268,7 @@ public class PlayerController : IHPSource
 			, _averageActiveFlames.ToString()
 			, _totalDistanceTravelled.ToString()
 			, _totalWaterUsed.ToString()
+			, _buttonPresses.ToString()
 			, _averageFps.ToString()
 			, type
 			);

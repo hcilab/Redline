@@ -34,6 +34,7 @@ public class GameMaster : MonoBehaviour
 	public static GameMaster Instance = null;
 	[SerializeField] private DeathScreenController _deathScreenController;
 	[SerializeField] private GameObject _endOfGameScreen;
+	[SerializeField] private SoundCalibrator _soundCalibration;
 	[SerializeField] private HpBarController _currentHpBar;
 	[SerializeField] private HpBarController _hpBarController;
 	[SerializeField] private Text _hpbarlabel;
@@ -156,6 +157,7 @@ public class GameMaster : MonoBehaviour
 	    #else
 			ReloadConfigs();
 		#endif
+		_soundCalibration.Setup(_setNumber);
 	}
 
 	private void WebSetup()
@@ -174,6 +176,9 @@ public class GameMaster : MonoBehaviour
 		if( _musicType != -1 ){
 			if(_setNumber == 2){
 				ChangeMusic(-1*_musicType + 1);
+			}
+			else if(_setNumber == 0){
+				ChangeMusic(-1);
 			}
 			else{
 				ChangeMusic(_musicType);//ChangeHpBar( barIndex );
@@ -332,7 +337,12 @@ public class GameMaster : MonoBehaviour
 	}
 
 	private void ChangeMusic(int index){
-		GetComponent<MusicBehaviour>().ChangeSong((uint)index);
+		if(index == -1){
+			GetComponent<MusicBehaviour>().StopMusic();
+		}
+		else{
+			GetComponent<MusicBehaviour>().ChangeSong((uint)index);
+		}
 	}
 
 	private void ChangeHpBar( int index )
@@ -454,7 +464,7 @@ public class GameMaster : MonoBehaviour
 
 	public string GetHpBarType()
 	{
-		return _musicType == 0 ? "Passive" : "Aggressive";
+		return _musicType == 0 ? "Peaceful" : "Powerful";
 	}
 
 	public void LoadFireSystem( FireSystemController fireSystem, [CanBeNull] Action cb )

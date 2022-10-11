@@ -237,7 +237,7 @@ public class DataCollectionController : MonoBehaviour
         , string trial
         , string level
         , string setNumber
-        , string bar_type
+        , string music_type
         , string hitPoints
         , string damage
         , string score
@@ -246,6 +246,7 @@ public class DataCollectionController : MonoBehaviour
         , string activeFlames
         , string distanceTravelled
         , string waterUsed
+        , string buttonPresses
         , string fps
         , DataType type = DataType.Atomic )
     {
@@ -259,7 +260,7 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "level", level );
         dataObj.AddField( "set", setNumber );
         dataObj.AddField( "hp", hitPoints );
-        dataObj.AddField( "bar", bar_type );
+        dataObj.AddField( "bar", music_type );
         dataObj.AddField( "damage", damage );
         dataObj.AddField( "score", score );
         dataObj.AddField( "proximity", flamesNearBy );
@@ -267,6 +268,7 @@ public class DataCollectionController : MonoBehaviour
         dataObj.AddField( "active", activeFlames );
         dataObj.AddField( "distance", distanceTravelled);
         dataObj.AddField( "waterUsed", waterUsed);
+        dataObj.AddField( "buttonPresses", buttonPresses);
         dataObj.AddField( "fps", fps );
         dataObj.AddField( "type", Enum.GetName( typeof( DataType ), type ) );
         var path = GetServerPath();

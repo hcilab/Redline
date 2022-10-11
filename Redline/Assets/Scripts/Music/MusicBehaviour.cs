@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class MusicBehaviour : MonoBehaviour {
 	
+	public AudioClip calmMusic;
+	public AudioClip tenseMusic;
 	private AudioSource _audioSource;
-	private AudioClip[] clips;
+	//private AudioClip[] clips;
 
 	private void Awake()
     {
@@ -13,7 +15,7 @@ public class MusicBehaviour : MonoBehaviour {
     }
 	void Start()
     {
-		clips = Resources.LoadAll<AudioClip>("Music");
+		//clips = Resources.LoadAll<AudioClip>("Music");
 	}
 	// Use this for initialization
 	public void PlayMusic()
@@ -21,18 +23,7 @@ public class MusicBehaviour : MonoBehaviour {
 		if (_audioSource.isPlaying) return;
 		_audioSource.Play();
 	}
-
-	void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-			ChangeSong(0);
-        }
-		else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-			ChangeSong(1);
-        }
-	}
+	
 	// Update is called once per frame
 	public void StopMusic()
 	{
@@ -51,9 +42,15 @@ public class MusicBehaviour : MonoBehaviour {
 
 	public void ChangeSong(uint songIndex)
     {
-		if(clips[songIndex] == null) return;
+		if(songIndex < 0 || songIndex > 1) return;
 		StopMusic();
-		_audioSource.clip = clips[songIndex];
+		if(songIndex == 0){
+			_audioSource.clip = calmMusic;
+		}
+		else if(songIndex == 1){
+			_audioSource.clip = tenseMusic;
+		}
+		//_audioSource.clip = clips[songIndex];
 		PlayMusic();
 	}
 }
